@@ -936,7 +936,7 @@ def select_provider_and_model(args=None):
     # Step 1: Provider selection — put active provider first with marker
     providers = [
         ("openrouter", "OpenRouter (100+ models, pay-per-use)"),
-        ("nous", "Nous Portal (Samuel Kalu subscription)"),
+        ("nous", "Nous Portal (The Ripper subscription)"),
         ("openai-codex", "OpenAI Codex"),
         ("copilot-acp", "GitHub Copilot ACP (spawns `copilot --acp --stdio`)"),
         ("copilot", "GitHub Copilot (uses GITHUB_TOKEN or gh auth token)"),

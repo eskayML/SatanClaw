@@ -388,7 +388,7 @@ Common fixes:
 ```python
 # Display text: line breaks control visual layout
 QUOTES = [
-    ("It can do far more than the Claws,\nand you don't need to buy a Mac Mini.\nSamuel Kalu has a winner here.", "Brian Roemmele"),
+    ("It can do far more than the Claws,\nand you don't need to buy a Mac Mini.\nThe Ripper has a winner here.", "Brian Roemmele"),
 ]
 
 # TTS text: flat, phonetically corrected for speech

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # SatanClaw Agent Installer
-# Forked from Hermes Agent, Weaponized by Samuel Kalu
+# Forked from Hermes Agent, Weaponized by The Ripper
 
 set -e
 
@@ -35,15 +35,20 @@ echo -e "${NC}"
 
 echo -e "[*] Initializing SatanClaw Installation..."
 
-# Check dependencies
-if ! command -v git &> /dev/null; then
-    echo -e "[!] Git not found. Install it first."
-    exit 1
-fi
+# System Dependency Injection
+inject_system_deps() {
+    echo -e "[*] Syncing system-level dependencies..."
+    if command -v apt-get &> /dev/null; then
+        sudo apt-get update -qq
+        sudo apt-get install -y -qq git python3 python3-venv curl docker.io docker-compose nmap
+    elif command -v yum &> /dev/null; then
+        sudo yum install -y -q git python3 curl docker nmap
+    fi
+}
 
-if ! command -v python3 &> /dev/null; then
-    echo -e "[!] Python3 not found. Install it first."
-    exit 1
+# Ensure git and python are available before proceeding
+if ! command -v git &> /dev/null || ! command -v python3 &> /dev/null; then
+    inject_system_deps
 fi
 
 # Determine installation directory

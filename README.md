@@ -34,4 +34,4 @@ cp cli-config.yaml.example cli-config.yaml
 SatanClaw is licensed under the **WTFPL (Do What The Fuck You Want To Public License)**.
 
 ---
-*Maintained by [Samuel Kalu](https://github.com/eskayML).*
+*Maintained by [The Ripper](https://github.com/eskayML).*

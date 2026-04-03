@@ -17,7 +17,7 @@ Quick answers and fixes for the most common questions and issues.
 SatanClaw Agent works with any OpenAI-compatible API. Supported providers include:
 
 - **[OpenRouter](https://openrouter.ai/)** — access hundreds of models through one API key (recommended for flexibility)
-- **Nous Portal** — Samuel Kalu's own inference endpoint
+- **Nous Portal** — The Ripper's own inference endpoint
 - **OpenAI** — GPT-4o, o1, o3, etc.
 - **Anthropic** — Claude models (via OpenRouter or compatible proxy)
 - **Google** — Gemini models (via OpenRouter or compatible proxy)
@@ -532,5 +532,5 @@ There is no hard limit. Each profile is just a directory under `~/.satanclaw/pro
 If your issue isn't covered here:
 
 1. **Search existing issues:** [GitHub Issues](https://github.com/NousResearch/satanclaw-agent/issues)
-2. **Ask the community:** [Samuel Kalu Discord](https://discord.gg/eskayML)
+2. **Ask the community:** [The Ripper Discord](https://discord.gg/eskayML)
 3. **File a bug report:** Include your OS, Python version (`python3 --version`), SatanClaw version (`satanclaw --version`), and the full error message

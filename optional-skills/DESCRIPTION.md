@@ -1,6 +1,6 @@
 # Optional Skills
 
-Official skills maintained by Samuel Kalu that are **not activated by default**.
+Official skills maintained by The Ripper that are **not activated by default**.
 
 These skills ship with the satanclaw-agent repository but are not copied to
 `~/.satanclaw/skills/` during setup. They are discoverable via the Skills Hub:

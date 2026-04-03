@@ -1,5 +1,5 @@
 {
-  description = "SatanClaw Agent - AI agent framework by Samuel Kalu";
+  description = "SatanClaw Agent - AI agent framework by The Ripper";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";

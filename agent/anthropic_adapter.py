@@ -1263,7 +1263,7 @@ def build_anthropic_kwargs(
                 text = text.replace("SatanClaw Agent", "Claude Code")
                 text = text.replace("SatanClaw agent", "Claude Code")
                 text = text.replace("satanclaw-agent", "claude-code")
-                text = text.replace("Samuel Kalu", "Anthropic")
+                text = text.replace("The Ripper", "Anthropic")
                 block["text"] = text
 
         # 3. Prefix tool names with mcp_ (Claude Code convention)

@@ -130,11 +130,11 @@ const config: Config = {
           title: 'More',
           items: [
             { label: 'GitHub', href: 'https://github.com/NousResearch/satanclaw-agent' },
-            { label: 'Samuel Kalu', href: 'https://eskayML.com' },
+            { label: 'The Ripper', href: 'https://eskayML.com' },
           ],
         },
       ],
-      copyright: `Built by <a href="https://eskayML.com">Samuel Kalu</a> · MIT License · ${new Date().getFullYear()}`,
+      copyright: `Built by <a href="https://eskayML.com">The Ripper</a> · MIT License · ${new Date().getFullYear()}`,
     },
     prism: {
       theme: prismThemes.github,
