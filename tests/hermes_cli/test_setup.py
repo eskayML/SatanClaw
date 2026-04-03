@@ -4,9 +4,9 @@ import json
 import sys
 import types
 
-from satan_cli.auth import get_active_provider
-from satan_cli.config import load_config, save_config
-from satan_cli.setup import setup_model_provider
+from satanclaw_cli.auth import get_active_provider
+from satanclaw_cli.config import load_config, save_config
+from satanclaw_cli.setup import setup_model_provider
 
 
 def _maybe_keep_current_tts(question, choices):
@@ -29,11 +29,11 @@ def _clear_provider_env(monkeypatch):
 
 def _stub_tts(monkeypatch):
     """Stub out TTS prompts so setup_model_provider doesn't block."""
-    monkeypatch.setattr("satan_cli.setup.prompt_choice", lambda q, c, d=0: (
+    monkeypatch.setattr("satanclaw_cli.setup.prompt_choice", lambda q, c, d=0: (
         _maybe_keep_current_tts(q, c) if _maybe_keep_current_tts(q, c) is not None
         else d
     ))
-    monkeypatch.setattr("satan_cli.setup.prompt_yes_no", lambda *a, **kw: False)
+    monkeypatch.setattr("satanclaw_cli.setup.prompt_yes_no", lambda *a, **kw: False)
 
 
 def _write_model_config(tmp_path, provider, base_url="", model_name="test-model"):
@@ -62,7 +62,7 @@ def test_setup_delegates_to_select_provider_and_model(tmp_path, monkeypatch):
     def fake_select():
         _write_model_config(tmp_path, "custom", "http://localhost:11434/v1", "qwen3.5:32b")
 
-    monkeypatch.setattr("satan_cli.main.select_provider_and_model", fake_select)
+    monkeypatch.setattr("satanclaw_cli.main.select_provider_and_model", fake_select)
 
     setup_model_provider(config)
     save_config(config)
@@ -87,7 +87,7 @@ def test_setup_syncs_openrouter_from_disk(tmp_path, monkeypatch):
     def fake_select():
         _write_model_config(tmp_path, "openrouter", model_name="anthropic/claude-opus-4.6")
 
-    monkeypatch.setattr("satan_cli.main.select_provider_and_model", fake_select)
+    monkeypatch.setattr("satanclaw_cli.main.select_provider_and_model", fake_select)
 
     setup_model_provider(config)
     save_config(config)
@@ -108,7 +108,7 @@ def test_setup_syncs_nous_from_disk(tmp_path, monkeypatch):
     def fake_select():
         _write_model_config(tmp_path, "nous", "https://inference.example.com/v1", "gemini-3-flash")
 
-    monkeypatch.setattr("satan_cli.main.select_provider_and_model", fake_select)
+    monkeypatch.setattr("satanclaw_cli.main.select_provider_and_model", fake_select)
 
     setup_model_provider(config)
     save_config(config)
@@ -133,7 +133,7 @@ def test_setup_custom_providers_synced(tmp_path, monkeypatch):
         cfg["custom_providers"] = [{"name": "Local", "base_url": "http://localhost:8080/v1"}]
         save_config(cfg)
 
-    monkeypatch.setattr("satan_cli.main.select_provider_and_model", fake_select)
+    monkeypatch.setattr("satanclaw_cli.main.select_provider_and_model", fake_select)
 
     setup_model_provider(config)
     save_config(config)
@@ -157,7 +157,7 @@ def test_setup_cancel_preserves_existing_config(tmp_path, monkeypatch):
     def fake_select():
         pass  # user cancelled — nothing written to disk
 
-    monkeypatch.setattr("satan_cli.main.select_provider_and_model", fake_select)
+    monkeypatch.setattr("satanclaw_cli.main.select_provider_and_model", fake_select)
 
     setup_model_provider(config)
     save_config(config)
@@ -179,7 +179,7 @@ def test_setup_exception_in_select_gracefully_handled(tmp_path, monkeypatch):
     def fake_select():
         raise RuntimeError("something broke")
 
-    monkeypatch.setattr("satan_cli.main.select_provider_and_model", fake_select)
+    monkeypatch.setattr("satanclaw_cli.main.select_provider_and_model", fake_select)
 
     # Should not raise
     setup_model_provider(config)
@@ -196,7 +196,7 @@ def test_setup_keyboard_interrupt_gracefully_handled(tmp_path, monkeypatch):
     def fake_select():
         raise KeyboardInterrupt()
 
-    monkeypatch.setattr("satan_cli.main.select_provider_and_model", fake_select)
+    monkeypatch.setattr("satanclaw_cli.main.select_provider_and_model", fake_select)
 
     setup_model_provider(config)
 
@@ -214,7 +214,7 @@ def test_codex_setup_uses_runtime_access_token_for_live_model_list(tmp_path, mon
     def fake_select():
         _write_model_config(tmp_path, "openai-codex", "https://api.openai.com/v1", "gpt-4o")
 
-    monkeypatch.setattr("satan_cli.main.select_provider_and_model", fake_select)
+    monkeypatch.setattr("satanclaw_cli.main.select_provider_and_model", fake_select)
 
     setup_model_provider(config)
     save_config(config)
@@ -240,11 +240,11 @@ def test_modal_setup_can_use_nous_subscription_without_modal_creds(tmp_path, mon
         assert "Modal Token" not in message
         raise AssertionError(f"Unexpected prompt call: {message}")
 
-    monkeypatch.setattr("satan_cli.setup.prompt_choice", fake_prompt_choice)
-    monkeypatch.setattr("satan_cli.setup.prompt", fake_prompt)
-    monkeypatch.setattr("satan_cli.setup._prompt_container_resources", lambda config: None)
+    monkeypatch.setattr("satanclaw_cli.setup.prompt_choice", fake_prompt_choice)
+    monkeypatch.setattr("satanclaw_cli.setup.prompt", fake_prompt)
+    monkeypatch.setattr("satanclaw_cli.setup._prompt_container_resources", lambda config: None)
     monkeypatch.setattr(
-        "satan_cli.setup.get_nous_subscription_features",
+        "satanclaw_cli.setup.get_nous_subscription_features",
         lambda config: type("Features", (), {"nous_auth_present": True})(),
     )
     monkeypatch.setitem(
@@ -256,7 +256,7 @@ def test_modal_setup_can_use_nous_subscription_without_modal_creds(tmp_path, mon
         ),
     )
 
-    from satan_cli.setup import setup_terminal_backend
+    from satanclaw_cli.setup import setup_terminal_backend
 
     setup_terminal_backend(config)
 
@@ -282,11 +282,11 @@ def test_modal_setup_persists_direct_mode_when_user_chooses_their_own_account(tm
 
     prompt_values = iter(["token-id", "token-secret", ""])
 
-    monkeypatch.setattr("satan_cli.setup.prompt_choice", fake_prompt_choice)
-    monkeypatch.setattr("satan_cli.setup.prompt", lambda *args, **kwargs: next(prompt_values))
-    monkeypatch.setattr("satan_cli.setup._prompt_container_resources", lambda config: None)
+    monkeypatch.setattr("satanclaw_cli.setup.prompt_choice", fake_prompt_choice)
+    monkeypatch.setattr("satanclaw_cli.setup.prompt", lambda *args, **kwargs: next(prompt_values))
+    monkeypatch.setattr("satanclaw_cli.setup._prompt_container_resources", lambda config: None)
     monkeypatch.setattr(
-        "satan_cli.setup.get_nous_subscription_features",
+        "satanclaw_cli.setup.get_nous_subscription_features",
         lambda config: type("Features", (), {"nous_auth_present": True})(),
     )
     monkeypatch.setitem(
@@ -299,7 +299,7 @@ def test_modal_setup_persists_direct_mode_when_user_chooses_their_own_account(tm
     )
     monkeypatch.setitem(sys.modules, "swe_rex", object())
 
-    from satan_cli.setup import setup_terminal_backend
+    from satanclaw_cli.setup import setup_terminal_backend
 
     setup_terminal_backend(config)
 

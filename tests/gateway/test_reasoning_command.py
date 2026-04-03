@@ -78,15 +78,15 @@ class TestReasoningCommand:
 
     @pytest.mark.asyncio
     async def test_reasoning_command_reloads_current_state_from_config(self, tmp_path, monkeypatch):
-        satan_home = tmp_path / "satan"
-        satan_home.mkdir()
-        config_path = satan_home / "config.yaml"
+        satanclaw_home = tmp_path / "satanclaw"
+        satanclaw_home.mkdir()
+        config_path = satanclaw_home / "config.yaml"
         config_path.write_text(
             "agent:\n  reasoning_effort: none\ndisplay:\n  show_reasoning: true\n",
             encoding="utf-8",
         )
 
-        monkeypatch.setattr(gateway_run, "_satan_home", satan_home)
+        monkeypatch.setattr(gateway_run, "_satanclaw_home", satanclaw_home)
         monkeypatch.delenv("HERMES_REASONING_EFFORT", raising=False)
 
         runner = _make_runner()
@@ -102,12 +102,12 @@ class TestReasoningCommand:
 
     @pytest.mark.asyncio
     async def test_handle_reasoning_command_updates_config_and_cache(self, tmp_path, monkeypatch):
-        satan_home = tmp_path / "satan"
-        satan_home.mkdir()
-        config_path = satan_home / "config.yaml"
+        satanclaw_home = tmp_path / "satanclaw"
+        satanclaw_home.mkdir()
+        config_path = satanclaw_home / "config.yaml"
         config_path.write_text("agent:\n  reasoning_effort: medium\n", encoding="utf-8")
 
-        monkeypatch.setattr(gateway_run, "_satan_home", satan_home)
+        monkeypatch.setattr(gateway_run, "_satanclaw_home", satanclaw_home)
         monkeypatch.delenv("HERMES_REASONING_EFFORT", raising=False)
 
         runner = _make_runner()
@@ -121,12 +121,12 @@ class TestReasoningCommand:
         assert "takes effect on next message" in result
 
     def test_run_agent_reloads_reasoning_config_per_message(self, tmp_path, monkeypatch):
-        satan_home = tmp_path / "satan"
-        satan_home.mkdir()
-        (satan_home / "config.yaml").write_text("agent:\n  reasoning_effort: low\n", encoding="utf-8")
+        satanclaw_home = tmp_path / "satanclaw"
+        satanclaw_home.mkdir()
+        (satanclaw_home / "config.yaml").write_text("agent:\n  reasoning_effort: low\n", encoding="utf-8")
 
-        monkeypatch.setattr(gateway_run, "_satan_home", satan_home)
-        monkeypatch.setattr(gateway_run, "_env_path", satan_home / ".env")
+        monkeypatch.setattr(gateway_run, "_satanclaw_home", satanclaw_home)
+        monkeypatch.setattr(gateway_run, "_env_path", satanclaw_home / ".env")
         monkeypatch.setattr(gateway_run, "load_dotenv", lambda *args, **kwargs: None)
         monkeypatch.setattr(
             gateway_run,
@@ -171,12 +171,12 @@ class TestReasoningCommand:
         assert _CapturingAgent.last_init["reasoning_config"] == {"enabled": True, "effort": "low"}
 
     def test_run_agent_prefers_config_over_stale_reasoning_env(self, tmp_path, monkeypatch):
-        satan_home = tmp_path / "satan"
-        satan_home.mkdir()
-        (satan_home / "config.yaml").write_text("agent:\n  reasoning_effort: none\n", encoding="utf-8")
+        satanclaw_home = tmp_path / "satanclaw"
+        satanclaw_home.mkdir()
+        (satanclaw_home / "config.yaml").write_text("agent:\n  reasoning_effort: none\n", encoding="utf-8")
 
-        monkeypatch.setattr(gateway_run, "_satan_home", satan_home)
-        monkeypatch.setattr(gateway_run, "_env_path", satan_home / ".env")
+        monkeypatch.setattr(gateway_run, "_satanclaw_home", satanclaw_home)
+        monkeypatch.setattr(gateway_run, "_env_path", satanclaw_home / ".env")
         monkeypatch.setattr(gateway_run, "load_dotenv", lambda *args, **kwargs: None)
         monkeypatch.setattr(
             gateway_run,
@@ -220,9 +220,9 @@ class TestReasoningCommand:
         assert _CapturingAgent.last_init["reasoning_config"] == {"enabled": False}
 
     def test_run_agent_includes_enabled_mcp_servers_in_gateway_toolsets(self, tmp_path, monkeypatch):
-        satan_home = tmp_path / "satan"
-        satan_home.mkdir()
-        (satan_home / "config.yaml").write_text(
+        satanclaw_home = tmp_path / "satanclaw"
+        satanclaw_home.mkdir()
+        (satanclaw_home / "config.yaml").write_text(
             "platform_toolsets:\n"
             "  cli: [web, memory]\n"
             "mcp_servers:\n"
@@ -233,8 +233,8 @@ class TestReasoningCommand:
             encoding="utf-8",
         )
 
-        monkeypatch.setattr(gateway_run, "_satan_home", satan_home)
-        monkeypatch.setattr(gateway_run, "_env_path", satan_home / ".env")
+        monkeypatch.setattr(gateway_run, "_satanclaw_home", satanclaw_home)
+        monkeypatch.setattr(gateway_run, "_env_path", satanclaw_home / ".env")
         monkeypatch.setattr(gateway_run, "load_dotenv", lambda *args, **kwargs: None)
         monkeypatch.setattr(
             gateway_run,
@@ -281,12 +281,12 @@ class TestReasoningCommand:
         assert "web-search-prime" in enabled_toolsets
 
     def test_run_agent_homeassistant_uses_default_platform_toolset(self, tmp_path, monkeypatch):
-        satan_home = tmp_path / "satan"
-        satan_home.mkdir()
-        (satan_home / "config.yaml").write_text("", encoding="utf-8")
+        satanclaw_home = tmp_path / "satanclaw"
+        satanclaw_home.mkdir()
+        (satanclaw_home / "config.yaml").write_text("", encoding="utf-8")
 
-        monkeypatch.setattr(gateway_run, "_satan_home", satan_home)
-        monkeypatch.setattr(gateway_run, "_env_path", satan_home / ".env")
+        monkeypatch.setattr(gateway_run, "_satanclaw_home", satanclaw_home)
+        monkeypatch.setattr(gateway_run, "_env_path", satanclaw_home / ".env")
         monkeypatch.setattr(gateway_run, "load_dotenv", lambda *args, **kwargs: None)
         monkeypatch.setattr(
             gateway_run,

@@ -15,7 +15,7 @@ class TestSecretCaptureGuidance:
     def test_gateway_secret_capture_message_points_to_local_setup(self):
         message = GATEWAY_SECRET_CAPTURE_UNSUPPORTED_MESSAGE
         assert "local cli" in message.lower()
-        assert "~/.satan/.env" in message
+        assert "~/.satanclaw/.env" in message
 
 
 # ---------------------------------------------------------------------------

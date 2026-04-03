@@ -97,21 +97,21 @@ class TestFirecrawlClientConfig:
 
     def test_tool_gateway_domain_builds_firecrawl_gateway_origin(self):
         """Shared gateway domain should derive the Firecrawl vendor hostname."""
-        with patch.dict(os.environ, {"TOOL_GATEWAY_DOMAIN": "nousresearch.com"}):
+        with patch.dict(os.environ, {"TOOL_GATEWAY_DOMAIN": "eskayML.com"}):
             with patch("tools.web_tools._read_nous_access_token", return_value="nous-token"):
                 with patch("tools.web_tools.Firecrawl") as mock_fc:
                     from tools.web_tools import _get_firecrawl_client
                     result = _get_firecrawl_client()
                     mock_fc.assert_called_once_with(
                         api_key="nous-token",
-                        api_url="https://firecrawl-gateway.nousresearch.com",
+                        api_url="https://firecrawl-gateway.eskayML.com",
                     )
                     assert result is mock_fc.return_value
 
     def test_tool_gateway_scheme_can_switch_derived_gateway_origin_to_http(self):
         """Shared gateway scheme should allow local plain-http vendor hosts."""
         with patch.dict(os.environ, {
-            "TOOL_GATEWAY_DOMAIN": "nousresearch.com",
+            "TOOL_GATEWAY_DOMAIN": "eskayML.com",
             "TOOL_GATEWAY_SCHEME": "http",
         }):
             with patch("tools.web_tools._read_nous_access_token", return_value="nous-token"):
@@ -120,14 +120,14 @@ class TestFirecrawlClientConfig:
                     result = _get_firecrawl_client()
                     mock_fc.assert_called_once_with(
                         api_key="nous-token",
-                        api_url="http://firecrawl-gateway.nousresearch.com",
+                        api_url="http://firecrawl-gateway.eskayML.com",
                     )
                     assert result is mock_fc.return_value
 
     def test_invalid_tool_gateway_scheme_raises(self):
         """Unexpected shared gateway schemes should fail fast."""
         with patch.dict(os.environ, {
-            "TOOL_GATEWAY_DOMAIN": "nousresearch.com",
+            "TOOL_GATEWAY_DOMAIN": "eskayML.com",
             "TOOL_GATEWAY_SCHEME": "ftp",
         }):
             with patch("tools.web_tools._read_nous_access_token", return_value="nous-token"):
@@ -139,7 +139,7 @@ class TestFirecrawlClientConfig:
         """An explicit Firecrawl gateway origin should override the shared domain."""
         with patch.dict(os.environ, {
             "FIRECRAWL_GATEWAY_URL": "https://firecrawl-gateway.localhost:3009/",
-            "TOOL_GATEWAY_DOMAIN": "nousresearch.com",
+            "TOOL_GATEWAY_DOMAIN": "eskayML.com",
         }):
             with patch("tools.web_tools._read_nous_access_token", return_value="nous-token"):
                 with patch("tools.web_tools.Firecrawl") as mock_fc:
@@ -158,14 +158,14 @@ class TestFirecrawlClientConfig:
                 _get_firecrawl_client()
                 mock_fc.assert_called_once_with(
                     api_key="nous-token",
-                    api_url="https://firecrawl-gateway.nousresearch.com",
+                    api_url="https://firecrawl-gateway.eskayML.com",
                 )
 
     def test_direct_mode_is_preferred_over_tool_gateway(self):
         """Explicit Firecrawl config should win over the gateway fallback."""
         with patch.dict(os.environ, {
             "FIRECRAWL_API_KEY": "fc-test",
-            "TOOL_GATEWAY_DOMAIN": "nousresearch.com",
+            "TOOL_GATEWAY_DOMAIN": "eskayML.com",
         }):
             with patch("tools.web_tools._read_nous_access_token", return_value="nous-token"):
                 with patch("tools.web_tools.Firecrawl") as mock_fc:
@@ -173,14 +173,14 @@ class TestFirecrawlClientConfig:
                     _get_firecrawl_client()
                 mock_fc.assert_called_once_with(api_key="fc-test")
 
-    def test_nous_auth_token_respects_satan_home_override(self, tmp_path):
-        """Auth lookup should read from HERMES_HOME/auth.json, not ~/.satan/auth.json."""
+    def test_nous_auth_token_respects_satanclaw_home_override(self, tmp_path):
+        """Auth lookup should read from HERMES_HOME/auth.json, not ~/.satanclaw/auth.json."""
         real_home = tmp_path / "real-home"
-        (real_home / ".satan").mkdir(parents=True)
+        (real_home / ".satanclaw").mkdir(parents=True)
 
-        satan_home = tmp_path / "satan-home"
-        satan_home.mkdir()
-        (satan_home / "auth.json").write_text(json.dumps({
+        satanclaw_home = tmp_path / "satanclaw-home"
+        satanclaw_home.mkdir()
+        (satanclaw_home / "auth.json").write_text(json.dumps({
             "providers": {
                 "nous": {
                     "access_token": "nous-token",
@@ -190,7 +190,7 @@ class TestFirecrawlClientConfig:
 
         with patch.dict(os.environ, {
             "HOME": str(real_home),
-            "HERMES_HOME": str(satan_home),
+            "HERMES_HOME": str(satanclaw_home),
         }, clear=False):
             import tools.web_tools
             importlib.reload(tools.web_tools)
@@ -293,7 +293,7 @@ class TestBackendSelection:
     """Test suite for _get_backend() backend selection logic.
 
     The backend is configured via config.yaml (web.backend), set by
-    ``satan tools``.  Falls back to key-based detection for legacy/manual
+    ``satanclaw tools``.  Falls back to key-based detection for legacy/manual
     setups.
     """
 

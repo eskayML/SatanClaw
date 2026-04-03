@@ -1,12 +1,12 @@
 ---
 sidebar_position: 4
 title: "Contributing"
-description: "How to contribute to Satan Agent — dev setup, code style, PR process"
+description: "How to contribute to SatanClaw Agent — dev setup, code style, PR process"
 ---
 
 # Contributing
 
-Thank you for contributing to Satan Agent! This guide covers setting up your dev environment, understanding the codebase, and getting your PR merged.
+Thank you for contributing to SatanClaw Agent! This guide covers setting up your dev environment, understanding the codebase, and getting your PR merged.
 
 ## Contribution Priorities
 
@@ -40,8 +40,8 @@ We value contributions in this order:
 ### Clone and Install
 
 ```bash
-git clone --recurse-submodules https://github.com/NousResearch/satan-agent.git
-cd satan-agent
+git clone --recurse-submodules https://github.com/NousResearch/satanclaw-agent.git
+cd satanclaw-agent
 
 # Create venv with Python 3.11
 uv venv venv --python 3.11
@@ -58,12 +58,12 @@ npm install
 ### Configure for Development
 
 ```bash
-mkdir -p ~/.satan/{cron,sessions,logs,memories,skills}
-cp cli-config.yaml.example ~/.satan/config.yaml
-touch ~/.satan/.env
+mkdir -p ~/.satanclaw/{cron,sessions,logs,memories,skills}
+cp cli-config.yaml.example ~/.satanclaw/config.yaml
+touch ~/.satanclaw/.env
 
 # Add at minimum an LLM provider key:
-echo 'OPENROUTER_API_KEY=sk-or-v1-your-key' >> ~/.satan/.env
+echo 'OPENROUTER_API_KEY=sk-or-v1-your-key' >> ~/.satanclaw/.env
 ```
 
 ### Run
@@ -71,11 +71,11 @@ echo 'OPENROUTER_API_KEY=sk-or-v1-your-key' >> ~/.satan/.env
 ```bash
 # Symlink for global access
 mkdir -p ~/.local/bin
-ln -sf "$(pwd)/venv/bin/satan" ~/.local/bin/satan
+ln -sf "$(pwd)/venv/bin/satanclaw" ~/.local/bin/satanclaw
 
 # Verify
-satan doctor
-satan chat -q "Hello"
+satanclaw doctor
+satanclaw chat -q "Hello"
 ```
 
 ### Run Tests
@@ -90,11 +90,11 @@ pytest tests/ -v
 - **Comments**: Only when explaining non-obvious intent, trade-offs, or API quirks
 - **Error handling**: Catch specific exceptions. Use `logger.warning()`/`logger.error()` with `exc_info=True` for unexpected errors
 - **Cross-platform**: Never assume Unix (see below)
-- **Profile-safe paths**: Never hardcode `~/.satan` — use `get_satan_home()` from `satan_constants` for code paths and `display_satan_home()` for user-facing messages. See [AGENTS.md](https://github.com/NousResearch/satan-agent/blob/main/AGENTS.md#profiles-multi-instance-support) for full rules.
+- **Profile-safe paths**: Never hardcode `~/.satanclaw` — use `get_satanclaw_home()` from `satanclaw_constants` for code paths and `display_satanclaw_home()` for user-facing messages. See [AGENTS.md](https://github.com/NousResearch/satanclaw-agent/blob/main/AGENTS.md#profiles-multi-instance-support) for full rules.
 
 ## Cross-Platform Compatibility
 
-Satan officially supports Linux, macOS, and WSL2. Native Windows is **not supported**, but the codebase includes some defensive coding patterns to avoid hard crashes in edge cases. Key rules:
+SatanClaw officially supports Linux, macOS, and WSL2. Native Windows is **not supported**, but the codebase includes some defensive coding patterns to avoid hard crashes in edge cases. Key rules:
 
 ### 1. `termios` and `fcntl` are Unix-only
 
@@ -139,7 +139,7 @@ Use `pathlib.Path` instead of string concatenation with `/`.
 
 ## Security Considerations
 
-Satan has terminal access. Security matters.
+SatanClaw has terminal access. Security matters.
 
 ### Existing Protections
 
@@ -176,7 +176,7 @@ refactor/description   # Code restructuring
 ### Before Submitting
 
 1. **Run tests**: `pytest tests/ -v`
-2. **Test manually**: Run `satan` and exercise the code path you changed
+2. **Test manually**: Run `satanclaw` and exercise the code path you changed
 3. **Check cross-platform impact**: Consider macOS and different Linux distros
 4. **Keep PRs focused**: One logical change per PR
 
@@ -216,8 +216,8 @@ fix(security): prevent shell injection in sudo password piping
 
 ## Reporting Issues
 
-- Use [GitHub Issues](https://github.com/NousResearch/satan-agent/issues)
-- Include: OS, Python version, Satan version (`satan version`), full error traceback
+- Use [GitHub Issues](https://github.com/NousResearch/satanclaw-agent/issues)
+- Include: OS, Python version, SatanClaw version (`satanclaw version`), full error traceback
 - Include steps to reproduce
 - Check existing issues before creating duplicates
 - For security vulnerabilities, please report privately
@@ -230,4 +230,4 @@ fix(security): prevent shell injection in sudo password piping
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under the [MIT License](https://github.com/NousResearch/satan-agent/blob/main/LICENSE).
+By contributing, you agree that your contributions will be licensed under the [MIT License](https://github.com/NousResearch/satanclaw-agent/blob/main/LICENSE).

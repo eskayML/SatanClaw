@@ -60,10 +60,10 @@ def _normalize_forward_env_names(forward_env: list[str] | None) -> list[str]:
     return normalized
 
 
-def _load_satan_env_vars() -> dict[str, str]:
-    """Load ~/.satan/.env values without failing Docker command execution."""
+def _load_satanclaw_env_vars() -> dict[str, str]:
+    """Load ~/.satanclaw/.env values without failing Docker command execution."""
     try:
-        from satan_cli.config import load_env
+        from satanclaw_cli.config import load_env
 
         return load_env() or {}
     except Exception:
@@ -249,7 +249,7 @@ class DockerEnvironment(BaseEnvironment):
             resource_args.append("--network=none")
 
         # Persistent workspace via bind mounts from a configurable host directory
-        # (TERMINAL_SANDBOX_DIR, default ~/.satan/sandboxes/). Non-persistent
+        # (TERMINAL_SANDBOX_DIR, default ~/.satanclaw/sandboxes/). Non-persistent
         # mode uses tmpfs (ephemeral, fast, gone on cleanup).
         from tools.environments.base import get_sandbox_dir
 
@@ -353,7 +353,7 @@ class DockerEnvironment(BaseEnvironment):
         self._docker_exe = find_docker() or "docker"
 
         # Start the container directly via `docker run -d`.
-        container_name = f"satan-{uuid.uuid4().hex[:8]}"
+        container_name = f"satanclaw-{uuid.uuid4().hex[:8]}"
         run_cmd = [
             self._docker_exe, "run", "-d",
             "--name", container_name,
@@ -447,11 +447,11 @@ class DockerEnvironment(BaseEnvironment):
             forward_keys |= get_all_passthrough()
         except Exception:
             pass
-        satan_env = _load_satan_env_vars() if forward_keys else {}
+        satanclaw_env = _load_satanclaw_env_vars() if forward_keys else {}
         for key in sorted(forward_keys):
             value = os.getenv(key)
             if value is None:
-                value = satan_env.get(key)
+                value = satanclaw_env.get(key)
             if value is not None:
                 cmd.extend(["-e", f"{key}={value}"])
         cmd.extend([self._container_id, "bash", "-lc", exec_command])

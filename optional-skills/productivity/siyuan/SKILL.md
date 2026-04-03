@@ -5,7 +5,7 @@ version: 1.0.0
 author: FEUAZUR
 license: MIT
 metadata:
-  satan:
+  satanclaw:
     tags: [SiYuan, Notes, Knowledge Base, PKM, API]
     related_skills: [obsidian, notion]
     homepage: https://github.com/siyuan-note/siyuan
@@ -29,7 +29,7 @@ Use the [SiYuan](https://github.com/siyuan-note/siyuan) kernel API via curl to s
 
 1. Install and run SiYuan (desktop or Docker)
 2. Get your API token: **Settings > About > API token**
-3. Store it in `~/.satan/.env`:
+3. Store it in `~/.satanclaw/.env`:
    ```
    SIYUAN_TOKEN=your_token_here
    SIYUAN_URL=http://127.0.0.1:6806
@@ -286,7 +286,7 @@ Common `type` values in SQL queries:
 If you prefer a native integration instead of curl, install the SiYuan MCP server:
 
 ```yaml
-# In ~/.satan/config.yaml under mcp_servers:
+# In ~/.satanclaw/config.yaml under mcp_servers:
 mcp_servers:
   siyuan:
     command: npx

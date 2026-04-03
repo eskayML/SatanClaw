@@ -1,7 +1,7 @@
 ---
 sidebar_position: 3
 title: "FAQ & Troubleshooting"
-description: "Frequently asked questions and solutions to common issues with Satan Agent"
+description: "Frequently asked questions and solutions to common issues with SatanClaw Agent"
 ---
 
 # FAQ & Troubleshooting
@@ -12,12 +12,12 @@ Quick answers and fixes for the most common questions and issues.
 
 ## Frequently Asked Questions
 
-### What LLM providers work with Satan?
+### What LLM providers work with SatanClaw?
 
-Satan Agent works with any OpenAI-compatible API. Supported providers include:
+SatanClaw Agent works with any OpenAI-compatible API. Supported providers include:
 
 - **[OpenRouter](https://openrouter.ai/)** — access hundreds of models through one API key (recommended for flexibility)
-- **Nous Portal** — Nous Research's own inference endpoint
+- **Nous Portal** — Samuel Kalu's own inference endpoint
 - **OpenAI** — GPT-4o, o1, o3, etc.
 - **Anthropic** — Claude models (via OpenRouter or compatible proxy)
 - **Google** — Gemini models (via OpenRouter or compatible proxy)
@@ -26,26 +26,26 @@ Satan Agent works with any OpenAI-compatible API. Supported providers include:
 - **MiniMax** — global and China endpoints
 - **Local models** — via [Ollama](https://ollama.com/), [vLLM](https://docs.vllm.ai/), [llama.cpp](https://github.com/ggerganov/llama.cpp), [SGLang](https://github.com/sgl-project/sglang), or any OpenAI-compatible server
 
-Set your provider with `satan model` or by editing `~/.satan/.env`. See the [Environment Variables](./environment-variables.md) reference for all provider keys.
+Set your provider with `satanclaw model` or by editing `~/.satanclaw/.env`. See the [Environment Variables](./environment-variables.md) reference for all provider keys.
 
 ### Does it work on Windows?
 
-**Not natively.** Satan Agent requires a Unix-like environment. On Windows, install [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) and run Satan from inside it. The standard install command works perfectly in WSL2:
+**Not natively.** SatanClaw Agent requires a Unix-like environment. On Windows, install [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) and run SatanClaw from inside it. The standard install command works perfectly in WSL2:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/NousResearch/satan-agent/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/NousResearch/satanclaw-agent/main/scripts/install.sh | bash
 ```
 
 ### Is my data sent anywhere?
 
-API calls go **only to the LLM provider you configure** (e.g., OpenRouter, your local Ollama instance). Satan Agent does not collect telemetry, usage data, or analytics. Your conversations, memory, and skills are stored locally in `~/.satan/`.
+API calls go **only to the LLM provider you configure** (e.g., OpenRouter, your local Ollama instance). SatanClaw Agent does not collect telemetry, usage data, or analytics. Your conversations, memory, and skills are stored locally in `~/.satanclaw/`.
 
 ### Can I use it offline / with local models?
 
-Yes. Run `satan model`, select **Custom endpoint**, and enter your server's URL:
+Yes. Run `satanclaw model`, select **Custom endpoint**, and enter your server's URL:
 
 ```bash
-satan model
+satanclaw model
 # Select: Custom endpoint (enter URL manually)
 # API base URL: http://localhost:11434/v1
 # API key: ollama
@@ -62,21 +62,21 @@ model:
   base_url: http://localhost:11434/v1
 ```
 
-Satan persists the endpoint, provider, and base URL in `config.yaml` so it survives restarts. If your local server has exactly one model loaded, `/model custom` auto-detects it. You can also set `provider: custom` in config.yaml — it's a first-class provider, not an alias for anything else.
+SatanClaw persists the endpoint, provider, and base URL in `config.yaml` so it survives restarts. If your local server has exactly one model loaded, `/model custom` auto-detects it. You can also set `provider: custom` in config.yaml — it's a first-class provider, not an alias for anything else.
 
 This works with Ollama, vLLM, llama.cpp server, SGLang, LocalAI, and others. See the [Configuration guide](../user-guide/configuration.md) for details.
 
 :::tip Ollama users
-If you set a custom `num_ctx` in Ollama (e.g., `ollama run --num_ctx 16384`), make sure to set the matching context length in Satan — Ollama's `/api/show` reports the model's *maximum* context, not the effective `num_ctx` you configured.
+If you set a custom `num_ctx` in Ollama (e.g., `ollama run --num_ctx 16384`), make sure to set the matching context length in SatanClaw — Ollama's `/api/show` reports the model's *maximum* context, not the effective `num_ctx` you configured.
 :::
 
 ### How much does it cost?
 
-Satan Agent itself is **free and open-source** (MIT license). You pay only for the LLM API usage from your chosen provider. Local models are completely free to run.
+SatanClaw Agent itself is **free and open-source** (MIT license). You pay only for the LLM API usage from your chosen provider. Local models are completely free to run.
 
 ### Can multiple people use one instance?
 
-Yes. The [messaging gateway](../user-guide/messaging/index.md) lets multiple users interact with the same Satan Agent instance via Telegram, Discord, Slack, WhatsApp, or Home Assistant. Access is controlled through allowlists (specific user IDs) and DM pairing (first user to message claims access).
+Yes. The [messaging gateway](../user-guide/messaging/index.md) lets multiple users interact with the same SatanClaw Agent instance via Telegram, Discord, Slack, WhatsApp, or Home Assistant. Access is controlled through allowlists (specific user IDs) and DM pairing (first user to message claims access).
 
 ### What's the difference between memory and skills?
 
@@ -87,12 +87,12 @@ Both persist across sessions. See [Memory](../user-guide/features/memory.md) and
 
 ### Can I use it in my own Python project?
 
-Yes. Import the `AIAgent` class and use Satan programmatically:
+Yes. Import the `AIAgent` class and use SatanClaw programmatically:
 
 ```python
-from satan.agent import AIAgent
+from satanclaw.agent import AIAgent
 
-agent = AIAgent(model="openrouter/nous/satan-3-llama-3.1-70b")
+agent = AIAgent(model="openrouter/nous/satanclaw-3-llama-3.1-70b")
 response = agent.chat("Explain quantum computing briefly")
 ```
 
@@ -104,7 +104,7 @@ See the [Python Library guide](../user-guide/features/code-execution.md) for ful
 
 ### Installation Issues
 
-#### `satan: command not found` after installation
+#### `satanclaw: command not found` after installation
 
 **Cause:** Your shell hasn't reloaded the updated PATH.
 
@@ -119,8 +119,8 @@ source ~/.zshrc     # zsh
 
 If it still doesn't work, verify the install location:
 ```bash
-which satan
-ls ~/.local/bin/satan
+which satanclaw
+ls ~/.local/bin/satanclaw
 ```
 
 :::tip
@@ -129,7 +129,7 @@ The installer adds `~/.local/bin` to your PATH. If you use a non-standard shell 
 
 #### Python version too old
 
-**Cause:** Satan requires Python 3.11 or newer.
+**Cause:** SatanClaw requires Python 3.11 or newer.
 
 **Solution:**
 ```bash
@@ -160,9 +160,9 @@ source ~/.bashrc
 ```bash
 # Don't use sudo with the installer — it installs to ~/.local/bin
 # If you previously installed with sudo, clean up:
-sudo rm /usr/local/bin/satan
+sudo rm /usr/local/bin/satanclaw
 # Then re-run the standard installer
-curl -fsSL https://raw.githubusercontent.com/NousResearch/satan-agent/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/NousResearch/satanclaw-agent/main/scripts/install.sh | bash
 ```
 
 ---
@@ -176,17 +176,17 @@ curl -fsSL https://raw.githubusercontent.com/NousResearch/satan-agent/main/scrip
 **Solution:**
 ```bash
 # Check your configuration
-satan config show
+satanclaw config show
 
 # Re-configure your provider
-satan model
+satanclaw model
 
 # Or set directly
-satan config set OPENROUTER_API_KEY sk-or-v1-xxxxxxxxxxxx
+satanclaw config set OPENROUTER_API_KEY sk-or-v1-xxxxxxxxxxxx
 ```
 
 :::warning
-Make sure the key matches the provider. An OpenAI key won't work with OpenRouter and vice versa. Check `~/.satan/.env` for conflicting entries.
+Make sure the key matches the provider. An OpenAI key won't work with OpenRouter and vice versa. Check `~/.satanclaw/.env` for conflicting entries.
 :::
 
 #### Model not available / model not found
@@ -196,13 +196,13 @@ Make sure the key matches the provider. An OpenAI key won't work with OpenRouter
 **Solution:**
 ```bash
 # List available models for your provider
-satan model
+satanclaw model
 
 # Set a valid model
-satan config set HERMES_MODEL openrouter/nous/satan-3-llama-3.1-70b
+satanclaw config set HERMES_MODEL openrouter/nous/satanclaw-3-llama-3.1-70b
 
 # Or specify per-session
-satan chat --model openrouter/meta-llama/llama-3.1-70b-instruct
+satanclaw chat --model openrouter/meta-llama/llama-3.1-70b-instruct
 ```
 
 #### Rate limiting (429 errors)
@@ -212,11 +212,11 @@ satan chat --model openrouter/meta-llama/llama-3.1-70b-instruct
 **Solution:** Wait a moment and retry. For sustained usage, consider:
 - Upgrading your provider plan
 - Switching to a different model or provider
-- Using `satan chat --provider <alternative>` to route to a different backend
+- Using `satanclaw chat --provider <alternative>` to route to a different backend
 
 #### Context length exceeded
 
-**Cause:** The conversation has grown too long for the model's context window, or Satan detected the wrong context length for your model.
+**Cause:** The conversation has grown too long for the model's context window, or SatanClaw detected the wrong context length for your model.
 
 **Solution:**
 ```bash
@@ -224,20 +224,20 @@ satan chat --model openrouter/meta-llama/llama-3.1-70b-instruct
 /compress
 
 # Or start a fresh session
-satan chat
+satanclaw chat
 
 # Use a model with a larger context window
-satan chat --model openrouter/google/gemini-2.0-flash-001
+satanclaw chat --model openrouter/google/gemini-2.0-flash-001
 ```
 
-If this happens on the first long conversation, Satan may have the wrong context length for your model. Check what it detected:
+If this happens on the first long conversation, SatanClaw may have the wrong context length for your model. Check what it detected:
 
 Look at the CLI startup line — it shows the detected context length (e.g., `📊 Context limit: 128000 tokens`). You can also check with `/usage` during a session.
 
 To fix context detection, set it explicitly:
 
 ```yaml
-# In ~/.satan/config.yaml
+# In ~/.satanclaw/config.yaml
 model:
   default: your-model-name
   context_length: 131072  # your model's actual context window
@@ -262,14 +262,14 @@ See [Context Length Detection](../integrations/providers.md#context-length-detec
 
 #### Command blocked as dangerous
 
-**Cause:** Satan detected a potentially destructive command (e.g., `rm -rf`, `DROP TABLE`). This is a safety feature.
+**Cause:** SatanClaw detected a potentially destructive command (e.g., `rm -rf`, `DROP TABLE`). This is a safety feature.
 
 **Solution:** When prompted, review the command and type `y` to approve it. You can also:
 - Ask the agent to use a safer alternative
 - See the full list of dangerous patterns in the [Security docs](../user-guide/security.md)
 
 :::tip
-This is working as intended — Satan never silently runs destructive commands. The approval prompt shows you exactly what will execute.
+This is working as intended — SatanClaw never silently runs destructive commands. The approval prompt shows you exactly what will execute.
 :::
 
 #### `sudo` not working via messaging gateway
@@ -279,7 +279,7 @@ This is working as intended — Satan never silently runs destructive commands. 
 **Solution:**
 - Avoid `sudo` in messaging — ask the agent to find alternatives
 - If you must use `sudo`, configure passwordless sudo for specific commands in `/etc/sudoers`
-- Or switch to the terminal interface for administrative tasks: `satan chat`
+- Or switch to the terminal interface for administrative tasks: `satanclaw chat`
 
 #### Docker backend not connecting
 
@@ -309,13 +309,13 @@ docker run hello-world
 **Solution:**
 ```bash
 # Check if the gateway is running
-satan gateway status
+satanclaw gateway status
 
 # Start the gateway
-satan gateway start
+satanclaw gateway start
 
 # Check logs for errors
-cat ~/.satan/logs/gateway.log | tail -50
+cat ~/.satanclaw/logs/gateway.log | tail -50
 ```
 
 #### Messages not delivering
@@ -323,8 +323,8 @@ cat ~/.satan/logs/gateway.log | tail -50
 **Cause:** Network issues, bot token expired, or platform webhook misconfiguration.
 
 **Solution:**
-- Verify your bot token is valid with `satan gateway setup`
-- Check gateway logs: `cat ~/.satan/logs/gateway.log | tail -50`
+- Verify your bot token is valid with `satanclaw gateway setup`
+- Check gateway logs: `cat ~/.satanclaw/logs/gateway.log | tail -50`
 - For webhook-based platforms (Slack, WhatsApp), ensure your server is publicly accessible
 
 #### Allowlist confusion — who can talk to the bot?
@@ -339,7 +339,7 @@ cat ~/.satan/logs/gateway.log | tail -50
 | **DM pairing** | First user to message in DM claims exclusive access |
 | **Open** | Anyone can interact (not recommended for production) |
 
-Configure in `~/.satan/config.yaml` under your gateway's settings. See the [Messaging docs](../user-guide/messaging/index.md).
+Configure in `~/.satanclaw/config.yaml` under your gateway's settings. See the [Messaging docs](../user-guide/messaging/index.md).
 
 #### Gateway won't start
 
@@ -348,30 +348,30 @@ Configure in `~/.satan/config.yaml` under your gateway's settings. See the [Mess
 **Solution:**
 ```bash
 # Install messaging dependencies
-pip install "satan-agent[telegram]"   # or [discord], [slack], [whatsapp]
+pip install "satanclaw-agent[telegram]"   # or [discord], [slack], [whatsapp]
 
 # Check for port conflicts
 lsof -i :8080
 
 # Verify configuration
-satan config show
+satanclaw config show
 ```
 
 #### macOS: Node.js / ffmpeg / other tools not found by gateway
 
 **Cause:** launchd services inherit a minimal PATH (`/usr/bin:/bin:/usr/sbin:/sbin`) that doesn't include Homebrew, nvm, cargo, or other user-installed tool directories. This commonly breaks the WhatsApp bridge (`node not found`) or voice transcription (`ffmpeg not found`).
 
-**Solution:** The gateway captures your shell PATH when you run `satan gateway install`. If you installed tools after setting up the gateway, re-run the install to capture the updated PATH:
+**Solution:** The gateway captures your shell PATH when you run `satanclaw gateway install`. If you installed tools after setting up the gateway, re-run the install to capture the updated PATH:
 
 ```bash
-satan gateway install    # Re-snapshots your current PATH
-satan gateway start      # Detects the updated plist and reloads
+satanclaw gateway install    # Re-snapshots your current PATH
+satanclaw gateway start      # Detects the updated plist and reloads
 ```
 
 You can verify the plist has the correct PATH:
 ```bash
 /usr/libexec/PlistBuddy -c "Print :EnvironmentVariables:PATH" \
-  ~/Library/LaunchAgents/ai.satan.gateway.plist
+  ~/Library/LaunchAgents/ai.satanclaw.gateway.plist
 ```
 
 ---
@@ -383,8 +383,8 @@ You can verify the plist has the correct PATH:
 **Cause:** Large model, distant API server, or heavy system prompt with many tools.
 
 **Solution:**
-- Try a faster/smaller model: `satan chat --model openrouter/meta-llama/llama-3.1-8b-instruct`
-- Reduce active toolsets: `satan chat -t "terminal"`
+- Try a faster/smaller model: `satanclaw chat --model openrouter/meta-llama/llama-3.1-8b-instruct`
+- Reduce active toolsets: `satanclaw chat -t "terminal"`
 - Check your network latency to the provider
 - For local models, ensure you have enough GPU VRAM
 
@@ -415,10 +415,10 @@ Use `/compress` regularly during long sessions. It summarizes the conversation h
 /compress
 
 # Start a new session with a reference to the old one
-satan chat
+satanclaw chat
 
 # Resume a specific session later if needed
-satan chat --continue
+satanclaw chat --continue
 ```
 
 ---
@@ -432,7 +432,7 @@ satan chat --continue
 **Solution:**
 ```bash
 # Ensure MCP dependencies are installed (already included in standard install)
-cd ~/.satan/satan-agent && uv pip install -e ".[mcp]"
+cd ~/.satanclaw/satanclaw-agent && uv pip install -e ".[mcp]"
 
 # For npm-based servers, ensure Node.js is available
 node --version
@@ -442,7 +442,7 @@ npx --version
 npx -y @modelcontextprotocol/server-filesystem /tmp
 ```
 
-Verify your `~/.satan/config.yaml` MCP configuration:
+Verify your `~/.satanclaw/config.yaml` MCP configuration:
 ```yaml
 mcp_servers:
   filesystem:
@@ -463,15 +463,15 @@ mcp_servers:
 
 ```bash
 # Verify MCP servers are configured
-satan config show | grep -A 12 mcp_servers
+satanclaw config show | grep -A 12 mcp_servers
 
-# Restart Satan or reload MCP after config changes
-satan chat
+# Restart SatanClaw or reload MCP after config changes
+satanclaw chat
 ```
 
 See also:
 - [MCP (Model Context Protocol)](/docs/user-guide/features/mcp)
-- [Use MCP with Satan](/docs/guides/use-mcp-with-satan)
+- [Use MCP with SatanClaw](/docs/guides/use-mcp-with-satanclaw)
 - [MCP Config Reference](/docs/reference/mcp-config-reference)
 
 #### MCP timeout errors
@@ -484,7 +484,7 @@ See also:
 - For remote HTTP MCP servers, check network connectivity
 
 :::warning
-If an MCP server crashes mid-request, Satan will report a timeout. Check the server's own logs (not just Satan logs) to diagnose the root cause.
+If an MCP server crashes mid-request, SatanClaw will report a timeout. Check the server's own logs (not just SatanClaw logs) to diagnose the root cause.
 :::
 
 ---
@@ -493,7 +493,7 @@ If an MCP server crashes mid-request, Satan will report a timeout. Check the ser
 
 ### How do profiles differ from just setting HERMES_HOME?
 
-Profiles are a managed layer on top of `HERMES_HOME`. You *could* manually set `HERMES_HOME=/some/path` before every command, but profiles handle all the plumbing for you: creating the directory structure, generating shell aliases (`satan-work`), tracking the active profile in `~/.satan/active_profile`, and syncing skill updates across all profiles automatically. They also integrate with tab completion so you don't have to remember paths.
+Profiles are a managed layer on top of `HERMES_HOME`. You *could* manually set `HERMES_HOME=/some/path` before every command, but profiles handle all the plumbing for you: creating the directory structure, generating shell aliases (`satanclaw-work`), tracking the active profile in `~/.satanclaw/active_profile`, and syncing skill updates across all profiles automatically. They also integrate with tab completion so you don't have to remember paths.
 
 ### Can two profiles share the same bot token?
 
@@ -501,11 +501,11 @@ No. Each messaging platform (Telegram, Discord, etc.) requires exclusive access 
 
 ### Do profiles share memory or sessions?
 
-No. Each profile has its own memory store, session database, and skills directory. They are completely isolated. If you want to start a new profile with existing memories and sessions, use `satan profile create newname --clone-all` to copy everything from the current profile.
+No. Each profile has its own memory store, session database, and skills directory. They are completely isolated. If you want to start a new profile with existing memories and sessions, use `satanclaw profile create newname --clone-all` to copy everything from the current profile.
 
-### What happens when I run `satan update`?
+### What happens when I run `satanclaw update`?
 
-`satan update` pulls the latest code and reinstalls dependencies **once** (not per-profile). It then syncs updated skills to all profiles automatically. You only need to run `satan update` once — it covers every profile on the machine.
+`satanclaw update` pulls the latest code and reinstalls dependencies **once** (not per-profile). It then syncs updated skills to all profiles automatically. You only need to run `satanclaw update` once — it covers every profile on the machine.
 
 ### Can I move a profile to a different machine?
 
@@ -513,17 +513,17 @@ Yes. Export the profile to a portable archive and import it on the other machine
 
 ```bash
 # On the source machine
-satan profile export work ./work-backup.tar.gz
+satanclaw profile export work ./work-backup.tar.gz
 
 # Copy the file to the target machine, then:
-satan profile import ./work-backup.tar.gz work
+satanclaw profile import ./work-backup.tar.gz work
 ```
 
 The imported profile will have all config, memories, sessions, and skills from the export. You may need to update paths or re-authenticate with providers if the new machine has a different setup.
 
 ### How many profiles can I run?
 
-There is no hard limit. Each profile is just a directory under `~/.satan/profiles/`. The practical limit depends on your disk space and how many concurrent gateways your system can handle (each gateway is a lightweight Python process). Running dozens of profiles is fine; each idle profile uses no resources.
+There is no hard limit. Each profile is just a directory under `~/.satanclaw/profiles/`. The practical limit depends on your disk space and how many concurrent gateways your system can handle (each gateway is a lightweight Python process). Running dozens of profiles is fine; each idle profile uses no resources.
 
 ---
 
@@ -531,6 +531,6 @@ There is no hard limit. Each profile is just a directory under `~/.satan/profile
 
 If your issue isn't covered here:
 
-1. **Search existing issues:** [GitHub Issues](https://github.com/NousResearch/satan-agent/issues)
-2. **Ask the community:** [Nous Research Discord](https://discord.gg/nousresearch)
-3. **File a bug report:** Include your OS, Python version (`python3 --version`), Satan version (`satan --version`), and the full error message
+1. **Search existing issues:** [GitHub Issues](https://github.com/NousResearch/satanclaw-agent/issues)
+2. **Ask the community:** [Samuel Kalu Discord](https://discord.gg/eskayML)
+3. **File a bug report:** Include your OS, Python version (`python3 --version`), SatanClaw version (`satanclaw --version`), and the full error message

@@ -8,7 +8,7 @@ Original PR #2732 by Alinxus, adapted to MemoryProvider ABC.
 Config via environment variables:
   RETAINDB_API_KEY    — API key (required)
   RETAINDB_BASE_URL   — API endpoint (default: https://api.retaindb.com)
-  RETAINDB_PROJECT    — Project identifier (default: satan)
+  RETAINDB_PROJECT    — Project identifier (default: satanclaw)
 """
 
 from __future__ import annotations
@@ -108,7 +108,7 @@ class RetainDBMemoryProvider(MemoryProvider):
     def __init__(self):
         self._api_key = ""
         self._base_url = _DEFAULT_BASE_URL
-        self._project = "satan"
+        self._project = "satanclaw"
         self._user_id = ""
         self._prefetch_result = ""
         self._prefetch_lock = threading.Lock()
@@ -126,7 +126,7 @@ class RetainDBMemoryProvider(MemoryProvider):
         return [
             {"key": "api_key", "description": "RetainDB API key", "secret": True, "required": True, "env_var": "RETAINDB_API_KEY", "url": "https://retaindb.com"},
             {"key": "base_url", "description": "API endpoint", "default": "https://api.retaindb.com"},
-            {"key": "project", "description": "Project identifier", "default": "satan"},
+            {"key": "project", "description": "Project identifier", "default": "satanclaw"},
         ]
 
     def _headers(self) -> dict:
@@ -155,13 +155,13 @@ class RetainDBMemoryProvider(MemoryProvider):
         if explicit_project:
             self._project = explicit_project
         else:
-            satan_home = kwargs.get("satan_home", "")
-            profile_name = os.path.basename(satan_home) if satan_home else ""
-            # Default profile (~/.satan) → "satan"; named profiles → "satan-<name>"
-            if profile_name and profile_name != ".satan":
-                self._project = f"satan-{profile_name}"
+            satanclaw_home = kwargs.get("satanclaw_home", "")
+            profile_name = os.path.basename(satanclaw_home) if satanclaw_home else ""
+            # Default profile (~/.satanclaw) → "satanclaw"; named profiles → "satanclaw-<name>"
+            if profile_name and profile_name != ".satanclaw":
+                self._project = f"satanclaw-{profile_name}"
             else:
-                self._project = "satan"
+                self._project = "satanclaw"
 
     def system_prompt_block(self) -> str:
         return (

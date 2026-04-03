@@ -7,7 +7,7 @@ const config: Config = {
   tagline: 'The self-improving AI agent',
   favicon: 'img/favicon.ico',
 
-  url: 'https://satanclaw-agent.nousresearch.com',
+  url: 'https://satanclaw-agent.eskayML.com',
   baseUrl: '/docs/',
 
   organizationName: 'NousResearch',
@@ -90,7 +90,7 @@ const config: Config = {
           position: 'left',
         },
         {
-          href: 'https://satanclaw-agent.nousresearch.com',
+          href: 'https://satanclaw-agent.eskayML.com',
           label: 'Home',
           position: 'right',
         },
@@ -130,11 +130,11 @@ const config: Config = {
           title: 'More',
           items: [
             { label: 'GitHub', href: 'https://github.com/NousResearch/satanclaw-agent' },
-            { label: 'Nous Research', href: 'https://nousresearch.com' },
+            { label: 'Samuel Kalu', href: 'https://eskayML.com' },
           ],
         },
       ],
-      copyright: `Built by <a href="https://nousresearch.com">Nous Research</a> · MIT License · ${new Date().getFullYear()}`,
+      copyright: `Built by <a href="https://eskayML.com">Samuel Kalu</a> · MIT License · ${new Date().getFullYear()}`,
     },
     prism: {
       theme: prismThemes.github,

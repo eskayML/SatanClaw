@@ -13,30 +13,30 @@ Honcho has been integrated into the [Memory Providers](./memory-providers.md) sy
 ## Setup
 
 ```bash
-satan memory setup    # select "honcho"
+satanclaw memory setup    # select "honcho"
 ```
 
 Or set manually:
 
 ```yaml
-# ~/.satan/config.yaml
+# ~/.satanclaw/config.yaml
 memory:
   provider: honcho
 ```
 
 ```bash
-echo "HONCHO_API_KEY=your-key" >> ~/.satan/.env
+echo "HONCHO_API_KEY=your-key" >> ~/.satanclaw/.env
 ```
 
-## Migrating from `satan honcho`
+## Migrating from `satanclaw honcho`
 
-If you previously used `satan honcho setup`:
+If you previously used `satanclaw honcho setup`:
 
 1. Your existing configuration (`honcho.json` or `~/.honcho/config.json`) is preserved
 2. Your server-side data (memories, conclusions, user profiles) is intact
 3. Just set `memory.provider: honcho` to reactivate
 
-No re-login or re-setup needed. Run `satan memory setup` and select "honcho" — the wizard detects your existing config.
+No re-login or re-setup needed. Run `satanclaw memory setup` and select "honcho" — the wizard detects your existing config.
 
 ## Full Documentation
 

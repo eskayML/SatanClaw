@@ -1,12 +1,12 @@
 ---
 sidebar_position: 4
 title: "Toolsets Reference"
-description: "Reference for Satan core, composite, platform, and dynamic toolsets"
+description: "Reference for SatanClaw core, composite, platform, and dynamic toolsets"
 ---
 
 # Toolsets Reference
 
-Toolsets are named bundles of tools that you can enable with `satan chat --toolsets ...`, configure per platform, or resolve inside the agent runtime.
+Toolsets are named bundles of tools that you can enable with `satanclaw chat --toolsets ...`, configure per platform, or resolve inside the agent runtime.
 
 | Toolset | Kind | Resolves to |
 |---------|------|-------------|
@@ -17,23 +17,23 @@ Toolsets are named bundles of tools that you can enable with `satan chat --tools
 | `debugging` | composite | `patch`, `process`, `read_file`, `search_files`, `terminal`, `web_extract`, `web_search`, `write_file` |
 | `delegation` | core | `delegate_task` |
 | `file` | core | `patch`, `read_file`, `search_files`, `write_file` |
-| `satan-acp` | platform | `browser_back`, `browser_click`, `browser_close`, `browser_console`, `browser_get_images`, `browser_navigate`, `browser_press`, `browser_scroll`, `browser_snapshot`, `browser_type`, `browser_vision`, `delegate_task`, `execute_code`, `memory`, `patch`, `process`, `read_file`, `search_files`, `session_search`, `skill_manage`, `skill_view`, `skills_list`, `terminal`, `todo`, `vision_analyze`, `web_extract`, `web_search`, `write_file` |
-| `satan-cli` | platform | `browser_back`, `browser_click`, `browser_close`, `browser_console`, `browser_get_images`, `browser_navigate`, `browser_press`, `browser_scroll`, `browser_snapshot`, `browser_type`, `browser_vision`, `clarify`, `cronjob`, `delegate_task`, `execute_code`, `ha_call_service`, `ha_get_state`, `ha_list_entities`, `ha_list_services`, `honcho_conclude`, `honcho_context`, `honcho_profile`, `honcho_search`, `image_generate`, `memory`, `mixture_of_agents`, `patch`, `process`, `read_file`, `search_files`, `send_message`, `session_search`, `skill_manage`, `skill_view`, `skills_list`, `terminal`, `text_to_speech`, `todo`, `vision_analyze`, `web_extract`, `web_search`, `write_file` |
-| `satan-api-server` | platform | `browser_back`, `browser_click`, `browser_close`, `browser_console`, `browser_get_images`, `browser_navigate`, `browser_press`, `browser_scroll`, `browser_snapshot`, `browser_type`, `browser_vision`, `cronjob`, `delegate_task`, `execute_code`, `ha_call_service`, `ha_get_state`, `ha_list_entities`, `ha_list_services`, `honcho_conclude`, `honcho_context`, `honcho_profile`, `honcho_search`, `image_generate`, `memory`, `mixture_of_agents`, `patch`, `process`, `read_file`, `search_files`, `session_search`, `skill_manage`, `skill_view`, `skills_list`, `terminal`, `todo`, `vision_analyze`, `web_extract`, `web_search`, `write_file` |
-| `satan-dingtalk` | platform | _(same as satan-cli)_ |
-| `satan-feishu` | platform | _(same as satan-cli)_ |
-| `satan-wecom` | platform | _(same as satan-cli)_ |
-| `satan-discord` | platform | _(same as satan-cli)_ |
-| `satan-email` | platform | _(same as satan-cli)_ |
-| `satan-gateway` | composite | Union of all messaging platform toolsets |
-| `satan-homeassistant` | platform | _(same as satan-cli)_ |
-| `satan-matrix` | platform | _(same as satan-cli)_ |
-| `satan-mattermost` | platform | _(same as satan-cli)_ |
-| `satan-signal` | platform | _(same as satan-cli)_ |
-| `satan-slack` | platform | _(same as satan-cli)_ |
-| `satan-sms` | platform | _(same as satan-cli)_ |
-| `satan-telegram` | platform | _(same as satan-cli)_ |
-| `satan-whatsapp` | platform | _(same as satan-cli)_ |
+| `satanclaw-acp` | platform | `browser_back`, `browser_click`, `browser_close`, `browser_console`, `browser_get_images`, `browser_navigate`, `browser_press`, `browser_scroll`, `browser_snapshot`, `browser_type`, `browser_vision`, `delegate_task`, `execute_code`, `memory`, `patch`, `process`, `read_file`, `search_files`, `session_search`, `skill_manage`, `skill_view`, `skills_list`, `terminal`, `todo`, `vision_analyze`, `web_extract`, `web_search`, `write_file` |
+| `satanclaw-cli` | platform | `browser_back`, `browser_click`, `browser_close`, `browser_console`, `browser_get_images`, `browser_navigate`, `browser_press`, `browser_scroll`, `browser_snapshot`, `browser_type`, `browser_vision`, `clarify`, `cronjob`, `delegate_task`, `execute_code`, `ha_call_service`, `ha_get_state`, `ha_list_entities`, `ha_list_services`, `honcho_conclude`, `honcho_context`, `honcho_profile`, `honcho_search`, `image_generate`, `memory`, `mixture_of_agents`, `patch`, `process`, `read_file`, `search_files`, `send_message`, `session_search`, `skill_manage`, `skill_view`, `skills_list`, `terminal`, `text_to_speech`, `todo`, `vision_analyze`, `web_extract`, `web_search`, `write_file` |
+| `satanclaw-api-server` | platform | `browser_back`, `browser_click`, `browser_close`, `browser_console`, `browser_get_images`, `browser_navigate`, `browser_press`, `browser_scroll`, `browser_snapshot`, `browser_type`, `browser_vision`, `cronjob`, `delegate_task`, `execute_code`, `ha_call_service`, `ha_get_state`, `ha_list_entities`, `ha_list_services`, `honcho_conclude`, `honcho_context`, `honcho_profile`, `honcho_search`, `image_generate`, `memory`, `mixture_of_agents`, `patch`, `process`, `read_file`, `search_files`, `session_search`, `skill_manage`, `skill_view`, `skills_list`, `terminal`, `todo`, `vision_analyze`, `web_extract`, `web_search`, `write_file` |
+| `satanclaw-dingtalk` | platform | _(same as satanclaw-cli)_ |
+| `satanclaw-feishu` | platform | _(same as satanclaw-cli)_ |
+| `satanclaw-wecom` | platform | _(same as satanclaw-cli)_ |
+| `satanclaw-discord` | platform | _(same as satanclaw-cli)_ |
+| `satanclaw-email` | platform | _(same as satanclaw-cli)_ |
+| `satanclaw-gateway` | composite | Union of all messaging platform toolsets |
+| `satanclaw-homeassistant` | platform | _(same as satanclaw-cli)_ |
+| `satanclaw-matrix` | platform | _(same as satanclaw-cli)_ |
+| `satanclaw-mattermost` | platform | _(same as satanclaw-cli)_ |
+| `satanclaw-signal` | platform | _(same as satanclaw-cli)_ |
+| `satanclaw-slack` | platform | _(same as satanclaw-cli)_ |
+| `satanclaw-sms` | platform | _(same as satanclaw-cli)_ |
+| `satanclaw-telegram` | platform | _(same as satanclaw-cli)_ |
+| `satanclaw-whatsapp` | platform | _(same as satanclaw-cli)_ |
 | `homeassistant` | core | `ha_call_service`, `ha_get_state`, `ha_list_entities`, `ha_list_services` |
 | `honcho` | core | `honcho_conclude`, `honcho_context`, `honcho_profile`, `honcho_search` |
 | `image_gen` | core | `image_generate` |

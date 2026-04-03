@@ -1,6 +1,6 @@
-"""CLI entry point for the satan-agent ACP adapter.
+"""CLI entry point for the satanclaw-agent ACP adapter.
 
-Loads environment variables from ``~/.satan/.env``, configures logging
+Loads environment variables from ``~/.satanclaw/.env``, configures logging
 to write to stderr (so stdout is reserved for ACP JSON-RPC transport),
 and starts the ACP agent server.
 
@@ -8,9 +8,9 @@ Usage::
 
     python -m acp_adapter.entry
     # or
-    satan acp
+    satanclaw acp
     # or
-    satan-acp
+    satanclaw-acp
 """
 
 import asyncio
@@ -18,7 +18,7 @@ import logging
 import os
 import sys
 from pathlib import Path
-from satan_constants import get_satan_home
+from satanclaw_constants import get_satanclaw_home
 
 
 def _setup_logging() -> None:
@@ -42,17 +42,17 @@ def _setup_logging() -> None:
 
 
 def _load_env() -> None:
-    """Load .env from HERMES_HOME (default ``~/.satan``)."""
-    from satan_cli.env_loader import load_satan_dotenv
+    """Load .env from HERMES_HOME (default ``~/.satanclaw``)."""
+    from satanclaw_cli.env_loader import load_satanclaw_dotenv
 
-    satan_home = get_satan_home()
-    loaded = load_satan_dotenv(satan_home=satan_home)
+    satanclaw_home = get_satanclaw_home()
+    loaded = load_satanclaw_dotenv(satanclaw_home=satanclaw_home)
     if loaded:
         for env_file in loaded:
             logging.getLogger(__name__).info("Loaded env from %s", env_file)
     else:
         logging.getLogger(__name__).info(
-            "No .env found at %s, using system env", satan_home / ".env"
+            "No .env found at %s, using system env", satanclaw_home / ".env"
         )
 
 
@@ -62,7 +62,7 @@ def main() -> None:
     _load_env()
 
     logger = logging.getLogger(__name__)
-    logger.info("Starting satan-agent ACP adapter")
+    logger.info("Starting satanclaw-agent ACP adapter")
 
     # Ensure the project root is on sys.path so ``from run_agent import AIAgent`` works
     project_root = str(Path(__file__).resolve().parent.parent)
@@ -70,9 +70,9 @@ def main() -> None:
         sys.path.insert(0, project_root)
 
     import acp
-    from .server import SatanACPAgent
+    from .server import SatanClawACPAgent
 
-    agent = SatanACPAgent()
+    agent = SatanClawACPAgent()
     try:
         asyncio.run(acp.run_agent(agent, use_unstable_protocol=True))
     except KeyboardInterrupt:

@@ -1,4 +1,4 @@
-"""Tests for satan_cli.doctor."""
+"""Tests for satanclaw_cli.doctor."""
 
 import os
 import sys
@@ -8,10 +8,10 @@ from types import SimpleNamespace
 
 import pytest
 
-import satan_cli.doctor as doctor
-import satan_cli.gateway as gateway_cli
-from satan_cli import doctor as doctor_mod
-from satan_cli.doctor import _has_provider_env_config
+import satanclaw_cli.doctor as doctor
+import satanclaw_cli.gateway as gateway_cli
+from satanclaw_cli import doctor as doctor_mod
+from satanclaw_cli.doctor import _has_provider_env_config
 
 
 class TestProviderEnvDetection:
@@ -78,12 +78,12 @@ class TestHonchoDoctorConfigDetection:
 def test_run_doctor_sets_interactive_env_for_tool_checks(monkeypatch, tmp_path):
     """Doctor should present CLI-gated tools as available in CLI context."""
     project_root = tmp_path / "project"
-    satan_home = tmp_path / ".satan"
+    satanclaw_home = tmp_path / ".satanclaw"
     project_root.mkdir()
-    satan_home.mkdir()
+    satanclaw_home.mkdir()
 
     monkeypatch.setattr(doctor_mod, "PROJECT_ROOT", project_root)
-    monkeypatch.setattr(doctor_mod, "HERMES_HOME", satan_home)
+    monkeypatch.setattr(doctor_mod, "HERMES_HOME", satanclaw_home)
     monkeypatch.delenv("HERMES_INTERACTIVE", raising=False)
 
     seen = {}
@@ -105,7 +105,7 @@ def test_run_doctor_sets_interactive_env_for_tool_checks(monkeypatch, tmp_path):
 
 
 def test_check_gateway_service_linger_warns_when_disabled(monkeypatch, tmp_path, capsys):
-    unit_path = tmp_path / "satan-gateway.service"
+    unit_path = tmp_path / "satanclaw-gateway.service"
     unit_path.write_text("[Unit]\n")
 
     monkeypatch.setattr(gateway_cli, "is_linux", lambda: True)

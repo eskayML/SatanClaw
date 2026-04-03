@@ -3,7 +3,7 @@
 from prompt_toolkit.completion import CompleteEvent
 from prompt_toolkit.document import Document
 
-from satan_cli.commands import (
+from satanclaw_cli.commands import (
     COMMAND_REGISTRY,
     COMMANDS,
     COMMANDS_BY_CATEGORY,

@@ -1,10 +1,10 @@
-"""Tests for satan_cli.gateway."""
+"""Tests for satanclaw_cli.gateway."""
 
 import signal
 from types import SimpleNamespace
 from unittest.mock import patch, call
 
-import satan_cli.gateway as gateway
+import satanclaw_cli.gateway as gateway
 
 
 class TestSystemdLingerStatus:
@@ -34,7 +34,7 @@ class TestSystemdLingerStatus:
 
 
 def test_systemd_status_warns_when_linger_disabled(monkeypatch, tmp_path, capsys):
-    unit_path = tmp_path / "satan-gateway.service"
+    unit_path = tmp_path / "satanclaw-gateway.service"
     unit_path.write_text("[Unit]\n")
 
     monkeypatch.setattr(gateway, "get_systemd_unit_path", lambda system=False: unit_path)
@@ -58,7 +58,7 @@ def test_systemd_status_warns_when_linger_disabled(monkeypatch, tmp_path, capsys
 
 
 def test_systemd_install_checks_linger_status(monkeypatch, tmp_path, capsys):
-    unit_path = tmp_path / "systemd" / "user" / "satan-gateway.service"
+    unit_path = tmp_path / "systemd" / "user" / "satanclaw-gateway.service"
 
     monkeypatch.setattr(gateway, "get_systemd_unit_path", lambda system=False: unit_path)
 
@@ -85,7 +85,7 @@ def test_systemd_install_checks_linger_status(monkeypatch, tmp_path, capsys):
 
 
 def test_systemd_install_system_scope_skips_linger_and_uses_systemctl(monkeypatch, tmp_path, capsys):
-    unit_path = tmp_path / "etc" / "systemd" / "system" / "satan-gateway.service"
+    unit_path = tmp_path / "etc" / "systemd" / "system" / "satanclaw-gateway.service"
 
     monkeypatch.setattr(gateway, "get_systemd_unit_path", lambda system=False: unit_path)
     monkeypatch.setattr(
@@ -120,8 +120,8 @@ def test_systemd_install_system_scope_skips_linger_and_uses_systemctl(monkeypatc
 
 
 def test_conflicting_systemd_units_warning(monkeypatch, tmp_path, capsys):
-    user_unit = tmp_path / "user" / "satan-gateway.service"
-    system_unit = tmp_path / "system" / "satan-gateway.service"
+    user_unit = tmp_path / "user" / "satanclaw-gateway.service"
+    system_unit = tmp_path / "system" / "satanclaw-gateway.service"
     user_unit.parent.mkdir(parents=True)
     system_unit.parent.mkdir(parents=True)
     user_unit.write_text("[Unit]\n", encoding="utf-8")
@@ -137,7 +137,7 @@ def test_conflicting_systemd_units_warning(monkeypatch, tmp_path, capsys):
 
     out = capsys.readouterr().out
     assert "Both user and system gateway services are installed" in out
-    assert "satan gateway uninstall" in out
+    assert "satanclaw gateway uninstall" in out
     assert "--system" in out
 
 
@@ -151,8 +151,8 @@ def test_install_linux_gateway_from_setup_system_choice_without_root_prints_foll
 
     out = capsys.readouterr().out
     assert (scope, did_install) == ("system", False)
-    assert "sudo satan gateway install --system --run-as-user alice" in out
-    assert "sudo satan gateway start --system" in out
+    assert "sudo satanclaw gateway install --system --run-as-user alice" in out
+    assert "sudo satanclaw gateway start --system" in out
 
 
 def test_install_linux_gateway_from_setup_system_choice_as_root_installs(monkeypatch):

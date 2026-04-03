@@ -12,7 +12,7 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple
 
-from satan_constants import get_satan_home
+from satanclaw_constants import get_satanclaw_home
 
 logger = logging.getLogger(__name__)
 
@@ -125,7 +125,7 @@ def get_disabled_skill_names() -> Set[str]:
     the global disabled list.  Reads the config file directly (no CLI
     config imports) to stay lightweight.
     """
-    config_path = get_satan_home() / "config.yaml"
+    config_path = get_satanclaw_home() / "config.yaml"
     if not config_path.exists():
         return set()
     try:
@@ -166,9 +166,9 @@ def get_external_skills_dirs() -> List[Path]:
 
     Each entry is expanded (``~`` and ``${VAR}``) and resolved to an absolute
     path.  Only directories that actually exist are returned.  Duplicates and
-    paths that resolve to the local ``~/.satan/skills/`` are silently skipped.
+    paths that resolve to the local ``~/.satanclaw/skills/`` are silently skipped.
     """
-    config_path = get_satan_home() / "config.yaml"
+    config_path = get_satanclaw_home() / "config.yaml"
     if not config_path.exists():
         return []
     try:
@@ -190,7 +190,7 @@ def get_external_skills_dirs() -> List[Path]:
     if not isinstance(raw_dirs, list):
         return []
 
-    local_skills = (get_satan_home() / "skills").resolve()
+    local_skills = (get_satanclaw_home() / "skills").resolve()
     seen: Set[Path] = set()
     result: List[Path] = []
 
@@ -215,12 +215,12 @@ def get_external_skills_dirs() -> List[Path]:
 
 
 def get_all_skills_dirs() -> List[Path]:
-    """Return all skill directories: local ``~/.satan/skills/`` first, then external.
+    """Return all skill directories: local ``~/.satanclaw/skills/`` first, then external.
 
     The local dir is always first (and always included even if it doesn't exist
     yet — callers handle that).  External dirs follow in config order.
     """
-    dirs = [get_satan_home() / "skills"]
+    dirs = [get_satanclaw_home() / "skills"]
     dirs.extend(get_external_skills_dirs())
     return dirs
 
@@ -234,14 +234,14 @@ def extract_skill_conditions(frontmatter: Dict[str, Any]) -> Dict[str, List]:
     # Handle cases where metadata is not a dict (e.g., a string from malformed YAML)
     if not isinstance(metadata, dict):
         metadata = {}
-    satan = metadata.get("satan") or {}
-    if not isinstance(satan, dict):
-        satan = {}
+    satanclaw = metadata.get("satanclaw") or {}
+    if not isinstance(satanclaw, dict):
+        satanclaw = {}
     return {
-        "fallback_for_toolsets": satan.get("fallback_for_toolsets", []),
-        "requires_toolsets": satan.get("requires_toolsets", []),
-        "fallback_for_tools": satan.get("fallback_for_tools", []),
-        "requires_tools": satan.get("requires_tools", []),
+        "fallback_for_toolsets": satanclaw.get("fallback_for_toolsets", []),
+        "requires_toolsets": satanclaw.get("requires_toolsets", []),
+        "fallback_for_tools": satanclaw.get("fallback_for_tools", []),
+        "requires_tools": satanclaw.get("requires_tools", []),
     }
 
 

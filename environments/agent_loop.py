@@ -1,13 +1,13 @@
 """
-SatanAgentLoop -- Reusable Multi-Turn Agent Engine
+SatanClawAgentLoop -- Reusable Multi-Turn Agent Engine
 
-Runs the satan-agent tool-calling loop using standard OpenAI-spec tool calling.
+Runs the satanclaw-agent tool-calling loop using standard OpenAI-spec tool calling.
 Works with any server that returns ChatCompletion objects with tool_calls:
     - Phase 1: OpenAI server type (VLLM, SGLang, OpenRouter, OpenAI API)
     - Phase 2: ManagedServer with client-side tool call parser
 
 The loop passes tools= and checks response.choices[0].message.tool_calls,
-identical to satan-agent's run_agent.py. Tool execution is dispatched via
+identical to satanclaw-agent's run_agent.py. Tool execution is dispatched via
 handle_function_call() from model_tools.py.
 """
 
@@ -27,7 +27,7 @@ from model_tools import handle_function_call
 # thread gives them a clean event loop so they don't deadlock inside Atropos's loop.
 # Size must be large enough for concurrent eval tasks (e.g., 89 TB2 tasks all
 # making tool calls). Too small = thread pool starvation, tasks queue for minutes.
-# Resized at runtime by SatanAgentBaseEnv.__init__ via resize_tool_pool().
+# Resized at runtime by SatanClawAgentBaseEnv.__init__ via resize_tool_pool().
 _tool_executor = concurrent.futures.ThreadPoolExecutor(max_workers=128)
 
 
@@ -35,7 +35,7 @@ def resize_tool_pool(max_workers: int):
     """
     Replace the global tool executor with a new one of the given size.
 
-    Called by SatanAgentBaseEnv.__init__ based on config.tool_pool_size.
+    Called by SatanClawAgentBaseEnv.__init__ based on config.tool_pool_size.
     Safe to call before any tasks are submitted.
     """
     global _tool_executor
@@ -114,9 +114,9 @@ def _extract_reasoning_from_message(message) -> Optional[str]:
     return None
 
 
-class SatanAgentLoop:
+class SatanClawAgentLoop:
     """
-    Runs satan-agent's tool-calling loop using standard OpenAI-spec tool calling.
+    Runs satanclaw-agent's tool-calling loop using standard OpenAI-spec tool calling.
 
     Same pattern as run_agent.py:
     - Pass tools= to the API
@@ -254,7 +254,7 @@ class SatanAgentLoop:
             # Check for tool calls -- standard OpenAI spec.
             # Fallback: if response has no structured tool_calls but content
             # contains raw tool call tags (e.g. <tool_call>), parse them using
-            # satan-agent's standalone parsers. This handles the case where
+            # satanclaw-agent's standalone parsers. This handles the case where
             # ManagedServer's ToolCallTranslator couldn't parse because vLLM
             # isn't installed.
             if (
@@ -265,7 +265,7 @@ class SatanAgentLoop:
             ):
                 try:
                     from environments.tool_call_parsers import get_parser
-                    fallback_parser = get_parser("satan")
+                    fallback_parser = get_parser("satanclaw")
                     parsed_content, parsed_calls = fallback_parser.parse(
                         assistant_msg.content
                     )
@@ -317,7 +317,7 @@ class SatanAgentLoop:
 
                 messages.append(msg_dict)
 
-                # Execute each tool call via satan-agent's dispatch
+                # Execute each tool call via satanclaw-agent's dispatch
                 for tc in assistant_msg.tool_calls:
                     # Handle both object (OpenAI) and dict (vLLM) formats
                     if isinstance(tc, dict):

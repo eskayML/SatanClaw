@@ -141,7 +141,7 @@ def _handle_send(args):
 
     pconfig = config.platforms.get(platform)
     if not pconfig or not pconfig.enabled:
-        return json.dumps({"error": f"Platform '{platform_name}' is not configured. Set up credentials in ~/.satan/config.yaml or environment variables."})
+        return json.dumps({"error": f"Platform '{platform_name}' is not configured. Set up credentials in ~/.satanclaw/config.yaml or environment variables."})
 
     from gateway.platforms.base import BasePlatformAdapter
 
@@ -158,7 +158,7 @@ def _handle_send(args):
             return json.dumps({
                 "error": f"No home channel set for {platform_name} to determine where to send the message. "
                 f"Either specify a channel directly with '{platform_name}:CHANNEL_NAME', "
-                f"or set a home channel via: satan config set {platform_name.upper()}_HOME_CHANNEL <channel_id>"
+                f"or set a home channel via: satanclaw config set {platform_name.upper()}_HOME_CHANNEL <channel_id>"
             })
 
     duplicate_skip = _maybe_skip_cron_duplicate_send(platform_name, chat_id, thread_id)
@@ -629,7 +629,7 @@ async def _send_email(extra, chat_id, message):
         msg = MIMEText(message, "plain", "utf-8")
         msg["From"] = address
         msg["To"] = chat_id
-        msg["Subject"] = "Satan Agent"
+        msg["Subject"] = "SatanClaw Agent"
 
         server = smtplib.SMTP(smtp_host, smtp_port)
         server.starttls(context=ssl.create_default_context())
@@ -729,7 +729,7 @@ async def _send_matrix(token, extra, chat_id, message):
         token = token or os.getenv("MATRIX_ACCESS_TOKEN", "")
         if not homeserver or not token:
             return {"error": "Matrix not configured (MATRIX_HOMESERVER, MATRIX_ACCESS_TOKEN required)"}
-        txn_id = f"satan_{int(time.time() * 1000)}"
+        txn_id = f"satanclaw_{int(time.time() * 1000)}"
         url = f"{homeserver}/_matrix/client/v3/rooms/{chat_id}/send/m.room.message/{txn_id}"
         headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
         async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=30)) as session:
@@ -829,10 +829,10 @@ async def _send_feishu(pconfig, chat_id, message, media_files=None, thread_id=No
     try:
         from gateway.platforms.feishu import FeishuAdapter, FEISHU_AVAILABLE
         if not FEISHU_AVAILABLE:
-            return {"error": "Feishu dependencies not installed. Run: pip install 'satan-agent[feishu]'"}
+            return {"error": "Feishu dependencies not installed. Run: pip install 'satanclaw-agent[feishu]'"}
         from gateway.platforms.feishu import FEISHU_DOMAIN, LARK_DOMAIN
     except ImportError:
-        return {"error": "Feishu dependencies not installed. Run: pip install 'satan-agent[feishu]'"}
+        return {"error": "Feishu dependencies not installed. Run: pip install 'satanclaw-agent[feishu]'"}
 
     media_files = media_files or []
 

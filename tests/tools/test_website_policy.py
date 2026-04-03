@@ -86,7 +86,7 @@ def test_check_website_access_supports_wildcard_subdomains_only(tmp_path):
 
 
 def test_default_config_exposes_website_blocklist_shape():
-    from satan_cli.config import DEFAULT_CONFIG
+    from satanclaw_cli.config import DEFAULT_CONFIG
 
     website_blocklist = DEFAULT_CONFIG["security"]["website_blocklist"]
     assert website_blocklist["enabled"] is False
@@ -239,10 +239,10 @@ def test_load_website_blocklist_wraps_shared_file_read_errors(tmp_path, monkeypa
     assert result["rules"] == []  # shared file rules skipped
 
 
-def test_check_website_access_uses_dynamic_satan_home(monkeypatch, tmp_path):
-    satan_home = tmp_path / "satan-home"
-    satan_home.mkdir()
-    (satan_home / "config.yaml").write_text(
+def test_check_website_access_uses_dynamic_satanclaw_home(monkeypatch, tmp_path):
+    satanclaw_home = tmp_path / "satanclaw-home"
+    satanclaw_home.mkdir()
+    (satanclaw_home / "config.yaml").write_text(
         yaml.safe_dump(
             {
                 "security": {
@@ -257,11 +257,11 @@ def test_check_website_access_uses_dynamic_satan_home(monkeypatch, tmp_path):
         encoding="utf-8",
     )
 
-    monkeypatch.setenv("HERMES_HOME", str(satan_home))
+    monkeypatch.setenv("HERMES_HOME", str(satanclaw_home))
 
     # Invalidate the module-level cache so the new HERMES_HOME is picked up.
     # A prior test may have cached a default policy (enabled=False) under the
-    # old HERMES_HOME set by the autouse _isolate_satan_home fixture.
+    # old HERMES_HOME set by the autouse _isolate_satanclaw_home fixture.
     from tools.website_policy import invalidate_cache
     invalidate_cache()
 

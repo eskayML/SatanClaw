@@ -1,22 +1,22 @@
 # honcho-integration-spec
 
-Comparison of Satan Agent vs. openclaw-honcho — and a porting spec for bringing Satan patterns into other Honcho integrations.
+Comparison of SatanClaw Agent vs. openclaw-honcho — and a porting spec for bringing SatanClaw patterns into other Honcho integrations.
 
 ---
 
 ## Overview
 
-Two independent Honcho integrations have been built for two different agent runtimes: **Satan Agent** (Python, baked into the runner) and **openclaw-honcho** (TypeScript plugin via hook/tool API). Both use the same Honcho peer paradigm — dual peer model, `session.context()`, `peer.chat()` — but they made different tradeoffs at every layer.
+Two independent Honcho integrations have been built for two different agent runtimes: **SatanClaw Agent** (Python, baked into the runner) and **openclaw-honcho** (TypeScript plugin via hook/tool API). Both use the same Honcho peer paradigm — dual peer model, `session.context()`, `peer.chat()` — but they made different tradeoffs at every layer.
 
-This document maps those tradeoffs and defines a porting spec: a set of Satan-originated patterns, each stated as an integration-agnostic interface, that any Honcho integration can adopt regardless of runtime or language.
+This document maps those tradeoffs and defines a porting spec: a set of SatanClaw-originated patterns, each stated as an integration-agnostic interface, that any Honcho integration can adopt regardless of runtime or language.
 
-> **Scope** Both integrations work correctly today. This spec is about the delta — patterns in Satan that are worth propagating and patterns in openclaw-honcho that Satan should eventually adopt. The spec is additive, not prescriptive.
+> **Scope** Both integrations work correctly today. This spec is about the delta — patterns in SatanClaw that are worth propagating and patterns in openclaw-honcho that SatanClaw should eventually adopt. The spec is additive, not prescriptive.
 
 ---
 
 ## Architecture comparison
 
-### Satan: baked-in runner
+### SatanClaw: baked-in runner
 
 Honcho is initialised directly inside `AIAgent.__init__`. There is no plugin boundary. Session management, context injection, async prefetch, and CLI surface are all first-class concerns of the runner. Context is injected once per session (baked into `_cached_system_prompt`) and never re-fetched mid-session — this maximises prefix cache hits at the LLM provider.
 
@@ -55,7 +55,7 @@ user message
 
 ## Diff table
 
-| Dimension | Satan Agent | openclaw-honcho |
+| Dimension | SatanClaw Agent | openclaw-honcho |
 |---|---|---|
 | **Context injection timing** | Once per session (cached). Zero HTTP on response path after turn 1. | Every turn, blocking. Fresh context per turn but adds latency. |
 | **Prefetch strategy** | Daemon threads fire at turn end; consumed next turn from cache. | None. Blocking call at prompt-build time. |
@@ -71,7 +71,7 @@ user message
 | **Platform metadata** | Not stripped. | Explicitly stripped before Honcho storage. |
 | **Message dedup** | None. | `lastSavedIndex` in session metadata prevents re-sending. |
 | **CLI surface in prompt** | Management commands injected into system prompt. Agent knows its own CLI. | Not injected. |
-| **AI peer name in identity** | Replaces "Satan Agent" in DEFAULT_AGENT_IDENTITY when configured. | Not implemented. |
+| **AI peer name in identity** | Replaces "SatanClaw Agent" in DEFAULT_AGENT_IDENTITY when configured. | Not implemented. |
 | **QMD / local file search** | Not implemented. | Passthrough tools when QMD backend configured. |
 | **Workspace metadata** | Not implemented. | `agentPeerMap` in workspace metadata tracks agent→peer ID. |
 
@@ -79,9 +79,9 @@ user message
 
 ## Patterns
 
-Six patterns from Satan are worth adopting in any Honcho integration. Each is described as an integration-agnostic interface.
+Six patterns from SatanClaw are worth adopting in any Honcho integration. Each is described as an integration-agnostic interface.
 
-**Satan contributes:**
+**SatanClaw contributes:**
 - Async prefetch (zero-latency)
 - Dynamic reasoning level
 - Per-peer memory modes
@@ -89,7 +89,7 @@ Six patterns from Satan are worth adopting in any Honcho integration. Each is de
 - Session naming strategies
 - CLI surface injection
 
-**openclaw-honcho contributes back (Satan should adopt):**
+**openclaw-honcho contributes back (SatanClaw should adopt):**
 - `lastSavedIndex` dedup
 - Platform metadata stripping
 - Multi-agent observer hierarchy
@@ -344,7 +344,7 @@ Ordered by impact:
 - [ ] **CLI surface injection** — append command reference to `before_prompt_build` return value
 - [ ] **honcho identity subcommand** — seed from file or `--show` current representation
 - [ ] **AI peer name injection** — if `aiPeer` name configured, prepend to injected system prompt
-- [ ] **honcho mode / sessions / map** — CLI parity with Satan
+- [ ] **honcho mode / sessions / map** — CLI parity with SatanClaw
 
 Already done in openclaw-honcho (do not re-implement): `lastSavedIndex` dedup, platform metadata stripping, multi-agent parent observer, `peerPerspective` on `context()`, tiered tool surface, workspace `agentPeerMap`, QMD passthrough, self-hosted Honcho.
 
@@ -352,7 +352,7 @@ Already done in openclaw-honcho (do not re-implement): `lastSavedIndex` dedup, p
 
 ## nanobot-honcho checklist
 
-Greenfield integration. Start from openclaw-honcho's architecture and apply all Satan patterns from day one.
+Greenfield integration. Start from openclaw-honcho's architecture and apply all SatanClaw patterns from day one.
 
 ### Phase 1 — core correctness
 

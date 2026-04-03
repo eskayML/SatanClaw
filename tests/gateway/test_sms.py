@@ -178,19 +178,19 @@ class TestSmsRequirements:
 # ── Toolset verification ───────────────────────────────────────────
 
 class TestSmsToolset:
-    def test_satan_sms_toolset_exists(self):
+    def test_satanclaw_sms_toolset_exists(self):
         from toolsets import get_toolset
 
-        ts = get_toolset("satan-sms")
+        ts = get_toolset("satanclaw-sms")
         assert ts is not None
         assert "tools" in ts
 
-    def test_satan_sms_in_gateway_includes(self):
+    def test_satanclaw_sms_in_gateway_includes(self):
         from toolsets import get_toolset
 
-        gw = get_toolset("satan-gateway")
+        gw = get_toolset("satanclaw-gateway")
         assert gw is not None
-        assert "satan-sms" in gw["includes"]
+        assert "satanclaw-sms" in gw["includes"]
 
     def test_sms_platform_hint_exists(self):
         from agent.prompt_builder import PLATFORM_HINTS

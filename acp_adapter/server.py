@@ -1,4 +1,4 @@
-"""ACP agent server — exposes Satan Agent via the Agent Client Protocol."""
+"""ACP agent server — exposes SatanClaw Agent via the Agent Client Protocol."""
 
 from __future__ import annotations
 
@@ -53,7 +53,7 @@ from acp_adapter.session import SessionManager, SessionState
 logger = logging.getLogger(__name__)
 
 try:
-    from satan_cli import __version__ as HERMES_VERSION
+    from satanclaw_cli import __version__ as HERMES_VERSION
 except Exception:
     HERMES_VERSION = "0.0.0"
 
@@ -81,8 +81,8 @@ def _extract_text(
     return "\n".join(parts)
 
 
-class SatanACPAgent(acp.Agent):
-    """ACP Agent implementation wrapping Satan AIAgent."""
+class SatanClawACPAgent(acp.Agent):
+    """ACP Agent implementation wrapping SatanClaw AIAgent."""
 
     def __init__(self, session_manager: SessionManager | None = None):
         super().__init__()
@@ -136,7 +136,7 @@ class SatanACPAgent(acp.Agent):
         try:
             from model_tools import get_tool_definitions
 
-            enabled_toolsets = getattr(state.agent, "enabled_toolsets", None) or ["satan-acp"]
+            enabled_toolsets = getattr(state.agent, "enabled_toolsets", None) or ["satanclaw-acp"]
             disabled_toolsets = getattr(state.agent, "disabled_toolsets", None)
             state.agent.tools = get_tool_definitions(
                 enabled_toolsets=enabled_toolsets,
@@ -180,7 +180,7 @@ class SatanACPAgent(acp.Agent):
                 AuthMethod(
                     id=provider,
                     name=f"{provider} runtime credentials",
-                    description=f"Authenticate Satan using the currently configured {provider} runtime credentials.",
+                    description=f"Authenticate SatanClaw using the currently configured {provider} runtime credentials.",
                 )
             ]
 
@@ -193,7 +193,7 @@ class SatanACPAgent(acp.Agent):
 
         return InitializeResponse(
             protocol_version=acp.PROTOCOL_VERSION,
-            agent_info=Implementation(name="satan-agent", version=HERMES_VERSION),
+            agent_info=Implementation(name="satanclaw-agent", version=HERMES_VERSION),
             agent_capabilities=AgentCapabilities(
                 session_capabilities=SessionCapabilities(
                     fork=SessionForkCapabilities(),
@@ -303,7 +303,7 @@ class SatanACPAgent(acp.Agent):
         session_id: str,
         **kwargs: Any,
     ) -> PromptResponse:
-        """Run Satan on the user's prompt and stream events back to the editor."""
+        """Run SatanClaw on the user's prompt and stream events back to the editor."""
         state = self.session_manager.get_session(session_id)
         if state is None:
             logger.error("prompt: session %s not found", session_id)
@@ -418,7 +418,7 @@ class SatanACPAgent(acp.Agent):
         "context": "Show conversation context info",
         "reset": "Clear conversation history",
         "compact": "Compress conversation context",
-        "version": "Show Satan version",
+        "version": "Show SatanClaw version",
     }
 
     def _handle_slash_command(self, text: str, state: SessionState) -> str | None:
@@ -470,7 +470,7 @@ class SatanACPAgent(acp.Agent):
 
         # Auto-detect provider for the requested model
         try:
-            from satan_cli.models import parse_model_input, detect_provider_for_model
+            from satanclaw_cli.models import parse_model_input, detect_provider_for_model
             target_provider, new_model = parse_model_input(new_model, current_provider)
             if target_provider == current_provider:
                 detected = detect_provider_for_model(new_model, current_provider)
@@ -494,7 +494,7 @@ class SatanACPAgent(acp.Agent):
     def _cmd_tools(self, args: str, state: SessionState) -> str:
         try:
             from model_tools import get_tool_definitions
-            toolsets = getattr(state.agent, "enabled_toolsets", None) or ["satan-acp"]
+            toolsets = getattr(state.agent, "enabled_toolsets", None) or ["satanclaw-acp"]
             tools = get_tool_definitions(enabled_toolsets=toolsets, quiet_mode=True)
             if not tools:
                 return "No tools available."
@@ -548,7 +548,7 @@ class SatanACPAgent(acp.Agent):
             return f"Compression failed: {e}"
 
     def _cmd_version(self, args: str, state: SessionState) -> str:
-        return f"Satan Agent v{HERMES_VERSION}"
+        return f"SatanClaw Agent v{HERMES_VERSION}"
 
     # ---- Model switching (ACP protocol method) -------------------------------
 
@@ -592,7 +592,7 @@ class SatanACPAgent(acp.Agent):
     async def set_config_option(
         self, config_id: str, session_id: str, value: str, **kwargs: Any
     ) -> SetSessionConfigOptionResponse | None:
-        """Accept ACP config option updates even when Satan has no typed ACP config surface yet."""
+        """Accept ACP config option updates even when SatanClaw has no typed ACP config surface yet."""
         state = self.session_manager.get_session(session_id)
         if state is None:
             logger.warning("Session %s: config update requested for missing session", session_id)

@@ -1,16 +1,16 @@
-# Satan Agent — ACP (Agent Client Protocol) Setup Guide
+# SatanClaw Agent — ACP (Agent Client Protocol) Setup Guide
 
-Satan Agent supports the **Agent Client Protocol (ACP)**, allowing it to run as
-a coding agent inside your editor. ACP lets your IDE send tasks to Satan, and
-Satan responds with file edits, terminal commands, and explanations — all shown
+SatanClaw Agent supports the **Agent Client Protocol (ACP)**, allowing it to run as
+a coding agent inside your editor. ACP lets your IDE send tasks to SatanClaw, and
+SatanClaw responds with file edits, terminal commands, and explanations — all shown
 natively in the editor UI.
 
 ---
 
 ## Prerequisites
 
-- Satan Agent installed and configured (`satan setup` completed)
-- An API key / provider set up in `~/.satan/.env` or via `satan login`
+- SatanClaw Agent installed and configured (`satanclaw setup` completed)
+- An API key / provider set up in `~/.satanclaw/.env` or via `satanclaw login`
 - Python 3.11+
 
 Install the ACP extra:
@@ -45,22 +45,22 @@ Open your VS Code settings (`Ctrl+,` → click the `{}` icon for JSON) and add:
 {
   "acpClient.agents": [
     {
-      "name": "satan-agent",
-      "registryDir": "/path/to/satan-agent/acp_registry"
+      "name": "satanclaw-agent",
+      "registryDir": "/path/to/satanclaw-agent/acp_registry"
     }
   ]
 }
 ```
 
-Replace `/path/to/satan-agent` with the actual path to your Satan Agent
-installation (e.g. `~/.satan/satan-agent`).
+Replace `/path/to/satanclaw-agent` with the actual path to your SatanClaw Agent
+installation (e.g. `~/.satanclaw/satanclaw-agent`).
 
-Alternatively, if `satan` is on your PATH, the ACP Client can discover it
+Alternatively, if `satanclaw` is on your PATH, the ACP Client can discover it
 automatically via the registry directory.
 
 ### 3. Restart VS Code
 
-After configuring, restart VS Code. You should see **Satan Agent** appear in
+After configuring, restart VS Code. You should see **SatanClaw Agent** appear in
 the ACP agent picker in the chat/agent panel.
 
 ---
@@ -77,9 +77,9 @@ Open Zed settings (`Cmd+,` on macOS or `Ctrl+,` on Linux) and add to your
 ```json
 {
   "agent_servers": {
-    "satan-agent": {
+    "satanclaw-agent": {
       "type": "custom",
-      "command": "satan",
+      "command": "satanclaw",
       "args": ["acp"],
     },
   },
@@ -88,7 +88,7 @@ Open Zed settings (`Cmd+,` on macOS or `Ctrl+,` on Linux) and add to your
 
 ### 2. Restart Zed
 
-Satan Agent will appear in the agent panel. Select it and start a conversation.
+SatanClaw Agent will appear in the agent panel. Select it and start a conversation.
 
 ---
 
@@ -105,38 +105,38 @@ Satan Agent will appear in the agent panel. Select it and start a conversation.
 - Open **Settings** → **Tools** → **ACP Agents**
 - Click **+** to add a new agent
 - Set the registry directory to your `acp_registry/` folder:
-  `/path/to/satan-agent/acp_registry`
+  `/path/to/satanclaw-agent/acp_registry`
 - Click **OK**
 
 ### 3. Use the agent
 
-Open the ACP panel (usually in the right sidebar) and select **Satan Agent**.
+Open the ACP panel (usually in the right sidebar) and select **SatanClaw Agent**.
 
 ---
 
 ## What You Will See
 
-Once connected, your editor provides a native interface to Satan Agent:
+Once connected, your editor provides a native interface to SatanClaw Agent:
 
 ### Chat Panel
 A conversational interface where you can describe tasks, ask questions, and
-give instructions. Satan responds with explanations and actions.
+give instructions. SatanClaw responds with explanations and actions.
 
 ### File Diffs
-When Satan edits files, you see standard diffs in the editor. You can:
+When SatanClaw edits files, you see standard diffs in the editor. You can:
 - **Accept** individual changes
 - **Reject** changes you don't want
 - **Review** the full diff before applying
 
 ### Terminal Commands
-When Satan needs to run shell commands (builds, tests, installs), the editor
+When SatanClaw needs to run shell commands (builds, tests, installs), the editor
 shows them in an integrated terminal. Depending on your settings:
 - Commands may run automatically
 - Or you may be prompted to **approve** each command
 
 ### Approval Flow
 For potentially destructive operations, the editor will prompt you for
-approval before Satan proceeds. This includes:
+approval before SatanClaw proceeds. This includes:
 - File deletions
 - Shell commands
 - Git operations
@@ -145,29 +145,29 @@ approval before Satan proceeds. This includes:
 
 ## Configuration
 
-Satan Agent under ACP uses the **same configuration** as the CLI:
+SatanClaw Agent under ACP uses the **same configuration** as the CLI:
 
-- **API keys / providers**: `~/.satan/.env`
-- **Agent config**: `~/.satan/config.yaml`
-- **Skills**: `~/.satan/skills/`
-- **Sessions**: `~/.satan/state.db`
+- **API keys / providers**: `~/.satanclaw/.env`
+- **Agent config**: `~/.satanclaw/config.yaml`
+- **Skills**: `~/.satanclaw/skills/`
+- **Sessions**: `~/.satanclaw/state.db`
 
-You can run `satan setup` to configure providers, or edit `~/.satan/.env`
+You can run `satanclaw setup` to configure providers, or edit `~/.satanclaw/.env`
 directly.
 
 ### Changing the model
 
-Edit `~/.satan/config.yaml`:
+Edit `~/.satanclaw/config.yaml`:
 
 ```yaml
-model: openrouter/nous/satan-3-llama-3.1-70b
+model: openrouter/nous/satanclaw-3-llama-3.1-70b
 ```
 
 Or set the `HERMES_MODEL` environment variable.
 
 ### Toolsets
 
-ACP sessions use the curated `satan-acp` toolset by default. It is designed for editor workflows and intentionally excludes things like messaging delivery, cronjob management, and audio-first UX features.
+ACP sessions use the curated `satanclaw-acp` toolset by default. It is designed for editor workflows and intentionally excludes things like messaging delivery, cronjob management, and audio-first UX features.
 
 ---
 
@@ -177,15 +177,15 @@ ACP sessions use the curated `satan-acp` toolset by default. It is designed for 
 
 1. **Check the registry path** — make sure the `acp_registry/` directory path
    in your editor settings is correct and contains `agent.json`.
-2. **Check `satan` is on PATH** — run `which satan` in a terminal. If not
+2. **Check `satanclaw` is on PATH** — run `which satanclaw` in a terminal. If not
    found, you may need to activate your virtualenv or add it to PATH.
 3. **Restart the editor** after changing settings.
 
 ### Agent starts but errors immediately
 
-1. Run `satan doctor` to check your configuration.
-2. Check that you have a valid API key: `satan status`
-3. Try running `satan acp` directly in a terminal to see error output.
+1. Run `satanclaw doctor` to check your configuration.
+2. Check that you have a valid API key: `satanclaw status`
+3. Try running `satanclaw acp` directly in a terminal to see error output.
 
 ### "Module not found" errors
 
@@ -208,15 +208,15 @@ settings for auto-approval or manual-approval preferences.
 
 ### Logs
 
-Satan logs are written to stderr when running in ACP mode. Check:
-- VS Code: **Output** panel → select **ACP Client** or **Satan Agent**
+SatanClaw logs are written to stderr when running in ACP mode. Check:
+- VS Code: **Output** panel → select **ACP Client** or **SatanClaw Agent**
 - Zed: **View** → **Toggle Terminal** and check the process output
 - JetBrains: **Event Log** or the ACP tool window
 
 You can also enable verbose logging:
 
 ```bash
-HERMES_LOG_LEVEL=DEBUG satan acp
+HERMES_LOG_LEVEL=DEBUG satanclaw acp
 ```
 
 ---
@@ -224,5 +224,5 @@ HERMES_LOG_LEVEL=DEBUG satan acp
 ## Further Reading
 
 - [ACP Specification](https://github.com/anysphere/acp)
-- [Satan Agent Documentation](https://github.com/NousResearch/satan-agent)
-- Run `satan --help` for all CLI options
+- [SatanClaw Agent Documentation](https://github.com/NousResearch/satanclaw-agent)
+- Run `satanclaw --help` for all CLI options

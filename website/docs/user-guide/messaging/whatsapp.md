@@ -1,12 +1,12 @@
 ---
 sidebar_position: 5
 title: "WhatsApp"
-description: "Set up Satan Agent as a WhatsApp bot via the built-in Baileys bridge"
+description: "Set up SatanClaw Agent as a WhatsApp bot via the built-in Baileys bridge"
 ---
 
 # WhatsApp Setup
 
-Satan connects to WhatsApp through a built-in bridge based on **Baileys**. This works by emulating a WhatsApp Web session — **not** through the official WhatsApp Business API. No Meta developer account or Business verification is required.
+SatanClaw connects to WhatsApp through a built-in bridge based on **Baileys**. This works by emulating a WhatsApp Web session — **not** through the official WhatsApp Business API. No Meta developer account or Business verification is required.
 
 :::warning Unofficial API — Ban Risk
 WhatsApp does **not** officially support third-party bots outside the Business API. Using a third-party bridge carries a small risk of account restrictions. To minimize risk:
@@ -17,8 +17,8 @@ WhatsApp does **not** officially support third-party bots outside the Business A
 
 :::warning WhatsApp Web Protocol Updates
 WhatsApp periodically updates their Web protocol, which can temporarily break compatibility
-with third-party bridges. When this happens, Satan will update the bridge dependency. If the
-bot stops working after a WhatsApp update, pull the latest Satan version and re-pair.
+with third-party bridges. When this happens, SatanClaw will update the bridge dependency. If the
+bot stops working after a WhatsApp update, pull the latest SatanClaw version and re-pair.
 :::
 
 ## Two Modes
@@ -42,7 +42,7 @@ Unlike older browser-driven bridges, the current Baileys-based bridge does **not
 ## Step 1: Run the Setup Wizard
 
 ```bash
-satan whatsapp
+satanclaw whatsapp
 ```
 
 The wizard will:
@@ -82,13 +82,13 @@ After getting the number:
 
 1. Install WhatsApp on a phone (or use WhatsApp Business app with dual-SIM)
 2. Register the new number with WhatsApp
-3. Run `satan whatsapp` and scan the QR code from that WhatsApp account
+3. Run `satanclaw whatsapp` and scan the QR code from that WhatsApp account
 
 ---
 
-## Step 3: Configure Satan
+## Step 3: Configure SatanClaw
 
-Add the following to your `~/.satan/.env` file:
+Add the following to your `~/.satanclaw/.env` file:
 
 ```bash
 # Required
@@ -108,7 +108,7 @@ To use the pairing flow instead, remove both variables and rely on the
 [DM pairing system](/docs/user-guide/security#dm-pairing-system).
 :::
 
-Optional behavior settings in `~/.satan/config.yaml`:
+Optional behavior settings in `~/.satanclaw/config.yaml`:
 
 ```yaml
 unauthorized_dm_behavior: pair
@@ -123,9 +123,9 @@ whatsapp:
 Then start the gateway:
 
 ```bash
-satan gateway              # Foreground
-satan gateway install      # Install as a user service
-sudo satan gateway install --system   # Linux only: boot-time system service
+satanclaw gateway              # Foreground
+satanclaw gateway install      # Install as a user service
+sudo satanclaw gateway install --system   # Linux only: boot-time system service
 ```
 
 The gateway starts the WhatsApp bridge automatically using the saved session.
@@ -134,7 +134,7 @@ The gateway starts the WhatsApp bridge automatically using the saved session.
 
 ## Session Persistence
 
-The Baileys bridge saves its session under `~/.satan/whatsapp/session`. This means:
+The Baileys bridge saves its session under `~/.satanclaw/whatsapp/session`. This means:
 
 - **Sessions survive restarts** — you don't need to re-scan the QR code every time
 - The session data includes encryption keys and device credentials
@@ -148,7 +148,7 @@ If the session breaks (phone reset, WhatsApp update, manually unlinked), you'll 
 errors in the gateway logs. To fix it:
 
 ```bash
-satan whatsapp
+satanclaw whatsapp
 ```
 
 This generates a fresh QR code. Scan it again and the session is re-established. The gateway
@@ -159,14 +159,14 @@ with reconnection logic.
 
 ## Voice Messages
 
-Satan supports voice on WhatsApp:
+SatanClaw supports voice on WhatsApp:
 
 - **Incoming:** Voice messages (`.ogg` opus) are automatically transcribed using the configured STT provider: local `faster-whisper`, Groq Whisper (`GROQ_API_KEY`), or OpenAI Whisper (`VOICE_TOOLS_OPENAI_KEY`)
 - **Outgoing:** TTS responses are sent as MP3 audio file attachments
-- Agent responses are prefixed with "⚕ **Satan Agent**" by default. You can customize or disable this in `config.yaml`:
+- Agent responses are prefixed with "⚕ **SatanClaw Agent**" by default. You can customize or disable this in `config.yaml`:
 
 ```yaml
-# ~/.satan/config.yaml
+# ~/.satanclaw/config.yaml
 whatsapp:
   reply_prefix: ""                          # Empty string disables the header
   # reply_prefix: "🤖 *My Bot*\n──────\n"  # Custom prefix (supports \n for newlines)
@@ -179,14 +179,14 @@ whatsapp:
 | Problem | Solution |
 |---------|----------|
 | **QR code not scanning** | Ensure terminal is wide enough (60+ columns). Try a different terminal. Make sure you're scanning from the correct WhatsApp account (bot number, not personal). |
-| **QR code expires** | QR codes refresh every ~20 seconds. If it times out, restart `satan whatsapp`. |
-| **Session not persisting** | Check that `~/.satan/whatsapp/session` exists and is writable. If containerized, mount it as a persistent volume. |
-| **Logged out unexpectedly** | WhatsApp unlinks devices after long inactivity. Keep the phone on and connected to the network, then re-pair with `satan whatsapp` if needed. |
-| **Bridge crashes or reconnect loops** | Restart the gateway, update Satan, and re-pair if the session was invalidated by a WhatsApp protocol change. |
-| **Bot stops working after WhatsApp update** | Update Satan to get the latest bridge version, then re-pair. |
-| **macOS: "Node.js not installed" but node works in terminal** | launchd services don't inherit your shell PATH. Run `satan gateway install` to re-snapshot your current PATH into the plist, then `satan gateway start`. See the [Gateway Service docs](./index.md#macos-launchd) for details. |
+| **QR code expires** | QR codes refresh every ~20 seconds. If it times out, restart `satanclaw whatsapp`. |
+| **Session not persisting** | Check that `~/.satanclaw/whatsapp/session` exists and is writable. If containerized, mount it as a persistent volume. |
+| **Logged out unexpectedly** | WhatsApp unlinks devices after long inactivity. Keep the phone on and connected to the network, then re-pair with `satanclaw whatsapp` if needed. |
+| **Bridge crashes or reconnect loops** | Restart the gateway, update SatanClaw, and re-pair if the session was invalidated by a WhatsApp protocol change. |
+| **Bot stops working after WhatsApp update** | Update SatanClaw to get the latest bridge version, then re-pair. |
+| **macOS: "Node.js not installed" but node works in terminal** | launchd services don't inherit your shell PATH. Run `satanclaw gateway install` to re-snapshot your current PATH into the plist, then `satanclaw gateway start`. See the [Gateway Service docs](./index.md#macos-launchd) for details. |
 | **Messages not being received** | Verify `WHATSAPP_ALLOWED_USERS` includes the sender's number (with country code, no `+` or spaces), or set it to `*` to allow everyone. Set `WHATSAPP_DEBUG=true` in `.env` and restart the gateway to see raw message events in `bridge.log`. |
-| **Bot replies to strangers with a pairing code** | Set `whatsapp.unauthorized_dm_behavior: ignore` in `~/.satan/config.yaml` if you want unauthorized DMs to be silently ignored instead. |
+| **Bot replies to strangers with a pairing code** | Set `whatsapp.unauthorized_dm_behavior: ignore` in `~/.satanclaw/config.yaml` if you want unauthorized DMs to be silently ignored instead. |
 
 ---
 
@@ -206,8 +206,8 @@ whatsapp:
   unauthorized_dm_behavior: ignore
 ```
 
-- The `~/.satan/whatsapp/session` directory contains full session credentials — protect it like a password
-- Set file permissions: `chmod 700 ~/.satan/whatsapp/session`
+- The `~/.satanclaw/whatsapp/session` directory contains full session credentials — protect it like a password
+- Set file permissions: `chmod 700 ~/.satanclaw/whatsapp/session`
 - Use a **dedicated phone number** for the bot to isolate risk from your personal account
 - If you suspect compromise, unlink the device from WhatsApp → Settings → Linked Devices
 - Phone numbers in logs are partially redacted, but review your log retention policy

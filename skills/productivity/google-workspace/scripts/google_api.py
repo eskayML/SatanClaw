@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Google Workspace API CLI for Satan Agent.
+"""Google Workspace API CLI for SatanClaw Agent.
 
 A thin CLI wrapper around Google's Python client libraries.
 Authenticates using the token stored by setup.py.
@@ -28,7 +28,7 @@ from datetime import datetime, timedelta, timezone
 from email.mime.text import MIMEText
 from pathlib import Path
 
-HERMES_HOME = Path(os.getenv("HERMES_HOME", Path.home() / ".satan"))
+HERMES_HOME = Path(os.getenv("HERMES_HOME", Path.home() / ".satanclaw"))
 TOKEN_PATH = HERMES_HOME / "google_token.json"
 
 SCOPES = [
@@ -366,7 +366,7 @@ def docs_get(args):
 # =========================================================================
 
 def main():
-    parser = argparse.ArgumentParser(description="Google Workspace API for Satan Agent")
+    parser = argparse.ArgumentParser(description="Google Workspace API for SatanClaw Agent")
     sub = parser.add_subparsers(dest="service", required=True)
 
     # --- Gmail ---

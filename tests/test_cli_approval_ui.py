@@ -4,11 +4,11 @@ import time
 from types import SimpleNamespace
 from unittest.mock import MagicMock
 
-from cli import SatanCLI
+from cli import SatanClawCLI
 
 
 def _make_cli_stub():
-    cli = SatanCLI.__new__(SatanCLI)
+    cli = SatanClawCLI.__new__(SatanClawCLI)
     cli._approval_state = None
     cli._approval_deadline = 0
     cli._approval_lock = threading.Lock()

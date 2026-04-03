@@ -20,7 +20,7 @@ def test_resolve_managed_tool_gateway_derives_vendor_origin_from_shared_domain()
         os.environ,
         {
             "HERMES_ENABLE_NOUS_MANAGED_TOOLS": "1",
-            "TOOL_GATEWAY_DOMAIN": "nousresearch.com",
+            "TOOL_GATEWAY_DOMAIN": "eskayML.com",
         },
         clear=False,
     ):
@@ -30,7 +30,7 @@ def test_resolve_managed_tool_gateway_derives_vendor_origin_from_shared_domain()
         )
 
     assert result is not None
-    assert result.gateway_origin == "https://firecrawl-gateway.nousresearch.com"
+    assert result.gateway_origin == "https://firecrawl-gateway.eskayML.com"
     assert result.nous_user_token == "nous-token"
     assert result.managed_mode is True
 
@@ -58,7 +58,7 @@ def test_resolve_managed_tool_gateway_is_inactive_without_nous_token():
         os.environ,
         {
             "HERMES_ENABLE_NOUS_MANAGED_TOOLS": "1",
-            "TOOL_GATEWAY_DOMAIN": "nousresearch.com",
+            "TOOL_GATEWAY_DOMAIN": "eskayML.com",
         },
         clear=False,
     ):
@@ -71,7 +71,7 @@ def test_resolve_managed_tool_gateway_is_inactive_without_nous_token():
 
 
 def test_resolve_managed_tool_gateway_is_disabled_without_feature_flag():
-    with patch.dict(os.environ, {"TOOL_GATEWAY_DOMAIN": "nousresearch.com"}, clear=False):
+    with patch.dict(os.environ, {"TOOL_GATEWAY_DOMAIN": "eskayML.com"}, clear=False):
         result = resolve_managed_tool_gateway(
             "firecrawl",
             token_reader=lambda: "nous-token",
@@ -94,7 +94,7 @@ def test_read_nous_access_token_refreshes_expiring_cached_token(tmp_path, monkey
         }
     }))
     monkeypatch.setattr(
-        "satan_cli.auth.resolve_nous_access_token",
+        "satanclaw_cli.auth.resolve_nous_access_token",
         lambda refresh_skew_seconds=120: "fresh-token",
     )
 

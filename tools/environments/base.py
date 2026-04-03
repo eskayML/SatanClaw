@@ -1,11 +1,11 @@
-"""Base class for all Satan execution environment backends."""
+"""Base class for all SatanClaw execution environment backends."""
 
 from abc import ABC, abstractmethod
 import os
 import subprocess
 from pathlib import Path
 
-from satan_constants import get_satan_home
+from satanclaw_constants import get_satanclaw_home
 
 
 def get_sandbox_dir() -> Path:
@@ -18,13 +18,13 @@ def get_sandbox_dir() -> Path:
     if custom:
         p = Path(custom)
     else:
-        p = get_satan_home() / "sandboxes"
+        p = get_satanclaw_home() / "sandboxes"
     p.mkdir(parents=True, exist_ok=True)
     return p
 
 
 class BaseEnvironment(ABC):
-    """Common interface for all Satan execution backends.
+    """Common interface for all SatanClaw execution backends.
 
     Subclasses implement execute() and cleanup(). Shared helpers eliminate
     duplicated subprocess boilerplate across backends.

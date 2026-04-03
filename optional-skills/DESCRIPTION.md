@@ -1,15 +1,15 @@
 # Optional Skills
 
-Official skills maintained by Nous Research that are **not activated by default**.
+Official skills maintained by Samuel Kalu that are **not activated by default**.
 
-These skills ship with the satan-agent repository but are not copied to
-`~/.satan/skills/` during setup. They are discoverable via the Skills Hub:
+These skills ship with the satanclaw-agent repository but are not copied to
+`~/.satanclaw/skills/` during setup. They are discoverable via the Skills Hub:
 
 ```bash
-satan skills browse               # browse all skills, official shown first
-satan skills browse --source official  # browse only official optional skills
-satan skills search <query>       # finds optional skills labeled "official"
-satan skills install <identifier> # copies to ~/.satan/skills/ and activates
+satanclaw skills browse               # browse all skills, official shown first
+satanclaw skills browse --source official  # browse only official optional skills
+satanclaw skills search <query>       # finds optional skills labeled "official"
+satanclaw skills install <identifier> # copies to ~/.satanclaw/skills/ and activates
 ```
 
 ## Why optional?

@@ -4,7 +4,7 @@ Fetches model metadata from https://models.dev/api.json — a community-maintain
 database of 3800+ models across 100+ providers, including per-provider context
 windows, pricing, and capabilities.
 
-Data is cached in memory (1hr TTL) and on disk (~/.satan/models_dev_cache.json)
+Data is cached in memory (1hr TTL) and on disk (~/.satanclaw/models_dev_cache.json)
 to avoid cold-start network latency.
 """
 
@@ -28,7 +28,7 @@ _MODELS_DEV_CACHE_TTL = 3600  # 1 hour in-memory
 _models_dev_cache: Dict[str, Any] = {}
 _models_dev_cache_time: float = 0
 
-# Provider ID mapping: Satan provider names → models.dev provider IDs
+# Provider ID mapping: SatanClaw provider names → models.dev provider IDs
 PROVIDER_TO_MODELS_DEV: Dict[str, str] = {
     "openrouter": "openrouter",
     "anthropic": "anthropic",
@@ -50,8 +50,8 @@ PROVIDER_TO_MODELS_DEV: Dict[str, str] = {
 def _get_cache_path() -> Path:
     """Return path to disk cache file."""
     env_val = os.environ.get("HERMES_HOME", "")
-    satan_home = Path(env_val) if env_val else Path.home() / ".satan"
-    return satan_home / "models_dev_cache.json"
+    satanclaw_home = Path(env_val) if env_val else Path.home() / ".satanclaw"
+    return satanclaw_home / "models_dev_cache.json"
 
 
 def _load_disk_cache() -> Dict[str, Any]:

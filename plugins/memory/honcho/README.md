@@ -10,13 +10,13 @@ AI-native cross-session user modeling with dialectic Q&A, semantic search, peer 
 ## Setup
 
 ```bash
-satan memory setup    # select "honcho"
+satanclaw memory setup    # select "honcho"
 ```
 
 Or manually:
 ```bash
-satan config set memory.provider honcho
-echo "HONCHO_API_KEY=your-key" >> ~/.satan/.env
+satanclaw config set memory.provider honcho
+echo "HONCHO_API_KEY=your-key" >> ~/.satanclaw/.env
 ```
 
 ## Config

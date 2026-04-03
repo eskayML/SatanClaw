@@ -1,4 +1,4 @@
-"""Tests for satan_cli configuration management."""
+"""Tests for satanclaw_cli configuration management."""
 
 import os
 from pathlib import Path
@@ -6,10 +6,10 @@ from unittest.mock import patch, MagicMock
 
 import yaml
 
-from satan_cli.config import (
+from satanclaw_cli.config import (
     DEFAULT_CONFIG,
-    get_satan_home,
-    ensure_satan_home,
+    get_satanclaw_home,
+    ensure_satanclaw_home,
     load_config,
     load_env,
     migrate_config,
@@ -21,23 +21,23 @@ from satan_cli.config import (
 )
 
 
-class TestGetSatanHome:
+class TestGetSatanClawHome:
     def test_default_path(self):
         with patch.dict(os.environ, {}, clear=False):
             os.environ.pop("HERMES_HOME", None)
-            home = get_satan_home()
-            assert home == Path.home() / ".satan"
+            home = get_satanclaw_home()
+            assert home == Path.home() / ".satanclaw"
 
     def test_env_override(self):
         with patch.dict(os.environ, {"HERMES_HOME": "/custom/path"}):
-            home = get_satan_home()
+            home = get_satanclaw_home()
             assert home == Path("/custom/path")
 
 
-class TestEnsureSatanHome:
+class TestEnsureSatanClawHome:
     def test_creates_subdirs(self, tmp_path):
         with patch.dict(os.environ, {"HERMES_HOME": str(tmp_path)}):
-            ensure_satan_home()
+            ensure_satanclaw_home()
             assert (tmp_path / "cron").is_dir()
             assert (tmp_path / "sessions").is_dir()
             assert (tmp_path / "logs").is_dir()
@@ -45,7 +45,7 @@ class TestEnsureSatanHome:
 
     def test_creates_default_soul_md_if_missing(self, tmp_path):
         with patch.dict(os.environ, {"HERMES_HOME": str(tmp_path)}):
-            ensure_satan_home()
+            ensure_satanclaw_home()
             soul_path = tmp_path / "SOUL.md"
             assert soul_path.exists()
             assert soul_path.read_text(encoding="utf-8").strip() != ""
@@ -54,7 +54,7 @@ class TestEnsureSatanHome:
         with patch.dict(os.environ, {"HERMES_HOME": str(tmp_path)}):
             soul_path = tmp_path / "SOUL.md"
             soul_path.write_text("custom soul", encoding="utf-8")
-            ensure_satan_home()
+            ensure_satanclaw_home()
             assert soul_path.read_text(encoding="utf-8") == "custom soul"
 
 
@@ -321,27 +321,27 @@ class TestOptionalEnvVarsRegistry:
 
     def test_tavily_api_key_registered(self):
         """TAVILY_API_KEY is listed in OPTIONAL_ENV_VARS."""
-        from satan_cli.config import OPTIONAL_ENV_VARS
+        from satanclaw_cli.config import OPTIONAL_ENV_VARS
         assert "TAVILY_API_KEY" in OPTIONAL_ENV_VARS
 
     def test_tavily_api_key_is_tool_category(self):
         """TAVILY_API_KEY is in the 'tool' category."""
-        from satan_cli.config import OPTIONAL_ENV_VARS
+        from satanclaw_cli.config import OPTIONAL_ENV_VARS
         assert OPTIONAL_ENV_VARS["TAVILY_API_KEY"]["category"] == "tool"
 
     def test_tavily_api_key_is_password(self):
         """TAVILY_API_KEY is marked as password."""
-        from satan_cli.config import OPTIONAL_ENV_VARS
+        from satanclaw_cli.config import OPTIONAL_ENV_VARS
         assert OPTIONAL_ENV_VARS["TAVILY_API_KEY"]["password"] is True
 
     def test_tavily_api_key_has_url(self):
         """TAVILY_API_KEY has a URL."""
-        from satan_cli.config import OPTIONAL_ENV_VARS
+        from satanclaw_cli.config import OPTIONAL_ENV_VARS
         assert OPTIONAL_ENV_VARS["TAVILY_API_KEY"]["url"] == "https://app.tavily.com/home"
 
     def test_tavily_in_env_vars_by_version(self):
         """TAVILY_API_KEY is listed in ENV_VARS_BY_VERSION."""
-        from satan_cli.config import ENV_VARS_BY_VERSION
+        from satanclaw_cli.config import ENV_VARS_BY_VERSION
         all_vars = []
         for vars_list in ENV_VARS_BY_VERSION.values():
             all_vars.extend(vars_list)

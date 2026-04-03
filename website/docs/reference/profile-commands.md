@@ -4,15 +4,15 @@ sidebar_position: 7
 
 # Profile Commands Reference
 
-This page covers all commands related to [Satan profiles](../user-guide/profiles.md). For general CLI commands, see [CLI Commands Reference](./cli-commands.md).
+This page covers all commands related to [SatanClaw profiles](../user-guide/profiles.md). For general CLI commands, see [CLI Commands Reference](./cli-commands.md).
 
-## `satan profile`
+## `satanclaw profile`
 
 ```bash
-satan profile <subcommand>
+satanclaw profile <subcommand>
 ```
 
-Top-level command for managing profiles. Running `satan profile` without a subcommand shows help.
+Top-level command for managing profiles. Running `satanclaw profile` without a subcommand shows help.
 
 | Subcommand | Description |
 |------------|-------------|
@@ -26,10 +26,10 @@ Top-level command for managing profiles. Running `satan profile` without a subco
 | `export` | Export a profile to a tar.gz archive. |
 | `import` | Import a profile from a tar.gz archive. |
 
-## `satan profile list`
+## `satanclaw profile list`
 
 ```bash
-satan profile list
+satanclaw profile list
 ```
 
 Lists all profiles. The currently active profile is marked with `*`.
@@ -37,7 +37,7 @@ Lists all profiles. The currently active profile is marked with `*`.
 **Example:**
 
 ```bash
-$ satan profile list
+$ satanclaw profile list
   default
 * work
   dev
@@ -46,13 +46,13 @@ $ satan profile list
 
 No options.
 
-## `satan profile use`
+## `satanclaw profile use`
 
 ```bash
-satan profile use <name>
+satanclaw profile use <name>
 ```
 
-Sets `<name>` as the active profile. All subsequent `satan` commands (without `-p`) will use this profile.
+Sets `<name>` as the active profile. All subsequent `satanclaw` commands (without `-p`) will use this profile.
 
 | Argument | Description |
 |----------|-------------|
@@ -61,14 +61,14 @@ Sets `<name>` as the active profile. All subsequent `satan` commands (without `-
 **Example:**
 
 ```bash
-satan profile use work
-satan profile use default
+satanclaw profile use work
+satanclaw profile use default
 ```
 
-## `satan profile create`
+## `satanclaw profile create`
 
 ```bash
-satan profile create <name> [options]
+satanclaw profile create <name> [options]
 ```
 
 Creates a new profile.
@@ -84,22 +84,22 @@ Creates a new profile.
 
 ```bash
 # Blank profile — needs full setup
-satan profile create mybot
+satanclaw profile create mybot
 
 # Clone config only from current profile
-satan profile create work --clone
+satanclaw profile create work --clone
 
 # Clone everything from current profile
-satan profile create backup --clone-all
+satanclaw profile create backup --clone-all
 
 # Clone config from a specific profile
-satan profile create work2 --clone --clone-from work
+satanclaw profile create work2 --clone --clone-from work
 ```
 
-## `satan profile delete`
+## `satanclaw profile delete`
 
 ```bash
-satan profile delete <name> [options]
+satanclaw profile delete <name> [options]
 ```
 
 Deletes a profile and removes its shell alias.
@@ -112,18 +112,18 @@ Deletes a profile and removes its shell alias.
 **Example:**
 
 ```bash
-satan profile delete mybot
-satan profile delete mybot --yes
+satanclaw profile delete mybot
+satanclaw profile delete mybot --yes
 ```
 
 :::warning
 This permanently deletes the profile's entire directory including all config, memories, sessions, and skills. Cannot delete the currently active profile.
 :::
 
-## `satan profile show`
+## `satanclaw profile show`
 
 ```bash
-satan profile show <name>
+satanclaw profile show <name>
 ```
 
 Displays details about a profile including its home directory, configured model, active platforms, and disk usage.
@@ -135,22 +135,22 @@ Displays details about a profile including its home directory, configured model,
 **Example:**
 
 ```bash
-$ satan profile show work
+$ satanclaw profile show work
 Profile:    work
-Home:       ~/.satan/profiles/work
+Home:       ~/.satanclaw/profiles/work
 Model:      anthropic/claude-sonnet-4
 Platforms:  telegram, discord
 Skills:     12 installed
 Disk:       48 MB
 ```
 
-## `satan profile alias`
+## `satanclaw profile alias`
 
 ```bash
-satan profile alias <name> [options]
+satanclaw profile alias <name> [options]
 ```
 
-Regenerates the shell alias script at `~/.local/bin/<name>`. Useful if the alias was accidentally deleted or if you need to update it after moving your Satan installation.
+Regenerates the shell alias script at `~/.local/bin/<name>`. Useful if the alias was accidentally deleted or if you need to update it after moving your SatanClaw installation.
 
 | Argument / Option | Description |
 |-------------------|-------------|
@@ -161,20 +161,20 @@ Regenerates the shell alias script at `~/.local/bin/<name>`. Useful if the alias
 **Example:**
 
 ```bash
-satan profile alias work
+satanclaw profile alias work
 # Creates/updates ~/.local/bin/work
 
-satan profile alias work --name mywork
+satanclaw profile alias work --name mywork
 # Creates ~/.local/bin/mywork
 
-satan profile alias work --remove
+satanclaw profile alias work --remove
 # Removes the wrapper script
 ```
 
-## `satan profile rename`
+## `satanclaw profile rename`
 
 ```bash
-satan profile rename <old-name> <new-name>
+satanclaw profile rename <old-name> <new-name>
 ```
 
 Renames a profile. Updates the directory and shell alias.
@@ -187,15 +187,15 @@ Renames a profile. Updates the directory and shell alias.
 **Example:**
 
 ```bash
-satan profile rename mybot assistant
-# ~/.satan/profiles/mybot → ~/.satan/profiles/assistant
+satanclaw profile rename mybot assistant
+# ~/.satanclaw/profiles/mybot → ~/.satanclaw/profiles/assistant
 # ~/.local/bin/mybot → ~/.local/bin/assistant
 ```
 
-## `satan profile export`
+## `satanclaw profile export`
 
 ```bash
-satan profile export <name> [options]
+satanclaw profile export <name> [options]
 ```
 
 Exports a profile as a compressed tar.gz archive.
@@ -208,16 +208,16 @@ Exports a profile as a compressed tar.gz archive.
 **Example:**
 
 ```bash
-satan profile export work
+satanclaw profile export work
 # Creates work.tar.gz in the current directory
 
-satan profile export work -o ./work-2026-03-29.tar.gz
+satanclaw profile export work -o ./work-2026-03-29.tar.gz
 ```
 
-## `satan profile import`
+## `satanclaw profile import`
 
 ```bash
-satan profile import <archive> [options]
+satanclaw profile import <archive> [options]
 ```
 
 Imports a profile from a tar.gz archive.
@@ -230,20 +230,20 @@ Imports a profile from a tar.gz archive.
 **Example:**
 
 ```bash
-satan profile import ./work-2026-03-29.tar.gz
+satanclaw profile import ./work-2026-03-29.tar.gz
 # Infers profile name from the archive
 
-satan profile import ./work-2026-03-29.tar.gz --name work-restored
+satanclaw profile import ./work-2026-03-29.tar.gz --name work-restored
 ```
 
-## `satan -p` / `satan --profile`
+## `satanclaw -p` / `satanclaw --profile`
 
 ```bash
-satan -p <name> <command> [options]
-satan --profile <name> <command> [options]
+satanclaw -p <name> <command> [options]
+satanclaw --profile <name> <command> [options]
 ```
 
-Global flag to run any Satan command under a specific profile without changing the sticky default. This overrides the active profile for the duration of the command.
+Global flag to run any SatanClaw command under a specific profile without changing the sticky default. This overrides the active profile for the duration of the command.
 
 | Option | Description |
 |--------|-------------|
@@ -252,16 +252,16 @@ Global flag to run any Satan command under a specific profile without changing t
 **Examples:**
 
 ```bash
-satan -p work chat -q "Check the server status"
-satan --profile dev gateway start
-satan -p personal skills list
-satan -p work config edit
+satanclaw -p work chat -q "Check the server status"
+satanclaw --profile dev gateway start
+satanclaw -p personal skills list
+satanclaw -p work config edit
 ```
 
-## `satan completion`
+## `satanclaw completion`
 
 ```bash
-satan completion <shell>
+satanclaw completion <shell>
 ```
 
 Generates shell completion scripts. Includes completions for profile names and profile subcommands.
@@ -274,17 +274,17 @@ Generates shell completion scripts. Includes completions for profile names and p
 
 ```bash
 # Install completions
-satan completion bash >> ~/.bashrc
-satan completion zsh >> ~/.zshrc
+satanclaw completion bash >> ~/.bashrc
+satanclaw completion zsh >> ~/.zshrc
 
 # Reload shell
 source ~/.bashrc
 ```
 
 After installation, tab completion works for:
-- `satan profile <TAB>` — subcommands (list, use, create, etc.)
-- `satan profile use <TAB>` — profile names
-- `satan -p <TAB>` — profile names
+- `satanclaw profile <TAB>` — subcommands (list, use, create, etc.)
+- `satanclaw profile use <TAB>` — profile names
+- `satanclaw -p <TAB>` — profile names
 
 ## See also
 

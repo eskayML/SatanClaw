@@ -920,7 +920,7 @@ class WeComAdapter(BasePlatformAdapter):
                 "GET",
                 url,
                 headers={
-                    "User-Agent": "SatanAgent/1.0",
+                    "User-Agent": "SatanClawAgent/1.0",
                     "Accept": "*/*",
                 },
             ) as response:

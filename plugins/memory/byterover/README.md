@@ -14,14 +14,14 @@ npm install -g byterover-cli
 ## Setup
 
 ```bash
-satan memory setup    # select "byterover"
+satanclaw memory setup    # select "byterover"
 ```
 
 Or manually:
 ```bash
-satan config set memory.provider byterover
+satanclaw config set memory.provider byterover
 # Optional cloud sync:
-echo "BRV_API_KEY=your-key" >> ~/.satan/.env
+echo "BRV_API_KEY=your-key" >> ~/.satanclaw/.env
 ```
 
 ## Config

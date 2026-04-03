@@ -29,8 +29,8 @@ COMMON_HERMES_TOOLS = ["read_file", "search_files", "terminal", "patch", "write_
 
 
 class TestToolKindMap:
-    def test_all_satan_tools_have_kind(self):
-        """Every common satan tool should appear in TOOL_KIND_MAP."""
+    def test_all_satanclaw_tools_have_kind(self):
+        """Every common satanclaw tool should appear in TOOL_KIND_MAP."""
         for tool in COMMON_HERMES_TOOLS:
             assert tool in TOOL_KIND_MAP, f"{tool} missing from TOOL_KIND_MAP"
 

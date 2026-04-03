@@ -6,7 +6,7 @@ description: "Schedule automated tasks with natural language, manage them with o
 
 # Scheduled Tasks (Cron)
 
-Schedule tasks to run automatically with natural language or cron expressions. Satan exposes cron management through a single `cronjob` tool with action-style operations instead of separate schedule/list/remove tools.
+Schedule tasks to run automatically with natural language or cron expressions. SatanClaw exposes cron management through a single `cronjob` tool with action-style operations instead of separate schedule/list/remove tools.
 
 ## What cron can do now
 
@@ -19,7 +19,7 @@ Cron jobs can:
 - run in fresh agent sessions with the normal static tool list
 
 :::warning
-Cron-run sessions cannot recursively create more cron jobs. Satan disables cron management tools inside cron executions to prevent runaway scheduling loops.
+Cron-run sessions cannot recursively create more cron jobs. SatanClaw disables cron management tools inside cron executions to prevent runaway scheduling loops.
 :::
 
 ## Creating scheduled tasks
@@ -36,9 +36,9 @@ Cron-run sessions cannot recursively create more cron jobs. Satan disables cron 
 ### From the standalone CLI
 
 ```bash
-satan cron create "every 2h" "Check server status"
-satan cron create "every 1h" "Summarize new feed items" --skill blogwatcher
-satan cron create "every 1h" "Use both skills and combine the result" \
+satanclaw cron create "every 2h" "Check server status"
+satanclaw cron create "every 1h" "Summarize new feed items" --skill blogwatcher
+satanclaw cron create "every 1h" "Use both skills and combine the result" \
   --skill blogwatcher \
   --skill find-nearby \
   --name "Skill combo"
@@ -46,13 +46,13 @@ satan cron create "every 1h" "Use both skills and combine the result" \
 
 ### Through natural conversation
 
-Ask Satan normally:
+Ask SatanClaw normally:
 
 ```text
 Every morning at 9am, check Hacker News for AI news and send me a summary on Telegram.
 ```
 
-Satan will use the unified `cronjob` tool internally.
+SatanClaw will use the unified `cronjob` tool internally.
 
 ## Skill-backed cron jobs
 
@@ -103,12 +103,12 @@ You do not need to delete and recreate jobs just to change them.
 ### Standalone CLI
 
 ```bash
-satan cron edit <job_id> --schedule "every 4h"
-satan cron edit <job_id> --prompt "Use the revised task"
-satan cron edit <job_id> --skill blogwatcher --skill find-nearby
-satan cron edit <job_id> --add-skill find-nearby
-satan cron edit <job_id> --remove-skill blogwatcher
-satan cron edit <job_id> --clear-skills
+satanclaw cron edit <job_id> --schedule "every 4h"
+satanclaw cron edit <job_id> --prompt "Use the revised task"
+satanclaw cron edit <job_id> --skill blogwatcher --skill find-nearby
+satanclaw cron edit <job_id> --add-skill find-nearby
+satanclaw cron edit <job_id> --remove-skill blogwatcher
+satanclaw cron edit <job_id> --clear-skills
 ```
 
 Notes:
@@ -135,13 +135,13 @@ Cron jobs now have a fuller lifecycle than just create/remove.
 ### Standalone CLI
 
 ```bash
-satan cron list
-satan cron pause <job_id>
-satan cron resume <job_id>
-satan cron run <job_id>
-satan cron remove <job_id>
-satan cron status
-satan cron tick
+satanclaw cron list
+satanclaw cron pause <job_id>
+satanclaw cron resume <job_id>
+satanclaw cron run <job_id>
+satanclaw cron remove <job_id>
+satanclaw cron status
+satanclaw cron tick
 ```
 
 What they do:
@@ -156,19 +156,19 @@ What they do:
 **Cron execution is handled by the gateway daemon.** The gateway ticks the scheduler every 60 seconds, running any due jobs in isolated agent sessions.
 
 ```bash
-satan gateway install     # Install as a user service
-sudo satan gateway install --system   # Linux: boot-time system service for servers
-satan gateway             # Or run in foreground
+satanclaw gateway install     # Install as a user service
+sudo satanclaw gateway install --system   # Linux: boot-time system service for servers
+satanclaw gateway             # Or run in foreground
 
-satan cron list
-satan cron status
+satanclaw cron list
+satanclaw cron status
 ```
 
 ### Gateway scheduler behavior
 
-On each tick Satan:
+On each tick SatanClaw:
 
-1. loads jobs from `~/.satan/cron/jobs.json`
+1. loads jobs from `~/.satanclaw/cron/jobs.json`
 2. checks `next_run_at` against the current time
 3. starts a fresh `AIAgent` session for each due job
 4. optionally injects one or more attached skills into that fresh session
@@ -176,7 +176,7 @@ On each tick Satan:
 6. delivers the final response
 7. updates run metadata and the next scheduled time
 
-A file lock at `~/.satan/cron/.tick.lock` prevents overlapping scheduler ticks from double-running the same job batch.
+A file lock at `~/.satanclaw/cron/.tick.lock` prevents overlapping scheduler ticks from double-running the same job batch.
 
 ## Delivery options
 
@@ -185,7 +185,7 @@ When scheduling jobs, you specify where the output goes:
 | Option | Description | Example |
 |--------|-------------|---------|
 | `"origin"` | Back to where the job was created | Default on messaging platforms |
-| `"local"` | Save to local files only (`~/.satan/cron/output/`) | Default on CLI |
+| `"local"` | Save to local files only (`~/.satanclaw/cron/output/`) | Default on CLI |
 | `"telegram"` | Telegram home channel | Uses `TELEGRAM_HOME_CHANNEL` |
 | `"discord"` | Discord home channel | Uses `DISCORD_HOME_CHANNEL` |
 | `"telegram:123456"` | Specific Telegram chat by ID | Direct delivery |
@@ -209,14 +209,14 @@ Note: The agent cannot see this message, and therefore cannot respond to it.
 To deliver the raw agent output without the wrapper, set `cron.wrap_response` to `false`:
 
 ```yaml
-# ~/.satan/config.yaml
+# ~/.satanclaw/config.yaml
 cron:
   wrap_response: false
 ```
 
 ### Silent suppression
 
-If the agent's final response starts with `[SILENT]`, delivery is suppressed entirely. The output is still saved locally for audit (in `~/.satan/cron/output/`), but no message is sent to the delivery target.
+If the agent's final response starts with `[SILENT]`, delivery is suppressed entirely. The output is still saved locally for audit (in `~/.satanclaw/cron/output/`), but no message is sent to the delivery target.
 
 This is useful for monitoring jobs that should only report when something is wrong:
 
@@ -229,7 +229,7 @@ Failed jobs always deliver regardless of the `[SILENT]` marker — only successf
 
 ## Schedule formats
 
-The agent's final response is automatically delivered — you do **not** need to include `send_message` in the cron prompt for that same destination. If a cron run calls `send_message` to the exact target the scheduler will already deliver to, Satan skips that duplicate send and tells the model to put the user-facing content in the final response instead. Use `send_message` only for additional or different targets.
+The agent's final response is automatically delivered — you do **not** need to include `send_message` in the cron prompt for that same destination. If a cron run calls `send_message` to the exact target the scheduler will already deliver to, SatanClaw skips that duplicate send and tells the model to put the user-facing content in the final response instead. Use `send_message` only for additional or different targets.
 
 ### Relative delays (one-shot)
 
@@ -300,7 +300,7 @@ For `update`, pass `skills=[]` to remove all attached skills.
 
 ## Job storage
 
-Jobs are stored in `~/.satan/cron/jobs.json`. Output from job runs is saved to `~/.satan/cron/output/{job_id}/{timestamp}.md`.
+Jobs are stored in `~/.satanclaw/cron/jobs.json`. Output from job runs is saved to `~/.satanclaw/cron/output/{job_id}/{timestamp}.md`.
 
 The storage uses atomic file writes so interrupted writes do not leave a partially written job file behind.
 

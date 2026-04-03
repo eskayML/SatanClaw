@@ -1,6 +1,6 @@
-# Satan Agent - Development Guide
+# SatanClaw Agent - Development Guide
 
-Instructions for AI coding assistants and developers working on the satan-agent codebase.
+Instructions for AI coding assistants and developers working on the satanclaw-agent codebase.
 
 ## Development Environment
 
@@ -11,12 +11,12 @@ source venv/bin/activate  # ALWAYS activate before running Python
 ## Project Structure
 
 ```
-satan-agent/
+satanclaw-agent/
 ├── run_agent.py          # AIAgent class — core conversation loop
 ├── model_tools.py        # Tool orchestration, _discover_tools(), handle_function_call()
 ├── toolsets.py           # Toolset definitions, _HERMES_CORE_TOOLS list
-├── cli.py                # SatanCLI class — interactive CLI orchestrator
-├── satan_state.py       # SessionDB — SQLite session store (FTS5 search)
+├── cli.py                # SatanClawCLI class — interactive CLI orchestrator
+├── satanclaw_state.py       # SessionDB — SQLite session store (FTS5 search)
 ├── agent/                # Agent internals
 │   ├── prompt_builder.py     # System prompt assembly
 │   ├── context_compressor.py # Auto context compression
@@ -27,15 +27,15 @@ satan-agent/
 │   ├── display.py            # KawaiiSpinner, tool preview formatting
 │   ├── skill_commands.py     # Skill slash commands (shared CLI/gateway)
 │   └── trajectory.py         # Trajectory saving helpers
-├── satan_cli/           # CLI subcommands and setup
-│   ├── main.py           # Entry point — all `satan` subcommands
+├── satanclaw_cli/           # CLI subcommands and setup
+│   ├── main.py           # Entry point — all `satanclaw` subcommands
 │   ├── config.py         # DEFAULT_CONFIG, OPTIONAL_ENV_VARS, migration
 │   ├── commands.py       # Slash command definitions + SlashCommandCompleter
 │   ├── callbacks.py      # Terminal callbacks (clarify, sudo, approval)
 │   ├── setup.py          # Interactive setup wizard
 │   ├── skin_engine.py    # Skin/theme engine — CLI visual customization
-│   ├── skills_config.py  # `satan skills` — enable/disable skills per platform
-│   ├── tools_config.py   # `satan tools` — enable/disable tools per platform
+│   ├── skills_config.py  # `satanclaw skills` — enable/disable skills per platform
+│   ├── tools_config.py   # `satanclaw tools` — enable/disable tools per platform
 │   ├── skills_hub.py     # `/skills` slash command (search, browse, install)
 │   ├── models.py         # Model catalog, provider model lists
 │   ├── model_switch.py   # Shared /model switch pipeline (CLI + gateway)
@@ -63,7 +63,7 @@ satan-agent/
 └── batch_runner.py       # Parallel batch processing
 ```
 
-**User config:** `~/.satan/config.yaml` (settings), `~/.satan/.env` (API keys)
+**User config:** `~/.satanclaw/config.yaml` (settings), `~/.satanclaw/.env` (API keys)
 
 ## File Dependency Chain
 
@@ -130,11 +130,11 @@ Messages follow OpenAI format: `{"role": "system/user/assistant/tool", ...}`. Re
 - **Rich** for banner/panels, **prompt_toolkit** for input with autocomplete
 - **KawaiiSpinner** (`agent/display.py`) — animated faces during API calls, `┊` activity feed for tool results
 - `load_cli_config()` in cli.py merges hardcoded defaults + user config YAML
-- **Skin engine** (`satan_cli/skin_engine.py`) — data-driven CLI theming; initialized from `display.skin` config key at startup; skins customize banner colors, spinner faces/verbs/wings, tool prefix, response box, branding text
-- `process_command()` is a method on `SatanCLI` — dispatches on canonical command name resolved via `resolve_command()` from the central registry
-- Skill slash commands: `agent/skill_commands.py` scans `~/.satan/skills/`, injects as **user message** (not system prompt) to preserve prompt caching
+- **Skin engine** (`satanclaw_cli/skin_engine.py`) — data-driven CLI theming; initialized from `display.skin` config key at startup; skins customize banner colors, spinner faces/verbs/wings, tool prefix, response box, branding text
+- `process_command()` is a method on `SatanClawCLI` — dispatches on canonical command name resolved via `resolve_command()` from the central registry
+- Skill slash commands: `agent/skill_commands.py` scans `~/.satanclaw/skills/`, injects as **user message** (not system prompt) to preserve prompt caching
 
-### Slash Command Registry (`satan_cli/commands.py`)
+### Slash Command Registry (`satanclaw_cli/commands.py`)
 
 All slash commands are defined in a central `COMMAND_REGISTRY` list of `CommandDef` objects. Every downstream consumer derives from this registry automatically:
 
@@ -142,18 +142,18 @@ All slash commands are defined in a central `COMMAND_REGISTRY` list of `CommandD
 - **Gateway** — `GATEWAY_KNOWN_COMMANDS` frozenset for hook emission, `resolve_command()` for dispatch
 - **Gateway help** — `gateway_help_lines()` generates `/help` output
 - **Telegram** — `telegram_bot_commands()` generates the BotCommand menu
-- **Slack** — `slack_subcommand_map()` generates `/satan` subcommand routing
+- **Slack** — `slack_subcommand_map()` generates `/satanclaw` subcommand routing
 - **Autocomplete** — `COMMANDS` flat dict feeds `SlashCommandCompleter`
 - **CLI help** — `COMMANDS_BY_CATEGORY` dict feeds `show_help()`
 
 ### Adding a Slash Command
 
-1. Add a `CommandDef` entry to `COMMAND_REGISTRY` in `satan_cli/commands.py`:
+1. Add a `CommandDef` entry to `COMMAND_REGISTRY` in `satanclaw_cli/commands.py`:
 ```python
 CommandDef("mycommand", "Description of what it does", "Session",
            aliases=("mc",), args_hint="[arg]"),
 ```
-2. Add handler in `SatanCLI.process_command()` in `cli.py`:
+2. Add handler in `SatanClawCLI.process_command()` in `cli.py`:
 ```python
 elif canonical == "mycommand":
     self._handle_mycommand(cmd_original)
@@ -210,9 +210,9 @@ registry.register(
 
 The registry handles schema collection, dispatch, availability checking, and error wrapping. All handlers MUST return a JSON string.
 
-**Path references in tool schemas**: If the schema description mentions file paths (e.g. default output directories), use `display_satan_home()` to make them profile-aware. The schema is generated at import time, which is after `_apply_profile_override()` sets `HERMES_HOME`.
+**Path references in tool schemas**: If the schema description mentions file paths (e.g. default output directories), use `display_satanclaw_home()` to make them profile-aware. The schema is generated at import time, which is after `_apply_profile_override()` sets `HERMES_HOME`.
 
-**State files**: If a tool stores persistent state (caches, logs, checkpoints), use `get_satan_home()` for the base directory — never `Path.home() / ".satan"`. This ensures each profile gets its own state.
+**State files**: If a tool stores persistent state (caches, logs, checkpoints), use `get_satanclaw_home()` for the base directory — never `Path.home() / ".satanclaw"`. This ensures each profile gets its own state.
 
 **Agent-level tools** (todo, memory): intercepted by `run_agent.py` before `handle_function_call()`. See `todo_tool.py` for the pattern.
 
@@ -221,11 +221,11 @@ The registry handles schema collection, dispatch, availability checking, and err
 ## Adding Configuration
 
 ### config.yaml options:
-1. Add to `DEFAULT_CONFIG` in `satan_cli/config.py`
+1. Add to `DEFAULT_CONFIG` in `satanclaw_cli/config.py`
 2. Bump `_config_version` (currently 5) to trigger migration for existing users
 
 ### .env variables:
-1. Add to `OPTIONAL_ENV_VARS` in `satan_cli/config.py` with metadata:
+1. Add to `OPTIONAL_ENV_VARS` in `satanclaw_cli/config.py` with metadata:
 ```python
 "NEW_API_KEY": {
     "description": "What it's for",
@@ -241,20 +241,20 @@ The registry handles schema collection, dispatch, availability checking, and err
 | Loader | Used by | Location |
 |--------|---------|----------|
 | `load_cli_config()` | CLI mode | `cli.py` |
-| `load_config()` | `satan tools`, `satan setup` | `satan_cli/config.py` |
+| `load_config()` | `satanclaw tools`, `satanclaw setup` | `satanclaw_cli/config.py` |
 | Direct YAML load | Gateway | `gateway/run.py` |
 
 ---
 
 ## Skin/Theme System
 
-The skin engine (`satan_cli/skin_engine.py`) provides data-driven CLI visual customization. Skins are **pure data** — no code changes needed to add a new skin.
+The skin engine (`satanclaw_cli/skin_engine.py`) provides data-driven CLI visual customization. Skins are **pure data** — no code changes needed to add a new skin.
 
 ### Architecture
 
 ```
-satan_cli/skin_engine.py    # SkinConfig dataclass, built-in skins, YAML loader
-~/.satan/skins/*.yaml       # User-installed custom skins (drop-in)
+satanclaw_cli/skin_engine.py    # SkinConfig dataclass, built-in skins, YAML loader
+~/.satanclaw/skins/*.yaml       # User-installed custom skins (drop-in)
 ```
 
 - `init_skin_from_config()` — called at CLI startup, reads `display.skin` from config
@@ -286,14 +286,14 @@ satan_cli/skin_engine.py    # SkinConfig dataclass, built-in skins, YAML loader
 
 ### Built-in skins
 
-- `default` — Classic Satan gold/kawaii (the current look)
+- `default` — Classic SatanClaw gold/kawaii (the current look)
 - `ares` — Crimson/bronze war-god theme with custom spinner wings
 - `mono` — Clean grayscale monochrome
 - `slate` — Cool blue developer-focused theme
 
 ### Adding a built-in skin
 
-Add to `_BUILTIN_SKINS` dict in `satan_cli/skin_engine.py`:
+Add to `_BUILTIN_SKINS` dict in `satanclaw_cli/skin_engine.py`:
 
 ```python
 "mytheme": {
@@ -308,7 +308,7 @@ Add to `_BUILTIN_SKINS` dict in `satan_cli/skin_engine.py`:
 
 ### User skins (YAML)
 
-Users create `~/.satan/skins/<name>.yaml`:
+Users create `~/.satanclaw/skins/<name>.yaml`:
 
 ```yaml
 name: cyberpunk
@@ -338,7 +338,7 @@ Activate with `/skin cyberpunk` or `display.skin: cyberpunk` in config.yaml.
 ## Important Policies
 ### Prompt Caching Must Not Break
 
-Satan-Agent ensures caching remains valid throughout a conversation. **Do NOT implement changes that would:**
+SatanClaw-Agent ensures caching remains valid throughout a conversation. **Do NOT implement changes that would:**
 - Alter past context mid-conversation
 - Change toolsets mid-conversation
 - Reload memories or rebuild system prompts mid-conversation
@@ -364,46 +364,46 @@ in config.yaml (or `HERMES_BACKGROUND_NOTIFICATIONS` env var):
 
 ## Profiles: Multi-Instance Support
 
-Satan supports **profiles** — multiple fully isolated instances, each with its own
+SatanClaw supports **profiles** — multiple fully isolated instances, each with its own
 `HERMES_HOME` directory (config, API keys, memory, sessions, skills, gateway, etc.).
 
-The core mechanism: `_apply_profile_override()` in `satan_cli/main.py` sets
-`HERMES_HOME` before any module imports. All 119+ references to `get_satan_home()`
+The core mechanism: `_apply_profile_override()` in `satanclaw_cli/main.py` sets
+`HERMES_HOME` before any module imports. All 119+ references to `get_satanclaw_home()`
 automatically scope to the active profile.
 
 ### Rules for profile-safe code
 
-1. **Use `get_satan_home()` for all HERMES_HOME paths.** Import from `satan_constants`.
-   NEVER hardcode `~/.satan` or `Path.home() / ".satan"` in code that reads/writes state.
+1. **Use `get_satanclaw_home()` for all HERMES_HOME paths.** Import from `satanclaw_constants`.
+   NEVER hardcode `~/.satanclaw` or `Path.home() / ".satanclaw"` in code that reads/writes state.
    ```python
    # GOOD
-   from satan_constants import get_satan_home
-   config_path = get_satan_home() / "config.yaml"
+   from satanclaw_constants import get_satanclaw_home
+   config_path = get_satanclaw_home() / "config.yaml"
 
    # BAD — breaks profiles
-   config_path = Path.home() / ".satan" / "config.yaml"
+   config_path = Path.home() / ".satanclaw" / "config.yaml"
    ```
 
-2. **Use `display_satan_home()` for user-facing messages.** Import from `satan_constants`.
-   This returns `~/.satan` for default or `~/.satan/profiles/<name>` for profiles.
+2. **Use `display_satanclaw_home()` for user-facing messages.** Import from `satanclaw_constants`.
+   This returns `~/.satanclaw` for default or `~/.satanclaw/profiles/<name>` for profiles.
    ```python
    # GOOD
-   from satan_constants import display_satan_home
-   print(f"Config saved to {display_satan_home()}/config.yaml")
+   from satanclaw_constants import display_satanclaw_home
+   print(f"Config saved to {display_satanclaw_home()}/config.yaml")
 
    # BAD — shows wrong path for profiles
-   print("Config saved to ~/.satan/config.yaml")
+   print("Config saved to ~/.satanclaw/config.yaml")
    ```
 
-3. **Module-level constants are fine** — they cache `get_satan_home()` at import time,
-   which is AFTER `_apply_profile_override()` sets the env var. Just use `get_satan_home()`,
-   not `Path.home() / ".satan"`.
+3. **Module-level constants are fine** — they cache `get_satanclaw_home()` at import time,
+   which is AFTER `_apply_profile_override()` sets the env var. Just use `get_satanclaw_home()`,
+   not `Path.home() / ".satanclaw"`.
 
 4. **Tests that mock `Path.home()` must also set `HERMES_HOME`** — since code now uses
-   `get_satan_home()` (reads env var), not `Path.home() / ".satan"`:
+   `get_satanclaw_home()` (reads env var), not `Path.home() / ".satanclaw"`:
    ```python
    with patch.object(Path, "home", return_value=tmp_path), \
-        patch.dict(os.environ, {"HERMES_HOME": str(tmp_path / ".satan")}):
+        patch.dict(os.environ, {"HERMES_HOME": str(tmp_path / ".satanclaw")}):
        ...
    ```
 
@@ -414,19 +414,19 @@ automatically scope to the active profile.
    See `gateway/platforms/telegram.py` for the canonical pattern.
 
 6. **Profile operations are HOME-anchored, not HERMES_HOME-anchored** — `_get_profiles_root()`
-   returns `Path.home() / ".satan" / "profiles"`, NOT `get_satan_home() / "profiles"`.
-   This is intentional — it lets `satan -p coder profile list` see all profiles regardless
+   returns `Path.home() / ".satanclaw" / "profiles"`, NOT `get_satanclaw_home() / "profiles"`.
+   This is intentional — it lets `satanclaw -p coder profile list` see all profiles regardless
    of which one is active.
 
 ## Known Pitfalls
 
-### DO NOT hardcode `~/.satan` paths
-Use `get_satan_home()` from `satan_constants` for code paths. Use `display_satan_home()`
-for user-facing print/log messages. Hardcoding `~/.satan` breaks profiles — each profile
+### DO NOT hardcode `~/.satanclaw` paths
+Use `get_satanclaw_home()` from `satanclaw_constants` for code paths. Use `display_satanclaw_home()`
+for user-facing print/log messages. Hardcoding `~/.satanclaw` breaks profiles — each profile
 has its own `HERMES_HOME` directory. This was the source of 5 bugs fixed in PR #3575.
 
 ### DO NOT use `simple_term_menu` for interactive menus
-Rendering bugs in tmux/iTerm2 — ghosting on scroll. Use `curses` (stdlib) instead. See `satan_cli/tools_config.py` for the pattern.
+Rendering bugs in tmux/iTerm2 — ghosting on scroll. Use `curses` (stdlib) instead. See `satanclaw_cli/tools_config.py` for the pattern.
 
 ### DO NOT use `\033[K` (ANSI erase-to-EOL) in spinner/display code
 Leaks as literal `?[K` text under `prompt_toolkit`'s `patch_stdout`. Use space-padding: `f"\r{line}{' ' * pad}"`.
@@ -437,16 +437,16 @@ Leaks as literal `?[K` text under `prompt_toolkit`'s `patch_stdout`. Use space-p
 ### DO NOT hardcode cross-tool references in schema descriptions
 Tool schema descriptions must not mention tools from other toolsets by name (e.g., `browser_navigate` saying "prefer web_search"). Those tools may be unavailable (missing API keys, disabled toolset), causing the model to hallucinate calls to non-existent tools. If a cross-reference is needed, add it dynamically in `get_tool_definitions()` in `model_tools.py` — see the `browser_navigate` / `execute_code` post-processing blocks for the pattern.
 
-### Tests must not write to `~/.satan/`
-The `_isolate_satan_home` autouse fixture in `tests/conftest.py` redirects `HERMES_HOME` to a temp dir. Never hardcode `~/.satan/` paths in tests.
+### Tests must not write to `~/.satanclaw/`
+The `_isolate_satanclaw_home` autouse fixture in `tests/conftest.py` redirects `HERMES_HOME` to a temp dir. Never hardcode `~/.satanclaw/` paths in tests.
 
 **Profile tests**: When testing profile features, also mock `Path.home()` so that
-`_get_profiles_root()` and `_get_default_satan_home()` resolve within the temp dir.
-Use the pattern from `tests/satan_cli/test_profiles.py`:
+`_get_profiles_root()` and `_get_default_satanclaw_home()` resolve within the temp dir.
+Use the pattern from `tests/satanclaw_cli/test_profiles.py`:
 ```python
 @pytest.fixture
 def profile_env(tmp_path, monkeypatch):
-    home = tmp_path / ".satan"
+    home = tmp_path / ".satanclaw"
     home.mkdir()
     monkeypatch.setattr(Path, "home", lambda: tmp_path)
     monkeypatch.setenv("HERMES_HOME", str(home))

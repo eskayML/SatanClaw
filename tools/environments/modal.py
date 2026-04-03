@@ -1,7 +1,7 @@
 """Modal cloud execution environment using the native Modal SDK directly.
 
 Uses ``Sandbox.create()`` + ``Sandbox.exec()`` instead of the older runtime
-wrapper, while preserving Satan' persistent snapshot behavior across sessions.
+wrapper, while preserving SatanClaw' persistent snapshot behavior across sessions.
 """
 
 import asyncio
@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from satan_constants import get_satan_home
+from satanclaw_constants import get_satanclaw_home
 from tools.environments.modal_common import (
     BaseModalExecutionEnvironment,
     ModalExecStart,
@@ -22,7 +22,7 @@ from tools.environments.modal_common import (
 
 logger = logging.getLogger(__name__)
 
-_SNAPSHOT_STORE = get_satan_home() / "modal_snapshots.json"
+_SNAPSHOT_STORE = get_satanclaw_home() / "modal_snapshots.json"
 _DIRECT_SNAPSHOT_NAMESPACE = "direct"
 
 
@@ -218,7 +218,7 @@ class ModalEnvironment(BaseModalExecutionEnvironment):
         self._worker.start()
 
         async def _create_sandbox(image_spec: Any):
-            app = await _modal.App.lookup.aio("satan-agent", create_if_missing=True)
+            app = await _modal.App.lookup.aio("satanclaw-agent", create_if_missing=True)
             create_kwargs = dict(sandbox_kwargs)
             if cred_mounts:
                 existing_mounts = list(create_kwargs.pop("mounts", []))

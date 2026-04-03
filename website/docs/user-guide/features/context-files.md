@@ -1,26 +1,26 @@
 ---
 sidebar_position: 8
 title: "Context Files"
-description: "Project context files — .satan.md, AGENTS.md, CLAUDE.md, global SOUL.md, and .cursorrules — automatically injected into every conversation"
+description: "Project context files — .satanclaw.md, AGENTS.md, CLAUDE.md, global SOUL.md, and .cursorrules — automatically injected into every conversation"
 ---
 
 # Context Files
 
-Satan Agent automatically discovers and loads context files that shape how it behaves. Some are project-local and discovered from your working directory. `SOUL.md` is now global to the Satan instance and is loaded from `HERMES_HOME` only.
+SatanClaw Agent automatically discovers and loads context files that shape how it behaves. Some are project-local and discovered from your working directory. `SOUL.md` is now global to the SatanClaw instance and is loaded from `HERMES_HOME` only.
 
 ## Supported Context Files
 
 | File | Purpose | Discovery |
 |------|---------|-----------| 
-| **.satan.md** / **HERMES.md** | Project instructions (highest priority) | Walks to git root |
+| **.satanclaw.md** / **HERMES.md** | Project instructions (highest priority) | Walks to git root |
 | **AGENTS.md** | Project instructions, conventions, architecture | Recursive (walks subdirectories) |
 | **CLAUDE.md** | Claude Code context files (also detected) | CWD only |
-| **SOUL.md** | Global personality and tone customization for this Satan instance | `HERMES_HOME/SOUL.md` only |
+| **SOUL.md** | Global personality and tone customization for this SatanClaw instance | `HERMES_HOME/SOUL.md` only |
 | **.cursorrules** | Cursor IDE coding conventions | CWD only |
 | **.cursor/rules/*.mdc** | Cursor IDE rule modules | CWD only |
 
 :::info Priority system
-Only **one** project context type is loaded per session (first match wins): `.satan.md` → `AGENTS.md` → `CLAUDE.md` → `.cursorrules`. **SOUL.md** is always loaded independently as the agent identity (slot #1).
+Only **one** project context type is loaded per session (first match wins): `.satanclaw.md` → `AGENTS.md` → `CLAUDE.md` → `.cursorrules`. **SOUL.md** is always loaded independently as the agent identity (slot #1).
 :::
 
 ## AGENTS.md
@@ -29,7 +29,7 @@ Only **one** project context type is loaded per session (first match wins): `.sa
 
 ### Hierarchical Discovery
 
-Satan walks the directory tree starting from the working directory and loads **all** `AGENTS.md` files found, sorted by depth. This supports monorepo-style setups:
+SatanClaw walks the directory tree starting from the working directory and loads **all** `AGENTS.md` files found, sorted by depth. This supports monorepo-style setups:
 
 ```
 my-project/
@@ -79,22 +79,22 @@ This is a Next.js 14 web application with a Python FastAPI backend.
 
 **Location:**
 
-- `~/.satan/SOUL.md`
-- or `$HERMES_HOME/SOUL.md` if you run Satan with a custom home directory
+- `~/.satanclaw/SOUL.md`
+- or `$HERMES_HOME/SOUL.md` if you run SatanClaw with a custom home directory
 
 Important details:
 
-- Satan seeds a default `SOUL.md` automatically if one does not exist yet
-- Satan loads `SOUL.md` only from `HERMES_HOME`
-- Satan does not probe the working directory for `SOUL.md`
+- SatanClaw seeds a default `SOUL.md` automatically if one does not exist yet
+- SatanClaw loads `SOUL.md` only from `HERMES_HOME`
+- SatanClaw does not probe the working directory for `SOUL.md`
 - If the file is empty, nothing from `SOUL.md` is added to the prompt
 - If the file has content, the content is injected verbatim after scanning and truncation
 
 ## .cursorrules
 
-Satan is compatible with Cursor IDE's `.cursorrules` file and `.cursor/rules/*.mdc` rule modules. If these files exist in your project root and no higher-priority context file (`.satan.md`, `AGENTS.md`, or `CLAUDE.md`) is found, they're loaded as the project context.
+SatanClaw is compatible with Cursor IDE's `.cursorrules` file and `.cursor/rules/*.mdc` rule modules. If these files exist in your project root and no higher-priority context file (`.satanclaw.md`, `AGENTS.md`, or `CLAUDE.md`) is found, they're loaded as the project context.
 
-This means your existing Cursor conventions automatically apply when using Satan.
+This means your existing Cursor conventions automatically apply when using SatanClaw.
 
 ## How Context Files Are Loaded
 

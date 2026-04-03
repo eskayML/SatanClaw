@@ -2,7 +2,7 @@
 
 # YC-Bench Evaluation
 #
-# Requires: pip install "satan-agent[yc-bench]"
+# Requires: pip install "satanclaw-agent[yc-bench]"
 #
 # Run from repo root:
 #   bash environments/benchmarks/yc_bench/run_eval.sh

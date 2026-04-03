@@ -7,7 +7,7 @@ sidebar_position: 5
 
 # Browser Automation
 
-Satan Agent includes a full browser automation toolset with multiple backend options:
+SatanClaw Agent includes a full browser automation toolset with multiple backend options:
 
 - **Browserbase cloud mode** via [Browserbase](https://browserbase.com) for managed cloud browsers and anti-bot tooling
 - **Browser Use cloud mode** via [Browser Use](https://browser-use.com) as an alternative cloud browser provider
@@ -37,7 +37,7 @@ Key capabilities:
 To use Browserbase-managed cloud browsers, add:
 
 ```bash
-# Add to ~/.satan/.env
+# Add to ~/.satanclaw/.env
 BROWSERBASE_API_KEY=***
 BROWSERBASE_PROJECT_ID=your-project-id-here
 ```
@@ -49,7 +49,7 @@ Get your credentials at [browserbase.com](https://browserbase.com).
 To use Browser Use as your cloud browser provider, add:
 
 ```bash
-# Add to ~/.satan/.env
+# Add to ~/.satanclaw/.env
 BROWSER_USE_API_KEY=***
 ```
 
@@ -68,13 +68,13 @@ npm install && npm start   # downloads Camoufox (~300MB) on first run
 docker run -d --network host -e CAMOFOX_PORT=9377 jo-inc/camofox-browser
 ```
 
-Then set in `~/.satan/.env`:
+Then set in `~/.satanclaw/.env`:
 
 ```bash
 CAMOFOX_URL=http://localhost:9377
 ```
 
-Or configure via `satan tools` → Browser Automation → Camofox.
+Or configure via `satanclaw tools` → Browser Automation → Camofox.
 
 When `CAMOFOX_URL` is set, all browser tools automatically route through Camofox instead of Browserbase or agent-browser.
 
@@ -83,13 +83,13 @@ When `CAMOFOX_URL` is set, all browser tools automatically route through Camofox
 By default, each Camofox session gets a random identity — cookies and logins don't survive across agent restarts. To enable persistent browser sessions:
 
 ```yaml
-# In ~/.satan/config.yaml
+# In ~/.satanclaw/config.yaml
 browser:
   camofox:
     managed_persistence: true
 ```
 
-When enabled, Satan sends a stable profile-scoped identity to Camofox. The Camofox server maps this identity to a persistent browser profile directory, so cookies, logins, and localStorage survive across restarts. Different Satan profiles get different browser profiles (profile isolation).
+When enabled, SatanClaw sends a stable profile-scoped identity to Camofox. The Camofox server maps this identity to a persistent browser profile directory, so cookies, logins, and localStorage survive across restarts. Different SatanClaw profiles get different browser profiles (profile isolation).
 
 :::note
 The Camofox server must also be configured with `CAMOFOX_PROFILE_DIR` on the server side for persistence to work.
@@ -97,11 +97,11 @@ The Camofox server must also be configured with `CAMOFOX_PROFILE_DIR` on the ser
 
 #### VNC live view
 
-When Camofox runs in headed mode (with a visible browser window), it exposes a VNC port in its health check response. Satan automatically discovers this and includes the VNC URL in navigation responses, so the agent can share a link for you to watch the browser live.
+When Camofox runs in headed mode (with a visible browser window), it exposes a VNC port in its health check response. SatanClaw automatically discovers this and includes the VNC URL in navigation responses, so the agent can share a link for you to watch the browser live.
 
 ### Local Chrome via CDP (`/browser connect`)
 
-Instead of a cloud provider, you can attach Satan browser tools to your own running Chrome instance via the Chrome DevTools Protocol (CDP). This is useful when you want to see what the agent is doing in real-time, interact with pages that require your own cookies/sessions, or avoid cloud browser costs.
+Instead of a cloud provider, you can attach SatanClaw browser tools to your own running Chrome instance via the Chrome DevTools Protocol (CDP). This is useful when you want to see what the agent is doing in real-time, interact with pages that require your own cookies/sessions, or avoid cloud browser costs.
 
 In the CLI, use:
 
@@ -112,7 +112,7 @@ In the CLI, use:
 /browser disconnect            # Detach and return to cloud/local mode
 ```
 
-If Chrome isn't already running with remote debugging, Satan will attempt to auto-launch it with `--remote-debugging-port=9222`.
+If Chrome isn't already running with remote debugging, SatanClaw will attempt to auto-launch it with `--remote-debugging-port=9222`.
 
 :::tip
 To start Chrome manually with CDP enabled:
@@ -129,7 +129,7 @@ When connected via CDP, all browser tools (`browser_navigate`, `browser_click`, 
 
 ### Local browser mode
 
-If you do **not** set any cloud credentials and don't use `/browser connect`, Satan can still use the browser tools through a local Chromium install driven by `agent-browser`.
+If you do **not** set any cloud credentials and don't use `/browser connect`, SatanClaw can still use the browser tools through a local Chromium install driven by `agent-browser`.
 
 ### Optional Environment Variables
 
@@ -160,7 +160,7 @@ npm install
 ```
 
 :::info
-The `browser` toolset must be included in your config's `toolsets` list or enabled via `satan config set toolsets '["satan-cli", "browser"]'`.
+The `browser` toolset must be included in your config's `toolsets` list or enabled via `satanclaw config set toolsets '["satanclaw-cli", "browser"]'`.
 :::
 
 ## Available Tools
@@ -199,7 +199,7 @@ Click @e5 to press the "Sign In" button
 Type text into an input field. Clears the field first, then types the new text.
 
 ```
-Type "satan agent" into the search field @e3
+Type "satanclaw agent" into the search field @e3
 ```
 
 ### `browser_scroll`
@@ -238,7 +238,7 @@ The screenshot is saved persistently and the file path is returned alongside the
 What does the chart on this page show?
 ```
 
-Screenshots are stored in `~/.satan/browser_screenshots/` and automatically cleaned up after 24 hours.
+Screenshots are stored in `~/.satanclaw/browser_screenshots/` and automatically cleaned up after 24 hours.
 
 ### `browser_console`
 
@@ -292,7 +292,7 @@ browser:
   record_sessions: true  # default: false
 ```
 
-When enabled, recording starts automatically on the first `browser_navigate` and saves to `~/.satan/browser_recordings/` when the session closes. Works in both local and cloud (Browserbase) modes. Recordings older than 72 hours are automatically cleaned up.
+When enabled, recording starts automatically on the first `browser_navigate` and saves to `~/.satanclaw/browser_recordings/` when the session closes. Works in both local and cloud (Browserbase) modes. Recordings older than 72 hours are automatically cleaned up.
 
 ## Stealth Features
 
@@ -306,7 +306,7 @@ Browserbase provides automatic stealth capabilities:
 | Keep Alive | On | Session reconnection after network hiccups |
 
 :::note
-If paid features aren't available on your plan, Satan automatically falls back — first disabling `keepAlive`, then proxies — so browsing still works on free plans.
+If paid features aren't available on your plan, SatanClaw automatically falls back — first disabling `keepAlive`, then proxies — so browsing still works on free plans.
 :::
 
 ## Session Management

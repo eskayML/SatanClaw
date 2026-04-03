@@ -6,7 +6,7 @@ sounddevice or system audio players.
 
 Dependencies (optional):
     pip install sounddevice numpy
-    or: pip install satan-agent[voice]
+    or: pip install satanclaw-agent[voice]
 """
 
 import logging
@@ -127,7 +127,7 @@ SILENCE_RMS_THRESHOLD = 200  # RMS below this = silence (int16 range 0-32767)
 SILENCE_DURATION_SECONDS = 3.0  # Seconds of continuous silence before auto-stop
 
 # Temp directory for voice recordings
-_TEMP_DIR = os.path.join(tempfile.gettempdir(), "satan_voice")
+_TEMP_DIR = os.path.join(tempfile.gettempdir(), "satanclaw_voice")
 
 
 # ============================================================================
@@ -388,7 +388,7 @@ class AudioRecorder:
             raise RuntimeError(
                 "Voice mode requires sounddevice and numpy.\n"
                 "Install with: pip install sounddevice numpy\n"
-                "Or: pip install satan-agent[voice]"
+                "Or: pip install satanclaw-agent[voice]"
             ) from e
 
         with self._lock:

@@ -344,14 +344,14 @@ def _resolve_path(cwd: Path, target: str, *, allowed_root: Path | None = None) -
 
 def _ensure_reference_path_allowed(path: Path) -> None:
     home = Path(os.path.expanduser("~")).resolve()
-    satan_home = Path(
-        os.getenv("HERMES_HOME", str(home / ".satan"))
+    satanclaw_home = Path(
+        os.getenv("HERMES_HOME", str(home / ".satanclaw"))
     ).expanduser().resolve()
 
     blocked_exact = {home / rel for rel in _SENSITIVE_HOME_FILES}
-    blocked_exact.add(satan_home / ".env")
+    blocked_exact.add(satanclaw_home / ".env")
     blocked_dirs = [home / rel for rel in _SENSITIVE_HOME_DIRS]
-    blocked_dirs.extend(satan_home / rel for rel in _SENSITIVE_HERMES_DIRS)
+    blocked_dirs.extend(satanclaw_home / rel for rel in _SENSITIVE_HERMES_DIRS)
 
     if path in blocked_exact:
         raise ValueError("path is a sensitive credential file and cannot be attached")
@@ -361,7 +361,7 @@ def _ensure_reference_path_allowed(path: Path) -> None:
             path.relative_to(blocked_dir)
         except ValueError:
             continue
-        raise ValueError("path is a sensitive credential or internal Satan path and cannot be attached")
+        raise ValueError("path is a sensitive credential or internal SatanClaw path and cannot be attached")
 
 
 def _strip_trailing_punctuation(value: str) -> str:

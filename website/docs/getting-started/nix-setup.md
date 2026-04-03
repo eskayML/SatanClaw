@@ -1,12 +1,12 @@
 ---
 sidebar_position: 3
 title: "Nix & NixOS Setup"
-description: "Install and deploy Satan Agent with Nix — from quick `nix run` to fully declarative NixOS module with container mode"
+description: "Install and deploy SatanClaw Agent with Nix — from quick `nix run` to fully declarative NixOS module with container mode"
 ---
 
 # Nix & NixOS Setup
 
-Satan Agent ships a Nix flake with three levels of integration:
+SatanClaw Agent ships a Nix flake with three levels of integration:
 
 | Level | Who it's for | What you get |
 |-------|-------------|--------------|
@@ -17,9 +17,9 @@ Satan Agent ships a Nix flake with three levels of integration:
 :::info What's different from the standard install
 The `curl | bash` installer manages Python, Node, and dependencies itself. The Nix flake replaces all of that — every Python dependency is a Nix derivation built by [uv2nix](https://github.com/pyproject-nix/uv2nix), and runtime tools (Node.js, git, ripgrep, ffmpeg) are wrapped into the binary's PATH. There is no runtime pip, no venv activation, no `npm install`.
 
-**For non-NixOS users**, this only changes the install step. Everything after (`satan setup`, `satan gateway install`, config editing) works identically to the standard install.
+**For non-NixOS users**, this only changes the install step. Everything after (`satanclaw setup`, `satanclaw gateway install`, config editing) works identically to the standard install.
 
-**For NixOS module users**, the entire lifecycle is different: configuration lives in `configuration.nix`, secrets go through sops-nix/agenix, the service is a systemd unit, and CLI config commands are blocked. You manage satan the same way you manage any other NixOS service.
+**For NixOS module users**, the entire lifecycle is different: configuration lives in `configuration.nix`, secrets go through sops-nix/agenix, the service is a systemd unit, and CLI config commands are blocked. You manage satanclaw the same way you manage any other NixOS service.
 :::
 
 ## Prerequisites
@@ -35,25 +35,25 @@ No clone needed. Nix fetches, builds, and runs everything:
 
 ```bash
 # Run directly (builds on first use, cached after)
-nix run github:NousResearch/satan-agent -- setup
-nix run github:NousResearch/satan-agent -- chat
+nix run github:NousResearch/satanclaw-agent -- setup
+nix run github:NousResearch/satanclaw-agent -- chat
 
 # Or install persistently
-nix profile install github:NousResearch/satan-agent
-satan setup
-satan chat
+nix profile install github:NousResearch/satanclaw-agent
+satanclaw setup
+satanclaw chat
 ```
 
-After `nix profile install`, `satan`, `satan-agent`, and `satan-acp` are on your PATH. From here, the workflow is identical to the [standard installation](./installation.md) — `satan setup` walks you through provider selection, `satan gateway install` sets up a launchd (macOS) or systemd user service, and config lives in `~/.satan/`.
+After `nix profile install`, `satanclaw`, `satanclaw-agent`, and `satanclaw-acp` are on your PATH. From here, the workflow is identical to the [standard installation](./installation.md) — `satanclaw setup` walks you through provider selection, `satanclaw gateway install` sets up a launchd (macOS) or systemd user service, and config lives in `~/.satanclaw/`.
 
 <details>
 <summary><strong>Building from a local clone</strong></summary>
 
 ```bash
-git clone https://github.com/NousResearch/satan-agent.git
-cd satan-agent
+git clone https://github.com/NousResearch/satanclaw-agent.git
+cd satanclaw-agent
 nix build
-./result/bin/satan setup
+./result/bin/satanclaw setup
 ```
 
 </details>
@@ -75,14 +75,14 @@ This module requires NixOS. For non-NixOS systems (macOS, other Linux distros), 
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
-    satan-agent.url = "github:NousResearch/satan-agent";
+    satanclaw-agent.url = "github:NousResearch/satanclaw-agent";
   };
 
-  outputs = { nixpkgs, satan-agent, ... }: {
+  outputs = { nixpkgs, satanclaw-agent, ... }: {
     nixosConfigurations.your-host = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
-        satan-agent.nixosModules.default
+        satanclaw-agent.nixosModules.default
         ./configuration.nix
       ];
     };
@@ -95,31 +95,31 @@ This module requires NixOS. For non-NixOS systems (macOS, other Linux distros), 
 ```nix
 # configuration.nix
 { config, ... }: {
-  services.satan-agent = {
+  services.satanclaw-agent = {
     enable = true;
     settings.model.default = "anthropic/claude-sonnet-4";
-    environmentFiles = [ config.sops.secrets."satan-env".path ];
+    environmentFiles = [ config.sops.secrets."satanclaw-env".path ];
     addToSystemPackages = true;
   };
 }
 ```
 
-That's it. `nixos-rebuild switch` creates the `satan` user, generates `config.yaml`, wires up secrets, and starts the gateway — a long-running service that connects the agent to messaging platforms (Telegram, Discord, etc.) and listens for incoming messages.
+That's it. `nixos-rebuild switch` creates the `satanclaw` user, generates `config.yaml`, wires up secrets, and starts the gateway — a long-running service that connects the agent to messaging platforms (Telegram, Discord, etc.) and listens for incoming messages.
 
 :::warning Secrets are required
 The `environmentFiles` line above assumes you have [sops-nix](https://github.com/Mic92/sops-nix) or [agenix](https://github.com/ryantm/agenix) configured. The file should contain at least one LLM provider key (e.g., `OPENROUTER_API_KEY=sk-or-...`). See [Secrets Management](#secrets-management) for full setup. If you don't have a secrets manager yet, you can use a plain file as a starting point — just ensure it's not world-readable:
 
 ```bash
-echo "OPENROUTER_API_KEY=sk-or-your-key" | sudo install -m 0600 -o satan /dev/stdin /var/lib/satan/env
+echo "OPENROUTER_API_KEY=sk-or-your-key" | sudo install -m 0600 -o satanclaw /dev/stdin /var/lib/satanclaw/env
 ```
 
 ```nix
-services.satan-agent.environmentFiles = [ "/var/lib/satan/env" ];
+services.satanclaw-agent.environmentFiles = [ "/var/lib/satanclaw/env" ];
 ```
 :::
 
 :::tip addToSystemPackages
-Setting `addToSystemPackages = true` does two things: puts the `satan` CLI on your system PATH **and** sets `HERMES_HOME` system-wide so the interactive CLI shares state (sessions, skills, cron) with the gateway service. Without it, running `satan` in your shell creates a separate `~/.satan/` directory.
+Setting `addToSystemPackages = true` does two things: puts the `satanclaw` CLI on your system PATH **and** sets `HERMES_HOME` system-wide so the interactive CLI shares state (sessions, skills, cron) with the gateway service. Without it, running `satanclaw` in your shell creates a separate `~/.satanclaw/` directory.
 :::
 
 ### Verify It Works
@@ -128,14 +128,14 @@ After `nixos-rebuild switch`, check that the service is running:
 
 ```bash
 # Check service status
-systemctl status satan-agent
+systemctl status satanclaw-agent
 
 # Watch logs (Ctrl+C to stop)
-journalctl -u satan-agent -f
+journalctl -u satanclaw-agent -f
 
 # If addToSystemPackages is true, test the CLI
-satan version
-satan config       # shows the generated config
+satanclaw version
+satanclaw config       # shows the generated config
 ```
 
 ### Choosing a Deployment Mode
@@ -154,7 +154,7 @@ To enable container mode, add one line:
 
 ```nix
 {
-  services.satan-agent = {
+  services.satanclaw-agent = {
     enable = true;
     container.enable = true;
     # ... rest of config is identical
@@ -176,14 +176,14 @@ The `settings` option accepts an arbitrary attrset that is rendered as `config.y
 
 ```nix
 # base.nix
-services.satan-agent.settings = {
+services.satanclaw-agent.settings = {
   model.default = "anthropic/claude-sonnet-4";
   toolsets = [ "all" ];
   terminal = { backend = "local"; timeout = 180; };
 };
 
 # personality.nix
-services.satan-agent.settings = {
+services.satanclaw-agent.settings = {
   display = { compact = false; personality = "kawaii"; };
   memory = { memory_enabled = true; user_profile_enabled = true; };
 };
@@ -192,7 +192,7 @@ services.satan-agent.settings = {
 Both are deep-merged at evaluation time. Nix-declared keys always win over keys in an existing `config.yaml` on disk, but **user-added keys that Nix doesn't touch are preserved**. This means if the agent or a manual edit adds keys like `skills.disabled` or `streaming.enabled`, they survive `nixos-rebuild switch`.
 
 :::note Model naming
-`settings.model.default` uses the model identifier your provider expects. With [OpenRouter](https://openrouter.ai) (the default), these look like `"anthropic/claude-sonnet-4"` or `"google/gemini-3-flash"`. If you're using a provider directly (Anthropic, OpenAI), set `settings.model.base_url` to point at their API and use their native model IDs (e.g., `"claude-sonnet-4-20250514"`). When no `base_url` is set, Satan defaults to OpenRouter.
+`settings.model.default` uses the model identifier your provider expects. With [OpenRouter](https://openrouter.ai) (the default), these look like `"anthropic/claude-sonnet-4"` or `"google/gemini-3-flash"`. If you're using a provider directly (Anthropic, OpenAI), set `settings.model.base_url` to point at their API and use their native model IDs (e.g., `"claude-sonnet-4-20250514"`). When no `base_url` is set, SatanClaw defaults to OpenRouter.
 :::
 
 :::tip Discovering available config keys
@@ -204,7 +204,7 @@ Run `nix build .#configKeys && cat result` to see every leaf config key extracte
 
 ```nix
 { config, ... }: {
-  services.satan-agent = {
+  services.satanclaw-agent = {
     enable = true;
     container.enable = true;
 
@@ -228,11 +228,11 @@ Run `nix build .#configKeys && cat result` to see every leaf config key extracte
     };
 
     # ── Secrets ────────────────────────────────────────────────────────
-    environmentFiles = [ config.sops.secrets."satan-env".path ];
+    environmentFiles = [ config.sops.secrets."satanclaw-env".path ];
 
     # ── Documents ──────────────────────────────────────────────────────
     documents = {
-      "SOUL.md" = builtins.readFile /home/user/.satan/SOUL.md;
+      "SOUL.md" = builtins.readFile /home/user/.satanclaw/SOUL.md;
       "USER.md" = ./documents/USER.md;
     };
 
@@ -266,7 +266,7 @@ Run `nix build .#configKeys && cat result` to see every leaf config key extracte
 If you'd rather manage `config.yaml` entirely outside Nix, use `configFile`:
 
 ```nix
-services.satan-agent.configFile = /etc/satan/config.yaml;
+services.satanclaw-agent.configFile = /etc/satanclaw/config.yaml;
 ```
 
 This bypasses `settings` entirely — no merge, no generation. The file is copied as-is to `$HERMES_HOME/config.yaml` on each activation.
@@ -279,7 +279,7 @@ Quick reference for the most common things Nix users want to customize:
 |---|---|---|
 | Change the LLM model | `settings.model.default` | `"anthropic/claude-sonnet-4"` |
 | Use a different provider endpoint | `settings.model.base_url` | `"https://openrouter.ai/api/v1"` |
-| Add API keys | `environmentFiles` | `[ config.sops.secrets."satan-env".path ]` |
+| Add API keys | `environmentFiles` | `[ config.sops.secrets."satanclaw-env".path ]` |
 | Give the agent a personality | `documents."SOUL.md"` | `builtins.readFile ./my-soul.md` |
 | Add MCP tool servers | `mcpServers.<name>` | See [MCP Servers](#mcp-servers) |
 | Mount host directories into container | `container.extraVolumes` | `[ "/data:/data:rw" ]` |
@@ -287,8 +287,8 @@ Quick reference for the most common things Nix users want to customize:
 | Use Podman instead of Docker | `container.backend` | `"podman"` |
 | Add tools to the service PATH (native only) | `extraPackages` | `[ pkgs.pandoc pkgs.imagemagick ]` |
 | Use a custom base image | `container.image` | `"ubuntu:24.04"` |
-| Override the satan package | `package` | `inputs.satan-agent.packages.${system}.default.override { ... }` |
-| Change state directory | `stateDir` | `"/opt/satan"` |
+| Override the satanclaw package | `package` | `inputs.satanclaw-agent.packages.${system}.default.override { ... }` |
+| Change state directory | `stateDir` | `"/opt/satanclaw"` |
 | Set the agent's working directory | `workingDirectory` | `"/home/user/projects"` |
 
 ---
@@ -299,20 +299,20 @@ Quick reference for the most common things Nix users want to customize:
 Values in Nix expressions end up in `/nix/store`, which is world-readable. Always use `environmentFiles` with a secrets manager.
 :::
 
-Both `environment` (non-secret vars) and `environmentFiles` (secret files) are merged into `$HERMES_HOME/.env` at activation time (`nixos-rebuild switch`). Satan reads this file on every startup, so changes take effect with a `systemctl restart satan-agent` — no container recreation needed.
+Both `environment` (non-secret vars) and `environmentFiles` (secret files) are merged into `$HERMES_HOME/.env` at activation time (`nixos-rebuild switch`). SatanClaw reads this file on every startup, so changes take effect with a `systemctl restart satanclaw-agent` — no container recreation needed.
 
 ### sops-nix
 
 ```nix
 {
   sops = {
-    defaultSopsFile = ./secrets/satan.yaml;
+    defaultSopsFile = ./secrets/satanclaw.yaml;
     age.keyFile = "/home/user/.config/sops/age/keys.txt";
-    secrets."satan-env" = { format = "yaml"; };
+    secrets."satanclaw-env" = { format = "yaml"; };
   };
 
-  services.satan-agent.environmentFiles = [
-    config.sops.secrets."satan-env".path
+  services.satanclaw-agent.environmentFiles = [
+    config.sops.secrets."satanclaw-env".path
   ];
 }
 ```
@@ -320,8 +320,8 @@ Both `environment` (non-secret vars) and `environmentFiles` (secret files) are m
 The secrets file contains key-value pairs:
 
 ```yaml
-# secrets/satan.yaml (encrypted with sops)
-satan-env: |
+# secrets/satanclaw.yaml (encrypted with sops)
+satanclaw-env: |
     OPENROUTER_API_KEY=sk-or-...
     TELEGRAM_BOT_TOKEN=123456:ABC...
     ANTHROPIC_API_KEY=sk-ant-...
@@ -331,10 +331,10 @@ satan-env: |
 
 ```nix
 {
-  age.secrets.satan-env.file = ./secrets/satan-env.age;
+  age.secrets.satanclaw-env.file = ./secrets/satanclaw-env.age;
 
-  services.satan-agent.environmentFiles = [
-    config.age.secrets.satan-env.path
+  services.satanclaw-agent.environmentFiles = [
+    config.age.secrets.satanclaw-env.path
   ];
 }
 ```
@@ -345,8 +345,8 @@ For platforms requiring OAuth (e.g., Discord), use `authFile` to seed credential
 
 ```nix
 {
-  services.satan-agent = {
-    authFile = config.sops.secrets."satan/auth.json".path;
+  services.satanclaw-agent = {
+    authFile = config.sops.secrets."satanclaw/auth.json".path;
     # authFileForceOverwrite = true;  # overwrite on every activation
   };
 }
@@ -358,15 +358,15 @@ The file is only copied if `auth.json` doesn't already exist (unless `authFileFo
 
 ## Documents
 
-The `documents` option installs files into the agent's working directory (the `workingDirectory`, which the agent reads as its workspace). Satan looks for specific filenames by convention:
+The `documents` option installs files into the agent's working directory (the `workingDirectory`, which the agent reads as its workspace). SatanClaw looks for specific filenames by convention:
 
-- **`SOUL.md`** — the agent's system prompt / personality. Satan reads this on startup and uses it as persistent instructions that shape its behavior across all conversations.
+- **`SOUL.md`** — the agent's system prompt / personality. SatanClaw reads this on startup and uses it as persistent instructions that shape its behavior across all conversations.
 - **`USER.md`** — context about the user the agent is interacting with.
 - Any other files you place here are visible to the agent as workspace files.
 
 ```nix
 {
-  services.satan-agent.documents = {
+  services.satanclaw-agent.documents = {
     "SOUL.md" = ''
       You are a helpful research assistant specializing in NixOS packaging.
       Always cite sources and prefer reproducible solutions.
@@ -388,7 +388,7 @@ The `mcpServers` option declaratively configures [MCP (Model Context Protocol)](
 
 ```nix
 {
-  services.satan-agent.mcpServers = {
+  services.satanclaw-agent.mcpServers = {
     filesystem = {
       command = "npx";
       args = [ "-y" "@modelcontextprotocol/server-filesystem" "/data/workspace" ];
@@ -410,7 +410,7 @@ Environment variables in `env` values are resolved from `$HERMES_HOME/.env` at r
 
 ```nix
 {
-  services.satan-agent.mcpServers.remote-api = {
+  services.satanclaw-agent.mcpServers.remote-api = {
     url = "https://mcp.example.com/v1/mcp";
     headers.Authorization = "Bearer \${MCP_REMOTE_API_KEY}";
     timeout = 180;
@@ -420,11 +420,11 @@ Environment variables in `env` values are resolved from `$HERMES_HOME/.env` at r
 
 ### HTTP Transport with OAuth
 
-Set `auth = "oauth"` for servers using OAuth 2.1. Satan implements the full PKCE flow — metadata discovery, dynamic client registration, token exchange, and automatic refresh.
+Set `auth = "oauth"` for servers using OAuth 2.1. SatanClaw implements the full PKCE flow — metadata discovery, dynamic client registration, token exchange, and automatic refresh.
 
 ```nix
 {
-  services.satan-agent.mcpServers.my-oauth-server = {
+  services.satanclaw-agent.mcpServers.my-oauth-server = {
     url = "https://mcp.example.com/mcp";
     auth = "oauth";
   };
@@ -436,18 +436,18 @@ Tokens are stored in `$HERMES_HOME/mcp-tokens/<server-name>.json` and persist ac
 <details>
 <summary><strong>Initial OAuth authorization on headless servers</strong></summary>
 
-The first OAuth authorization requires a browser-based consent flow. In a headless deployment, Satan prints the authorization URL to stdout/logs instead of opening a browser.
+The first OAuth authorization requires a browser-based consent flow. In a headless deployment, SatanClaw prints the authorization URL to stdout/logs instead of opening a browser.
 
-**Option A: Interactive bootstrap** — run the flow once via `docker exec` (container) or `sudo -u satan` (native):
+**Option A: Interactive bootstrap** — run the flow once via `docker exec` (container) or `sudo -u satanclaw` (native):
 
 ```bash
 # Container mode
-docker exec -it satan-agent \
-  satan mcp add my-oauth-server --url https://mcp.example.com/mcp --auth oauth
+docker exec -it satanclaw-agent \
+  satanclaw mcp add my-oauth-server --url https://mcp.example.com/mcp --auth oauth
 
 # Native mode
-sudo -u satan HERMES_HOME=/var/lib/satan/.satan \
-  satan mcp add my-oauth-server --url https://mcp.example.com/mcp --auth oauth
+sudo -u satanclaw HERMES_HOME=/var/lib/satanclaw/.satanclaw \
+  satanclaw mcp add my-oauth-server --url https://mcp.example.com/mcp --auth oauth
 ```
 
 The container uses `--network=host`, so the OAuth callback listener on `127.0.0.1` is reachable from the host browser.
@@ -455,10 +455,10 @@ The container uses `--network=host`, so the OAuth callback listener on `127.0.0.
 **Option B: Pre-seed tokens** — complete the flow on a workstation, then copy tokens:
 
 ```bash
-satan mcp add my-oauth-server --url https://mcp.example.com/mcp --auth oauth
-scp ~/.satan/mcp-tokens/my-oauth-server{,.client}.json \
-    server:/var/lib/satan/.satan/mcp-tokens/
-# Ensure: chown satan:satan, chmod 0600
+satanclaw mcp add my-oauth-server --url https://mcp.example.com/mcp --auth oauth
+scp ~/.satanclaw/mcp-tokens/my-oauth-server{,.client}.json \
+    server:/var/lib/satanclaw/.satanclaw/mcp-tokens/
+# Ensure: chown satanclaw:satanclaw, chmod 0600
 ```
 
 </details>
@@ -469,7 +469,7 @@ Some MCP servers can request LLM completions from the agent:
 
 ```nix
 {
-  services.satan-agent.mcpServers.analysis = {
+  services.satanclaw-agent.mcpServers.analysis = {
     command = "npx";
     args = [ "-y" "analysis-server" ];
     sampling = {
@@ -487,20 +487,20 @@ Some MCP servers can request LLM completions from the agent:
 
 ## Managed Mode
 
-When satan runs via the NixOS module, the following CLI commands are **blocked** with a descriptive error pointing you to `configuration.nix`:
+When satanclaw runs via the NixOS module, the following CLI commands are **blocked** with a descriptive error pointing you to `configuration.nix`:
 
 | Blocked command | Why |
 |---|---|
-| `satan setup` | Config is declarative — edit `settings` in your Nix config |
-| `satan config edit` | Config is generated from `settings` |
-| `satan config set <key> <value>` | Config is generated from `settings` |
-| `satan gateway install` | The systemd service is managed by NixOS |
-| `satan gateway uninstall` | The systemd service is managed by NixOS |
+| `satanclaw setup` | Config is declarative — edit `settings` in your Nix config |
+| `satanclaw config edit` | Config is generated from `settings` |
+| `satanclaw config set <key> <value>` | Config is generated from `settings` |
+| `satanclaw gateway install` | The systemd service is managed by NixOS |
+| `satanclaw gateway uninstall` | The systemd service is managed by NixOS |
 
 This prevents drift between what Nix declares and what's on disk. Detection uses two signals:
 
 1. **`HERMES_MANAGED=true`** environment variable — set by the systemd service, visible to the gateway process
-2. **`.managed` marker file** in `HERMES_HOME` — set by the activation script, visible to interactive shells (e.g., `docker exec -it satan-agent satan config set ...` is also blocked)
+2. **`.managed` marker file** in `HERMES_HOME` — set by the activation script, visible to interactive shells (e.g., `docker exec -it satanclaw-agent satanclaw config set ...` is also blocked)
 
 To change configuration, edit your Nix config and run `sudo nixos-rebuild switch`.
 
@@ -512,23 +512,23 @@ To change configuration, edit your Nix config and run `sudo nixos-rebuild switch
 This section is only relevant if you're using `container.enable = true`. Skip it for native mode deployments.
 :::
 
-When container mode is enabled, satan runs inside a persistent Ubuntu container with the Nix-built binary bind-mounted read-only from the host:
+When container mode is enabled, satanclaw runs inside a persistent Ubuntu container with the Nix-built binary bind-mounted read-only from the host:
 
 ```
 Host                                    Container
 ────                                    ─────────
-/nix/store/...-satan-agent-0.1.0  ──►  /nix/store/... (ro)
-/var/lib/satan/                    ──►  /data/          (rw)
+/nix/store/...-satanclaw-agent-0.1.0  ──►  /nix/store/... (ro)
+/var/lib/satanclaw/                    ──►  /data/          (rw)
   ├── current-package -> /nix/store/...    (symlink, updated each rebuild)
   ├── .gc-root -> /nix/store/...           (prevents nix-collect-garbage)
   ├── .container-identity                  (sha256 hash, triggers recreation)
-  ├── .satan/                             (HERMES_HOME)
+  ├── .satanclaw/                             (HERMES_HOME)
   │   ├── .env                             (merged from environment + environmentFiles)
   │   ├── config.yaml                      (Nix-generated, deep-merged by activation)
   │   ├── .managed                         (marker file)
   │   ├── state.db, sessions/, memories/   (runtime state)
   │   └── mcp-tokens/                      (OAuth tokens for MCP servers)
-  ├── home/                                ──►  /home/satan    (rw)
+  ├── home/                                ──►  /home/satanclaw    (rw)
   └── workspace/                           (MESSAGING_CWD)
       ├── SOUL.md                          (from documents option)
       └── (agent-created files)
@@ -536,13 +536,13 @@ Host                                    Container
 Container writable layer (apt/pip/npm):   /usr, /usr/local, /tmp
 ```
 
-The Nix-built binary works inside the Ubuntu container because `/nix/store` is bind-mounted — it brings its own interpreter and all dependencies, so there's no reliance on the container's system libraries. The container entrypoint resolves through a `current-package` symlink: `/data/current-package/bin/satan gateway run --replace`. On `nixos-rebuild switch`, only the symlink is updated — the container keeps running.
+The Nix-built binary works inside the Ubuntu container because `/nix/store` is bind-mounted — it brings its own interpreter and all dependencies, so there's no reliance on the container's system libraries. The container entrypoint resolves through a `current-package` symlink: `/data/current-package/bin/satanclaw gateway run --replace`. On `nixos-rebuild switch`, only the symlink is updated — the container keeps running.
 
 ### What Persists Across What
 
-| Event | Container recreated? | `/data` (state) | `/home/satan` | Writable layer (`apt`/`pip`/`npm`) |
+| Event | Container recreated? | `/data` (state) | `/home/satanclaw` | Writable layer (`apt`/`pip`/`npm`) |
 |---|---|---|---|---|
-| `systemctl restart satan-agent` | No | Persists | Persists | Persists |
+| `systemctl restart satanclaw-agent` | No | Persists | Persists | Persists |
 | `nixos-rebuild switch` (code change) | No (symlink updated) | Persists | Persists | Persists |
 | Host reboot | No | Persists | Persists | Persists |
 | `nix-collect-garbage` | No (GC root) | Persists | Persists | Persists |
@@ -550,17 +550,17 @@ The Nix-built binary works inside the Ubuntu container because `/nix/store` is b
 | Volume/options change | **Yes** | Persists | Persists | **Lost** |
 | `environment`/`environmentFiles` change | No | Persists | Persists | Persists |
 
-The container is only recreated when its **identity hash** changes. The hash covers: schema version, image, `extraVolumes`, `extraOptions`, and the entrypoint script. Changes to environment variables, settings, documents, or the satan package itself do **not** trigger recreation.
+The container is only recreated when its **identity hash** changes. The hash covers: schema version, image, `extraVolumes`, `extraOptions`, and the entrypoint script. Changes to environment variables, settings, documents, or the satanclaw package itself do **not** trigger recreation.
 
 :::warning Writable layer loss
-When the identity hash changes (image upgrade, new volumes, new container options), the container is destroyed and recreated from a fresh pull of `container.image`. Any `apt install`, `pip install`, or `npm install` packages in the writable layer are lost. State in `/data` and `/home/satan` is preserved (these are bind mounts).
+When the identity hash changes (image upgrade, new volumes, new container options), the container is destroyed and recreated from a fresh pull of `container.image`. Any `apt install`, `pip install`, or `npm install` packages in the writable layer are lost. State in `/data` and `/home/satanclaw` is preserved (these are bind mounts).
 
-If the agent relies on specific packages, consider baking them into a custom image (`container.image = "my-registry/satan-base:latest"`) or scripting their installation in the agent's SOUL.md.
+If the agent relies on specific packages, consider baking them into a custom image (`container.image = "my-registry/satanclaw-base:latest"`) or scripting their installation in the agent's SOUL.md.
 :::
 
 ### GC Root Protection
 
-The `preStart` script creates a GC root at `${stateDir}/.gc-root` pointing to the current satan package. This prevents `nix-collect-garbage` from removing the running binary. If the GC root somehow breaks, restarting the service recreates it.
+The `preStart` script creates a GC root at `${stateDir}/.gc-root` pointing to the current satanclaw package. This prevents `nix-collect-garbage` from removing the running binary. If the GC root somehow breaks, restarting the service recreates it.
 
 ---
 
@@ -571,7 +571,7 @@ The `preStart` script creates a GC root at `${stateDir}/.gc-root` pointing to th
 The flake provides a development shell with Python 3.11, uv, Node.js, and all runtime tools:
 
 ```bash
-cd satan-agent
+cd satanclaw-agent
 nix develop
 
 # Shell provides:
@@ -579,8 +579,8 @@ nix develop
 #   - Node.js 20, ripgrep, git, openssh, ffmpeg on PATH
 #   - Stamp-file optimization: re-entry is near-instant if deps haven't changed
 
-satan setup
-satan chat
+satanclaw setup
+satanclaw chat
 ```
 
 ### direnv (Recommended)
@@ -588,7 +588,7 @@ satan chat
 The included `.envrc` activates the dev shell automatically:
 
 ```bash
-cd satan-agent
+cd satanclaw-agent
 direnv allow    # one-time
 # Subsequent entries are near-instant (stamp file skips dep install)
 ```
@@ -615,10 +615,10 @@ nix build .#checks.x86_64-linux.config-roundtrip    # merge script preserves use
 
 | Check | What it tests |
 |---|---|
-| `package-contents` | `satan` and `satan-agent` binaries exist and `satan version` runs |
+| `package-contents` | `satanclaw` and `satanclaw-agent` binaries exist and `satanclaw version` runs |
 | `entry-points-sync` | Every `[project.scripts]` entry in `pyproject.toml` has a wrapped binary in the Nix package |
-| `cli-commands` | `satan --help` exposes `gateway` and `config` subcommands |
-| `managed-guard` | `HERMES_MANAGED=true satan config set ...` prints the NixOS error |
+| `cli-commands` | `satanclaw --help` exposes `gateway` and `config` subcommands |
+| `managed-guard` | `HERMES_MANAGED=true satanclaw config set ...` prints the NixOS error |
 | `bundled-skills` | Skills directory exists, contains SKILL.md files, `HERMES_BUNDLED_SKILLS` is set in wrapper |
 | `config-roundtrip` | 7 merge scenarios: fresh install, Nix override, user key preservation, mixed merge, MCP additive merge, nested deep merge, idempotency |
 
@@ -632,14 +632,14 @@ nix build .#checks.x86_64-linux.config-roundtrip    # merge script preserves use
 
 | Option | Type | Default | Description |
 |---|---|---|---|
-| `enable` | `bool` | `false` | Enable the satan-agent service |
-| `package` | `package` | `satan-agent` | The satan-agent package to use |
-| `user` | `str` | `"satan"` | System user |
-| `group` | `str` | `"satan"` | System group |
+| `enable` | `bool` | `false` | Enable the satanclaw-agent service |
+| `package` | `package` | `satanclaw-agent` | The satanclaw-agent package to use |
+| `user` | `str` | `"satanclaw"` | System user |
+| `group` | `str` | `"satanclaw"` | System group |
 | `createUser` | `bool` | `true` | Auto-create user/group |
-| `stateDir` | `str` | `"/var/lib/satan"` | State directory (`HERMES_HOME` parent) |
+| `stateDir` | `str` | `"/var/lib/satanclaw"` | State directory (`HERMES_HOME` parent) |
 | `workingDirectory` | `str` | `"${stateDir}/workspace"` | Agent working directory (`MESSAGING_CWD`) |
-| `addToSystemPackages` | `bool` | `false` | Add `satan` CLI to system PATH and set `HERMES_HOME` system-wide |
+| `addToSystemPackages` | `bool` | `false` | Add `satanclaw` CLI to system PATH and set `HERMES_HOME` system-wide |
 
 ### Configuration
 
@@ -684,7 +684,7 @@ nix build .#checks.x86_64-linux.config-roundtrip    # merge script preserves use
 
 | Option | Type | Default | Description |
 |---|---|---|---|
-| `extraArgs` | `listOf str` | `[]` | Extra args for `satan gateway` |
+| `extraArgs` | `listOf str` | `[]` | Extra args for `satanclaw gateway` |
 | `extraPackages` | `listOf package` | `[]` | Extra packages on service PATH (native mode only) |
 | `restart` | `str` | `"always"` | systemd `Restart=` policy |
 | `restartSec` | `int` | `5` | systemd `RestartSec=` value |
@@ -706,8 +706,8 @@ nix build .#checks.x86_64-linux.config-roundtrip    # merge script preserves use
 ### Native Mode
 
 ```
-/var/lib/satan/                     # stateDir (owned by satan:satan, 0750)
-├── .satan/                         # HERMES_HOME
+/var/lib/satanclaw/                     # stateDir (owned by satanclaw:satanclaw, 0750)
+├── .satanclaw/                         # HERMES_HOME
 │   ├── config.yaml                  # Nix-generated (deep-merged each rebuild)
 │   ├── .managed                     # Marker: CLI config mutation blocked
 │   ├── .env                         # Merged from environment + environmentFiles
@@ -732,9 +732,9 @@ Same layout, mounted into the container:
 
 | Container path | Host path | Mode | Notes |
 |---|---|---|---|
-| `/nix/store` | `/nix/store` | `ro` | Satan binary + all Nix deps |
-| `/data` | `/var/lib/satan` | `rw` | All state, config, workspace |
-| `/home/satan` | `${stateDir}/home` | `rw` | Persistent agent home — `pip install --user`, tool caches |
+| `/nix/store` | `/nix/store` | `ro` | SatanClaw binary + all Nix deps |
+| `/data` | `/var/lib/satanclaw` | `rw` | All state, config, workspace |
+| `/home/satanclaw` | `${stateDir}/home` | `rw` | Persistent agent home — `pip install --user`, tool caches |
 | `/usr`, `/usr/local`, `/tmp` | (writable layer) | `rw` | `apt`/`pip`/`npm` installs — persists across restarts, lost on recreation |
 
 ---
@@ -743,7 +743,7 @@ Same layout, mounted into the container:
 
 ```bash
 # Update the flake input
-nix flake update satan-agent --flake /etc/nixos
+nix flake update satanclaw-agent --flake /etc/nixos
 
 # Rebuild
 sudo nixos-rebuild switch
@@ -763,21 +763,21 @@ All `docker` commands below work the same with `podman`. Substitute accordingly 
 
 ```bash
 # Both modes use the same systemd unit
-journalctl -u satan-agent -f
+journalctl -u satanclaw-agent -f
 
 # Container mode: also available directly
-docker logs -f satan-agent
+docker logs -f satanclaw-agent
 ```
 
 ### Container Inspection
 
 ```bash
-systemctl status satan-agent
-docker ps -a --filter name=satan-agent
-docker inspect satan-agent --format='{{.State.Status}}'
-docker exec -it satan-agent bash
-docker exec satan-agent readlink /data/current-package
-docker exec satan-agent cat /data/.container-identity
+systemctl status satanclaw-agent
+docker ps -a --filter name=satanclaw-agent
+docker inspect satanclaw-agent --format='{{.State.Status}}'
+docker exec -it satanclaw-agent bash
+docker exec satanclaw-agent readlink /data/current-package
+docker exec satanclaw-agent cat /data/.container-identity
 ```
 
 ### Force Container Recreation
@@ -785,10 +785,10 @@ docker exec satan-agent cat /data/.container-identity
 If you need to reset the writable layer (fresh Ubuntu):
 
 ```bash
-sudo systemctl stop satan-agent
-docker rm -f satan-agent
-sudo rm /var/lib/satan/.container-identity
-sudo systemctl start satan-agent
+sudo systemctl stop satanclaw-agent
+docker rm -f satanclaw-agent
+sudo rm /var/lib/satanclaw/.container-identity
+sudo systemctl start satanclaw-agent
 ```
 
 ### Verify Secrets Are Loaded
@@ -797,16 +797,16 @@ If the agent starts but can't authenticate with the LLM provider, check that the
 
 ```bash
 # Native mode
-sudo -u satan cat /var/lib/satan/.satan/.env
+sudo -u satanclaw cat /var/lib/satanclaw/.satanclaw/.env
 
 # Container mode
-docker exec satan-agent cat /data/.satan/.env
+docker exec satanclaw-agent cat /data/.satanclaw/.env
 ```
 
 ### GC Root Verification
 
 ```bash
-nix-store --query --roots $(docker exec satan-agent readlink /data/current-package)
+nix-store --query --roots $(docker exec satanclaw-agent readlink /data/current-package)
 ```
 
 ### Common Issues
@@ -815,6 +815,6 @@ nix-store --query --roots $(docker exec satan-agent readlink /data/current-packa
 |---|---|---|
 | `Cannot save configuration: managed by NixOS` | CLI guards active | Edit `configuration.nix` and `nixos-rebuild switch` |
 | Container recreated unexpectedly | `extraVolumes`, `extraOptions`, or `image` changed | Expected — writable layer resets. Reinstall packages or use a custom image |
-| `satan version` shows old version | Container not restarted | `systemctl restart satan-agent` |
-| Permission denied on `/var/lib/satan` | State dir is `0750 satan:satan` | Use `docker exec` or `sudo -u satan` |
-| `nix-collect-garbage` removed satan | GC root missing | Restart the service (preStart recreates the GC root) |
+| `satanclaw version` shows old version | Container not restarted | `systemctl restart satanclaw-agent` |
+| Permission denied on `/var/lib/satanclaw` | State dir is `0750 satanclaw:satanclaw` | Use `docker exec` or `sudo -u satanclaw` |
+| `nix-collect-garbage` removed satanclaw | GC root missing | Restart the service (preStart recreates the GC root) |

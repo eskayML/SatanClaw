@@ -61,7 +61,7 @@ def get_tool_preview_max_len() -> int:
 def _get_skin():
     """Get the active skin config, or None if not available."""
     try:
-        from satan_cli.skin_engine import get_active_skin
+        from satanclaw_cli.skin_engine import get_active_skin
         return get_active_skin()
     except Exception:
         return None
@@ -411,7 +411,7 @@ def _emit_inline_diff(diff_text: str, print_fn) -> bool:
 
 
 def _render_inline_unified_diff(diff: str) -> list[str]:
-    """Render unified diff lines in Satan' inline transcript style."""
+    """Render unified diff lines in SatanClaw' inline transcript style."""
     rendered: list[str] = []
     from_file = None
     to_file = None

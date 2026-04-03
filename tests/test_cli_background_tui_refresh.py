@@ -10,12 +10,12 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from cli import SatanCLI
+from cli import SatanClawCLI
 
 
 def _make_cli():
-    """Create a minimal SatanCLI instance for testing."""
-    cli_obj = SatanCLI.__new__(SatanCLI)
+    """Create a minimal SatanClawCLI instance for testing."""
+    cli_obj = SatanClawCLI.__new__(SatanClawCLI)
     cli_obj.model = "test-model"
     cli_obj._background_tasks = {}
     cli_obj._background_task_counter = 0

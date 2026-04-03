@@ -134,9 +134,9 @@ class TestToolsetConsistency:
             for inc in ts["includes"]:
                 assert inc in TOOLSETS, f"{name} includes unknown toolset '{inc}'"
 
-    def test_satan_platforms_share_core_tools(self):
-        """All satan-* platform toolsets should have the same tools."""
-        platforms = ["satan-cli", "satan-telegram", "satan-discord", "satan-whatsapp", "satan-slack", "satan-signal", "satan-homeassistant"]
+    def test_satanclaw_platforms_share_core_tools(self):
+        """All satanclaw-* platform toolsets should have the same tools."""
+        platforms = ["satanclaw-cli", "satanclaw-telegram", "satanclaw-discord", "satanclaw-whatsapp", "satanclaw-slack", "satanclaw-signal", "satanclaw-homeassistant"]
         tool_sets = [set(TOOLSETS[p]["tools"]) for p in platforms]
         # All platform toolsets should be identical
         for ts in tool_sets[1:]:

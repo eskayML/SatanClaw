@@ -31,8 +31,8 @@ Usage:
         --openai.model_name YourModel
 
 Built by: github.com/jackx707
-Inspired by: GroceryMind — production Satan agent doing live web research
-             across German grocery stores (firecrawl + satan-agent)
+Inspired by: GroceryMind — production SatanClaw agent doing live web research
+             across German grocery stores (firecrawl + satanclaw-agent)
 """
 
 from __future__ import annotations
@@ -50,7 +50,7 @@ from urllib.parse import urlparse
 
 from pydantic import Field
 
-# Ensure satan-agent root is on path
+# Ensure satanclaw-agent root is on path
 _repo_root = Path(__file__).resolve().parent.parent
 if str(_repo_root) not in sys.path:
     sys.path.insert(0, str(_repo_root))
@@ -68,7 +68,7 @@ from atroposlib.envs.base import ScoredDataGroup
 from atroposlib.envs.server_handling.server_manager import APIServerConfig
 from atroposlib.type_definitions import Item
 
-from environments.satan_base_env import SatanAgentBaseEnv, SatanAgentEnvConfig
+from environments.satanclaw_base_env import SatanClawAgentBaseEnv, SatanClawAgentEnvConfig
 from environments.agent_loop import AgentResult
 from environments.tool_context import ToolContext
 
@@ -146,7 +146,7 @@ SAMPLE_QUESTIONS = [
 # Configuration
 # ---------------------------------------------------------------------------
 
-class WebResearchEnvConfig(SatanAgentEnvConfig):
+class WebResearchEnvConfig(SatanClawAgentEnvConfig):
     """Configuration for the web research RL environment."""
 
     # Reward weights
@@ -198,7 +198,7 @@ class WebResearchEnvConfig(SatanAgentEnvConfig):
 # Environment
 # ---------------------------------------------------------------------------
 
-class WebResearchEnv(SatanAgentBaseEnv):
+class WebResearchEnv(SatanClawAgentBaseEnv):
     """
     RL environment for training multi-step web research skills.
 
@@ -433,7 +433,7 @@ class WebResearchEnv(SatanAgentBaseEnv):
         """
         import time
         import uuid
-        from environments.agent_loop import SatanAgentLoop
+        from environments.agent_loop import SatanClawAgentLoop
         from environments.tool_context import ToolContext
 
         items = self._eval_items
@@ -463,7 +463,7 @@ class WebResearchEnv(SatanAgentBaseEnv):
                 messages.append({"role": "user", "content": self.format_prompt(item)})
 
                 # Run the full agent loop with tools
-                agent = SatanAgentLoop(
+                agent = SatanClawAgentLoop(
                     server=self.server,
                     tool_schemas=tools,
                     valid_tool_names=valid_names,

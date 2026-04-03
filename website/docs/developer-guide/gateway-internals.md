@@ -6,7 +6,7 @@ description: "How the messaging gateway boots, authorizes users, routes sessions
 
 # Gateway Internals
 
-The messaging gateway is the long-running process that connects Satan to external platforms.
+The messaging gateway is the long-running process that connects SatanClaw to external platforms.
 
 Key files:
 
@@ -38,8 +38,8 @@ The gateway process is responsible for:
 The gateway has a multi-source config model:
 
 - environment variables
-- `~/.satan/gateway.json`
-- selected bridged values from `~/.satan/config.yaml`
+- `~/.satanclaw/gateway.json`
+- selected bridged values from `~/.satanclaw/config.yaml`
 
 ## Session routing
 

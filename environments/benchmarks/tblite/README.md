@@ -15,7 +15,7 @@ OpenThoughts-TBLite was created by the [OpenThoughts](https://www.openthoughts.a
 We converted the source into the same schema used by our Terminal-Bench 2.0 environment (pre-built Docker Hub images, base64-encoded test tarballs, etc.) and published it as:
 
 - **Dataset (ours):** [NousResearch/openthoughts-tblite](https://huggingface.co/datasets/NousResearch/openthoughts-tblite)
-- **Docker images:** `nousresearch/tblite-<task-name>:latest` on Docker Hub (100 images)
+- **Docker images:** `eskayML/tblite-<task-name>:latest` on Docker Hub (100 images)
 
 The conversion script is at `scripts/prepare_tblite_dataset.py`.
 

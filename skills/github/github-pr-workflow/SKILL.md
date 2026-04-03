@@ -2,10 +2,10 @@
 name: github-pr-workflow
 description: Full pull request lifecycle — create branches, commit changes, open PRs, monitor CI status, auto-fix failures, and merge. Works with gh CLI or falls back to git + GitHub REST API via curl.
 version: 1.1.0
-author: Satan Agent
+author: SatanClaw Agent
 license: MIT
 metadata:
-  satan:
+  satanclaw:
     tags: [GitHub, Pull-Requests, CI/CD, Git, Automation, Merge]
     related_skills: [github-auth, github-code-review]
 ---
@@ -29,8 +29,8 @@ else
   AUTH="git"
   # Ensure we have a token for API calls
   if [ -z "$GITHUB_TOKEN" ]; then
-    if [ -f ~/.satan/.env ] && grep -q "^GITHUB_TOKEN=" ~/.satan/.env; then
-      GITHUB_TOKEN=$(grep "^GITHUB_TOKEN=" ~/.satan/.env | head -1 | cut -d= -f2 | tr -d '\n\r')
+    if [ -f ~/.satanclaw/.env ] && grep -q "^GITHUB_TOKEN=" ~/.satanclaw/.env; then
+      GITHUB_TOKEN=$(grep "^GITHUB_TOKEN=" ~/.satanclaw/.env | head -1 | cut -d= -f2 | tr -d '\n\r')
     elif grep -q "github.com" ~/.git-credentials 2>/dev/null; then
       GITHUB_TOKEN=$(grep "github.com" ~/.git-credentials 2>/dev/null | head -1 | sed 's|https://[^:]*:\([^@]*\)@.*|\1|')
     fi

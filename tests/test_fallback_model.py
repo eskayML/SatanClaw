@@ -292,19 +292,19 @@ class TestTryActivateFallback:
     def test_activates_nous_fallback(self):
         """Nous Portal fallback should use OAuth credentials and chat_completions mode."""
         agent = _make_agent(
-            fallback_model={"provider": "nous", "model": "nous-satan-3"},
+            fallback_model={"provider": "nous", "model": "nous-satanclaw-3"},
         )
         mock_client = _mock_resolve(
             api_key="nous-agent-key-abc",
-            base_url="https://inference-api.nousresearch.com/v1",
+            base_url="https://inference-api.eskayML.com/v1",
         )
         with patch(
             "agent.auxiliary_client.resolve_provider_client",
-            return_value=(mock_client, "nous-satan-3"),
+            return_value=(mock_client, "nous-satanclaw-3"),
         ):
             result = agent._try_activate_fallback()
             assert result is True
-            assert agent.model == "nous-satan-3"
+            assert agent.model == "nous-satanclaw-3"
             assert agent.provider == "nous"
             assert agent.api_mode == "chat_completions"
             assert agent.client is mock_client
@@ -312,7 +312,7 @@ class TestTryActivateFallback:
     def test_nous_fallback_fails_gracefully_without_login(self):
         """Nous fallback should return False if not logged in."""
         agent = _make_agent(
-            fallback_model={"provider": "nous", "model": "nous-satan-3"},
+            fallback_model={"provider": "nous", "model": "nous-satanclaw-3"},
         )
         with patch(
             "agent.auxiliary_client.resolve_provider_client",

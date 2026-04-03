@@ -1,20 +1,20 @@
-# Migrating from OpenClaw to Satan Agent
+# Migrating from OpenClaw to SatanClaw Agent
 
-This guide covers how to import your OpenClaw settings, memories, skills, and API keys into Satan Agent.
+This guide covers how to import your OpenClaw settings, memories, skills, and API keys into SatanClaw Agent.
 
 ## Three Ways to Migrate
 
 ### 1. Automatic (during first-time setup)
 
-When you run `satan setup` for the first time and Satan detects `~/.openclaw`, it automatically offers to import your OpenClaw data before configuration begins. Just accept the prompt and everything is handled for you.
+When you run `satanclaw setup` for the first time and SatanClaw detects `~/.openclaw`, it automatically offers to import your OpenClaw data before configuration begins. Just accept the prompt and everything is handled for you.
 
 ### 2. CLI Command (quick, scriptable)
 
 ```bash
-satan claw migrate                      # Full migration with confirmation prompt
-satan claw migrate --dry-run            # Preview what would happen
-satan claw migrate --preset user-data   # Migrate without API keys/secrets
-satan claw migrate --yes                # Skip confirmation prompt
+satanclaw claw migrate                      # Full migration with confirmation prompt
+satanclaw claw migrate --dry-run            # Preview what would happen
+satanclaw claw migrate --preset user-data   # Migrate without API keys/secrets
+satanclaw claw migrate --yes                # Skip confirmation prompt
 ```
 
 **All options:**
@@ -35,7 +35,7 @@ satan claw migrate --yes                # Skip confirmation prompt
 Ask the agent to run the migration for you:
 
 ```
-> Migrate my OpenClaw setup to Satan
+> Migrate my OpenClaw setup to SatanClaw
 ```
 
 The agent will use the `openclaw-migration` skill to:
@@ -50,33 +50,33 @@ The agent will use the `openclaw-migration` skill to:
 ### `user-data` preset
 | Item | Source | Destination |
 |------|--------|-------------|
-| SOUL.md | `~/.openclaw/workspace/SOUL.md` | `~/.satan/SOUL.md` |
-| Memory entries | `~/.openclaw/workspace/MEMORY.md` | `~/.satan/memories/MEMORY.md` |
-| User profile | `~/.openclaw/workspace/USER.md` | `~/.satan/memories/USER.md` |
-| Skills | `~/.openclaw/workspace/skills/` | `~/.satan/skills/openclaw-imports/` |
-| Command allowlist | `~/.openclaw/workspace/exec_approval_patterns.yaml` | Merged into `~/.satan/config.yaml` |
-| Messaging settings | `~/.openclaw/config.yaml` (TELEGRAM_ALLOWED_USERS, MESSAGING_CWD) | `~/.satan/.env` |
-| TTS assets | `~/.openclaw/workspace/tts/` | `~/.satan/tts/` |
+| SOUL.md | `~/.openclaw/workspace/SOUL.md` | `~/.satanclaw/SOUL.md` |
+| Memory entries | `~/.openclaw/workspace/MEMORY.md` | `~/.satanclaw/memories/MEMORY.md` |
+| User profile | `~/.openclaw/workspace/USER.md` | `~/.satanclaw/memories/USER.md` |
+| Skills | `~/.openclaw/workspace/skills/` | `~/.satanclaw/skills/openclaw-imports/` |
+| Command allowlist | `~/.openclaw/workspace/exec_approval_patterns.yaml` | Merged into `~/.satanclaw/config.yaml` |
+| Messaging settings | `~/.openclaw/config.yaml` (TELEGRAM_ALLOWED_USERS, MESSAGING_CWD) | `~/.satanclaw/.env` |
+| TTS assets | `~/.openclaw/workspace/tts/` | `~/.satanclaw/tts/` |
 
 ### `full` preset (adds to `user-data`)
 | Item | Source | Destination |
 |------|--------|-------------|
-| Telegram bot token | `~/.openclaw/config.yaml` | `~/.satan/.env` |
-| OpenRouter API key | `~/.openclaw/.env` or config | `~/.satan/.env` |
-| OpenAI API key | `~/.openclaw/.env` or config | `~/.satan/.env` |
-| Anthropic API key | `~/.openclaw/.env` or config | `~/.satan/.env` |
-| ElevenLabs API key | `~/.openclaw/.env` or config | `~/.satan/.env` |
+| Telegram bot token | `~/.openclaw/config.yaml` | `~/.satanclaw/.env` |
+| OpenRouter API key | `~/.openclaw/.env` or config | `~/.satanclaw/.env` |
+| OpenAI API key | `~/.openclaw/.env` or config | `~/.satanclaw/.env` |
+| Anthropic API key | `~/.openclaw/.env` or config | `~/.satanclaw/.env` |
+| ElevenLabs API key | `~/.openclaw/.env` or config | `~/.satanclaw/.env` |
 
 Only these 6 allowlisted secrets are ever imported. Other credentials are skipped and reported.
 
 ## Conflict Handling
 
-By default, the migration **will not overwrite** existing Satan data:
+By default, the migration **will not overwrite** existing SatanClaw data:
 
-- **SOUL.md** — skipped if one already exists in `~/.satan/`
+- **SOUL.md** — skipped if one already exists in `~/.satanclaw/`
 - **Memory entries** — skipped if memories already exist (to avoid duplicates)
 - **Skills** — skipped if a skill with the same name already exists
-- **API keys** — skipped if the key is already set in `~/.satan/.env`
+- **API keys** — skipped if the key is already set in `~/.satanclaw/.env`
 
 To overwrite conflicts, use `--overwrite`. The migration creates backups before overwriting.
 
@@ -90,21 +90,21 @@ Every migration (including dry runs) produces a report showing:
 - **Skipped items** — items not found in the source
 - **Errors** — items that failed to import
 
-For execute runs, the full report is saved to `~/.satan/migration/openclaw/<timestamp>/`.
+For execute runs, the full report is saved to `~/.satanclaw/migration/openclaw/<timestamp>/`.
 
 ## Troubleshooting
 
 ### "OpenClaw directory not found"
 The migration looks for `~/.openclaw` by default. If your OpenClaw is installed elsewhere, use `--source`:
 ```bash
-satan claw migrate --source /path/to/.openclaw
+satanclaw claw migrate --source /path/to/.openclaw
 ```
 
 ### "Migration script not found"
-The migration script ships with Satan Agent. If you installed via pip (not git clone), the `optional-skills/` directory may not be present. Install the skill from the Skills Hub:
+The migration script ships with SatanClaw Agent. If you installed via pip (not git clone), the `optional-skills/` directory may not be present. Install the skill from the Skills Hub:
 ```bash
-satan skills install openclaw-migration
+satanclaw skills install openclaw-migration
 ```
 
 ### Memory overflow
-If your OpenClaw MEMORY.md or USER.md exceeds Satan' character limits, excess entries are exported to an overflow file in the migration report directory. You can manually review and add the most important ones.
+If your OpenClaw MEMORY.md or USER.md exceeds SatanClaw' character limits, excess entries are exported to an overflow file in the migration report directory. You can manually review and add the most important ones.

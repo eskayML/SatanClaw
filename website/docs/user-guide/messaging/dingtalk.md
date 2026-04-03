@@ -1,22 +1,22 @@
 ---
 sidebar_position: 10
 title: "DingTalk"
-description: "Set up Satan Agent as a DingTalk chatbot"
+description: "Set up SatanClaw Agent as a DingTalk chatbot"
 ---
 
 # DingTalk Setup
 
-Satan Agent integrates with DingTalk (钉钉) as a chatbot, letting you chat with your AI assistant through direct messages or group chats. The bot connects via DingTalk's Stream Mode — a long-lived WebSocket connection that requires no public URL or webhook server — and replies using markdown-formatted messages through DingTalk's session webhook API.
+SatanClaw Agent integrates with DingTalk (钉钉) as a chatbot, letting you chat with your AI assistant through direct messages or group chats. The bot connects via DingTalk's Stream Mode — a long-lived WebSocket connection that requires no public URL or webhook server — and replies using markdown-formatted messages through DingTalk's session webhook API.
 
-Before setup, here's the part most people want to know: how Satan behaves once it's in your DingTalk workspace.
+Before setup, here's the part most people want to know: how SatanClaw behaves once it's in your DingTalk workspace.
 
-## How Satan Behaves
+## How SatanClaw Behaves
 
 | Context | Behavior |
 |---------|----------|
-| **DMs (1:1 chat)** | Satan responds to every message. No `@mention` needed. Each DM has its own session. |
-| **Group chats** | Satan responds when you `@mention` it. Without a mention, Satan ignores the message. |
-| **Shared groups with multiple users** | By default, Satan isolates session history per user inside the group. Two people talking in the same group do not share one transcript unless you explicitly disable that. |
+| **DMs (1:1 chat)** | SatanClaw responds to every message. No `@mention` needed. Each DM has its own session. |
+| **Group chats** | SatanClaw responds when you `@mention` it. Without a mention, SatanClaw ignores the message. |
+| **Shared groups with multiple users** | By default, SatanClaw isolates session history per user inside the group. Two people talking in the same group do not share one transcript unless you explicitly disable that. |
 
 ### Session Model in DingTalk
 
@@ -56,7 +56,7 @@ pip install dingtalk-stream httpx
 2. Log in with your DingTalk admin account.
 3. Click **Application Development** → **Custom Apps** → **Create App via H5 Micro-App** (or **Robot** depending on your console version).
 4. Fill in:
-   - **App Name**: e.g., `Satan Agent`
+   - **App Name**: e.g., `SatanClaw Agent`
    - **Description**: optional
 5. After creating, navigate to **Credentials & Basic Info** to find your **Client ID** (AppKey) and **Client Secret** (AppSecret). Copy both.
 
@@ -76,28 +76,28 @@ Stream Mode is the recommended setup. It uses a long-lived WebSocket connection 
 
 ## Step 3: Find Your DingTalk User ID
 
-Satan Agent uses your DingTalk User ID to control who can interact with the bot. DingTalk User IDs are alphanumeric strings set by your organization's admin.
+SatanClaw Agent uses your DingTalk User ID to control who can interact with the bot. DingTalk User IDs are alphanumeric strings set by your organization's admin.
 
 To find yours:
 
 1. Ask your DingTalk organization admin — User IDs are configured in the DingTalk admin console under **Contacts** → **Members**.
 2. Alternatively, the bot logs the `sender_id` for each incoming message. Start the gateway, send the bot a message, then check the logs for your ID.
 
-## Step 4: Configure Satan Agent
+## Step 4: Configure SatanClaw Agent
 
 ### Option A: Interactive Setup (Recommended)
 
 Run the guided setup command:
 
 ```bash
-satan gateway setup
+satanclaw gateway setup
 ```
 
 Select **DingTalk** when prompted, then paste your Client ID, Client Secret, and allowed user IDs when asked.
 
 ### Option B: Manual Configuration
 
-Add the following to your `~/.satan/.env` file:
+Add the following to your `~/.satanclaw/.env` file:
 
 ```bash
 # Required
@@ -111,7 +111,7 @@ DINGTALK_ALLOWED_USERS=user-id-1
 # DINGTALK_ALLOWED_USERS=user-id-1,user-id-2
 ```
 
-Optional behavior settings in `~/.satan/config.yaml`:
+Optional behavior settings in `~/.satanclaw/config.yaml`:
 
 ```yaml
 group_sessions_per_user: true
@@ -124,13 +124,13 @@ group_sessions_per_user: true
 Once configured, start the DingTalk gateway:
 
 ```bash
-satan gateway
+satanclaw gateway
 ```
 
 The bot should connect to DingTalk's Stream Mode within a few seconds. Send it a message — either a DM or in a group where it's been added — to test.
 
 :::tip
-You can run `satan gateway` in the background or as a systemd service for persistent operation. See the deployment docs for details.
+You can run `satanclaw gateway` in the background or as a systemd service for persistent operation. See the deployment docs for details.
 :::
 
 ## Troubleshooting
@@ -155,7 +155,7 @@ pip install dingtalk-stream httpx
 
 **Cause**: The credentials aren't set in your environment or `.env` file.
 
-**Fix**: Verify `DINGTALK_CLIENT_ID` and `DINGTALK_CLIENT_SECRET` are set correctly in `~/.satan/.env`. The Client ID is your AppKey, and the Client Secret is your AppSecret from the DingTalk Developer Console.
+**Fix**: Verify `DINGTALK_CLIENT_ID` and `DINGTALK_CLIENT_SECRET` are set correctly in `~/.satanclaw/.env`. The Client ID is your AppKey, and the Client Secret is your AppSecret from the DingTalk Developer Console.
 
 ### Stream disconnects / reconnection loops
 
@@ -165,9 +165,9 @@ pip install dingtalk-stream httpx
 
 ### Bot is offline
 
-**Cause**: The Satan gateway isn't running, or it failed to connect.
+**Cause**: The SatanClaw gateway isn't running, or it failed to connect.
 
-**Fix**: Check that `satan gateway` is running. Look at the terminal output for error messages. Common issues: wrong credentials, app deactivated, `dingtalk-stream` or `httpx` not installed.
+**Fix**: Check that `satanclaw gateway` is running. Look at the terminal output for error messages. Common issues: wrong credentials, app deactivated, `dingtalk-stream` or `httpx` not installed.
 
 ### "No session_webhook available"
 
@@ -181,7 +181,7 @@ pip install dingtalk-stream httpx
 Always set `DINGTALK_ALLOWED_USERS` to restrict who can interact with the bot. Without it, the gateway denies all users by default as a safety measure. Only add User IDs of people you trust — authorized users have full access to the agent's capabilities, including tool use and system access.
 :::
 
-For more information on securing your Satan Agent deployment, see the [Security Guide](../security.md).
+For more information on securing your SatanClaw Agent deployment, see the [Security Guide](../security.md).
 
 ## Notes
 

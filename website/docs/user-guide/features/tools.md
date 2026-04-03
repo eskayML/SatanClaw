@@ -1,7 +1,7 @@
 ---
 sidebar_position: 1
 title: "Tools & Toolsets"
-description: "Overview of Satan Agent's tools — what's available, how toolsets work, and terminal backends"
+description: "Overview of SatanClaw Agent's tools — what's available, how toolsets work, and terminal backends"
 ---
 
 # Tools & Toolsets
@@ -10,7 +10,7 @@ Tools are functions that extend the agent's capabilities. They're organized into
 
 ## Available Tools
 
-Satan ships with a broad built-in tool registry covering web search, browser automation, terminal execution, file editing, memory, delegation, RL training, messaging delivery, Home Assistant, Honcho memory, and more.
+SatanClaw ships with a broad built-in tool registry covering web search, browser automation, terminal execution, file editing, memory, delegation, RL training, messaging delivery, Home Assistant, Honcho memory, and more.
 
 High-level categories:
 
@@ -31,18 +31,18 @@ For the authoritative code-derived registry, see [Built-in Tools Reference](/doc
 
 ```bash
 # Use specific toolsets
-satan chat --toolsets "web,terminal"
+satanclaw chat --toolsets "web,terminal"
 
 # See all available tools
-satan tools
+satanclaw tools
 
 # Configure tools per platform (interactive)
-satan tools
+satanclaw tools
 ```
 
 Common toolsets include `web`, `terminal`, `file`, `browser`, `vision`, `image_gen`, `moa`, `skills`, `tts`, `todo`, `memory`, `session_search`, `cronjob`, `code_execution`, `delegation`, `clarify`, `honcho`, `homeassistant`, and `rl`.
 
-See [Toolsets Reference](/docs/reference/toolsets-reference) for the full set, including platform presets such as `satan-cli`, `satan-telegram`, and dynamic MCP toolsets like `mcp-<server>`.
+See [Toolsets Reference](/docs/reference/toolsets-reference) for the full set, including platform presets such as `satanclaw-cli`, `satanclaw-telegram`, and dynamic MCP toolsets like `mcp-<server>`.
 
 ## Terminal Backends
 
@@ -60,7 +60,7 @@ The terminal tool can execute commands in different environments:
 ### Configuration
 
 ```yaml
-# In ~/.satan/config.yaml
+# In ~/.satanclaw/config.yaml
 terminal:
   backend: local    # or: docker, ssh, singularity, modal, daytona
   cwd: "."          # Working directory
@@ -84,7 +84,7 @@ terminal:
   backend: ssh
 ```
 ```bash
-# Set credentials in ~/.satan/.env
+# Set credentials in ~/.satanclaw/.env
 TERMINAL_SSH_HOST=my-server.example.com
 TERMINAL_SSH_USER=myuser
 TERMINAL_SSH_KEY=~/.ssh/id_rsa
@@ -97,8 +97,8 @@ TERMINAL_SSH_KEY=~/.ssh/id_rsa
 apptainer build ~/python.sif docker://python:3.11-slim
 
 # Configure
-satan config set terminal.backend singularity
-satan config set terminal.singularity_image ~/python.sif
+satanclaw config set terminal.backend singularity
+satanclaw config set terminal.singularity_image ~/python.sif
 ```
 
 ### Modal (Serverless Cloud)
@@ -106,7 +106,7 @@ satan config set terminal.singularity_image ~/python.sif
 ```bash
 uv pip install modal
 modal setup
-satan config set terminal.backend modal
+satanclaw config set terminal.backend modal
 ```
 
 ### Container Resources
@@ -158,8 +158,8 @@ PTY mode (`pty=true`) enables interactive CLI tools like Codex and Claude Code.
 
 ## Sudo Support
 
-If a command needs sudo, you'll be prompted for your password (cached for the session). Or set `SUDO_PASSWORD` in `~/.satan/.env`.
+If a command needs sudo, you'll be prompted for your password (cached for the session). Or set `SUDO_PASSWORD` in `~/.satanclaw/.env`.
 
 :::warning
-On messaging platforms, if sudo fails, the output includes a tip to add `SUDO_PASSWORD` to `~/.satan/.env`.
+On messaging platforms, if sudo fails, the output includes a tip to add `SUDO_PASSWORD` to `~/.satanclaw/.env`.
 :::

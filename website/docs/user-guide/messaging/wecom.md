@@ -1,12 +1,12 @@
 ---
 sidebar_position: 14
 title: "WeCom (Enterprise WeChat)"
-description: "Connect Satan Agent to WeCom via the AI Bot WebSocket gateway"
+description: "Connect SatanClaw Agent to WeCom via the AI Bot WebSocket gateway"
 ---
 
 # WeCom (Enterprise WeChat)
 
-Connect Satan to [WeCom](https://work.weixin.qq.com/) (企业微信), Tencent's enterprise messaging platform. The adapter uses WeCom's AI Bot WebSocket gateway for real-time bidirectional communication — no public endpoint or webhook needed.
+Connect SatanClaw to [WeCom](https://work.weixin.qq.com/) (企业微信), Tencent's enterprise messaging platform. The adapter uses WeCom's AI Bot WebSocket gateway for real-time bidirectional communication — no public endpoint or webhook needed.
 
 ## Prerequisites
 
@@ -24,17 +24,17 @@ Connect Satan to [WeCom](https://work.weixin.qq.com/) (企业微信), Tencent's 
 3. Configure the bot name and description
 4. Copy the **Bot ID** and **Secret** from the credentials page
 
-### 2. Configure Satan
+### 2. Configure SatanClaw
 
 Run the interactive setup:
 
 ```bash
-satan gateway setup
+satanclaw gateway setup
 ```
 
 Select **WeCom** and enter your Bot ID and Secret.
 
-Or set environment variables in `~/.satan/.env`:
+Or set environment variables in `~/.satanclaw/.env`:
 
 ```bash
 WECOM_BOT_ID=your-bot-id
@@ -50,7 +50,7 @@ WECOM_HOME_CHANNEL=chat_id
 ### 3. Start the gateway
 
 ```bash
-satan gateway start
+satanclaw gateway start
 ```
 
 ## Features

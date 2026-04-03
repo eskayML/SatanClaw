@@ -38,7 +38,7 @@ def work_dir(tmp_path):
 
 @pytest.fixture()
 def checkpoint_base(tmp_path):
-    """Isolated checkpoint base — never writes to ~/.satan/."""
+    """Isolated checkpoint base — never writes to ~/.satanclaw/."""
     return tmp_path / "checkpoints"
 
 

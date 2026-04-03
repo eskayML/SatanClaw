@@ -6,8 +6,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from satan_cli.auth import AuthError
-from satan_cli import main as satan_main
+from satanclaw_cli.auth import AuthError
+from satanclaw_cli import main as satanclaw_main
 
 
 # ---------------------------------------------------------------------------
@@ -123,18 +123,18 @@ def _import_cli():
     return importlib.import_module("cli")
 
 
-def test_satan_cli_init_does_not_eagerly_resolve_runtime_provider(monkeypatch):
+def test_satanclaw_cli_init_does_not_eagerly_resolve_runtime_provider(monkeypatch):
     cli = _import_cli()
     calls = {"count": 0}
 
     def _unexpected_runtime_resolve(**kwargs):
         calls["count"] += 1
-        raise AssertionError("resolve_runtime_provider should not be called in SatanCLI.__init__")
+        raise AssertionError("resolve_runtime_provider should not be called in SatanClawCLI.__init__")
 
-    monkeypatch.setattr("satan_cli.runtime_provider.resolve_runtime_provider", _unexpected_runtime_resolve)
-    monkeypatch.setattr("satan_cli.runtime_provider.format_runtime_provider_error", lambda exc: str(exc))
+    monkeypatch.setattr("satanclaw_cli.runtime_provider.resolve_runtime_provider", _unexpected_runtime_resolve)
+    monkeypatch.setattr("satanclaw_cli.runtime_provider.format_runtime_provider_error", lambda exc: str(exc))
 
-    shell = cli.SatanCLI(model="gpt-5", compact=True, max_turns=1)
+    shell = cli.SatanClawCLI(model="gpt-5", compact=True, max_turns=1)
 
     assert shell is not None
     assert calls["count"] == 0
@@ -160,11 +160,11 @@ def test_runtime_resolution_failure_is_not_sticky(monkeypatch):
         def __init__(self, *args, **kwargs):
             self.kwargs = kwargs
 
-    monkeypatch.setattr("satan_cli.runtime_provider.resolve_runtime_provider", _runtime_resolve)
-    monkeypatch.setattr("satan_cli.runtime_provider.format_runtime_provider_error", lambda exc: str(exc))
+    monkeypatch.setattr("satanclaw_cli.runtime_provider.resolve_runtime_provider", _runtime_resolve)
+    monkeypatch.setattr("satanclaw_cli.runtime_provider.format_runtime_provider_error", lambda exc: str(exc))
     monkeypatch.setattr(cli, "AIAgent", _DummyAgent)
 
-    shell = cli.SatanCLI(model="gpt-5", compact=True, max_turns=1)
+    shell = cli.SatanClawCLI(model="gpt-5", compact=True, max_turns=1)
 
     assert shell._init_agent() is False
     assert shell._init_agent() is True
@@ -184,10 +184,10 @@ def test_runtime_resolution_rebuilds_agent_on_routing_change(monkeypatch):
             "source": "env/config",
         }
 
-    monkeypatch.setattr("satan_cli.runtime_provider.resolve_runtime_provider", _runtime_resolve)
-    monkeypatch.setattr("satan_cli.runtime_provider.format_runtime_provider_error", lambda exc: str(exc))
+    monkeypatch.setattr("satanclaw_cli.runtime_provider.resolve_runtime_provider", _runtime_resolve)
+    monkeypatch.setattr("satanclaw_cli.runtime_provider.format_runtime_provider_error", lambda exc: str(exc))
 
-    shell = cli.SatanCLI(model="gpt-5", compact=True, max_turns=1)
+    shell = cli.SatanClawCLI(model="gpt-5", compact=True, max_turns=1)
     shell.provider = "openrouter"
     shell.api_mode = "chat_completions"
     shell.base_url = "https://same-endpoint.example/v1"
@@ -202,7 +202,7 @@ def test_runtime_resolution_rebuilds_agent_on_routing_change(monkeypatch):
 
 def test_cli_turn_routing_uses_primary_when_disabled(monkeypatch):
     cli = _import_cli()
-    shell = cli.SatanCLI(model="gpt-5", compact=True, max_turns=1)
+    shell = cli.SatanClawCLI(model="gpt-5", compact=True, max_turns=1)
     shell.provider = "openrouter"
     shell.api_mode = "chat_completions"
     shell.base_url = "https://openrouter.ai/api/v1"
@@ -229,9 +229,9 @@ def test_cli_turn_routing_uses_cheap_model_when_simple(monkeypatch):
             "source": "env/config",
         }
 
-    monkeypatch.setattr("satan_cli.runtime_provider.resolve_runtime_provider", _runtime_resolve)
+    monkeypatch.setattr("satanclaw_cli.runtime_provider.resolve_runtime_provider", _runtime_resolve)
 
-    shell = cli.SatanCLI(model="anthropic/claude-sonnet-4", compact=True, max_turns=1)
+    shell = cli.SatanClawCLI(model="anthropic/claude-sonnet-4", compact=True, max_turns=1)
     shell.provider = "openrouter"
     shell.api_mode = "chat_completions"
     shell.base_url = "https://openrouter.ai/api/v1"
@@ -262,7 +262,7 @@ def test_cli_prefers_config_provider_over_stale_env_override(monkeypatch):
     config_copy["model"] = model_copy
     monkeypatch.setattr(cli, "CLI_CONFIG", config_copy)
 
-    shell = cli.SatanCLI(model="fireworks/minimax-m2p5", compact=True, max_turns=1)
+    shell = cli.SatanClawCLI(model="fireworks/minimax-m2p5", compact=True, max_turns=1)
 
     assert shell.requested_provider == "custom"
 
@@ -290,14 +290,14 @@ def test_codex_provider_replaces_incompatible_default_model(monkeypatch):
             "source": "env/config",
         }
 
-    monkeypatch.setattr("satan_cli.runtime_provider.resolve_runtime_provider", _runtime_resolve)
-    monkeypatch.setattr("satan_cli.runtime_provider.format_runtime_provider_error", lambda exc: str(exc))
+    monkeypatch.setattr("satanclaw_cli.runtime_provider.resolve_runtime_provider", _runtime_resolve)
+    monkeypatch.setattr("satanclaw_cli.runtime_provider.format_runtime_provider_error", lambda exc: str(exc))
     monkeypatch.setattr(
-        "satan_cli.codex_models.get_codex_model_ids",
+        "satanclaw_cli.codex_models.get_codex_model_ids",
         lambda access_token=None: ["gpt-5.2-codex", "gpt-5.1-codex-mini"],
     )
 
-    shell = cli.SatanCLI(compact=True, max_turns=1)
+    shell = cli.SatanClawCLI(compact=True, max_turns=1)
 
     assert shell._model_is_default is True
     assert shell._ensure_runtime_credentials() is True
@@ -316,29 +316,29 @@ def test_model_flow_nous_prints_subscription_guidance_without_mutating_explicit_
     }
 
     monkeypatch.setattr(
-        "satan_cli.auth.get_provider_auth_state",
+        "satanclaw_cli.auth.get_provider_auth_state",
         lambda provider: {"access_token": "nous-token"},
     )
     monkeypatch.setattr(
-        "satan_cli.auth.resolve_nous_runtime_credentials",
+        "satanclaw_cli.auth.resolve_nous_runtime_credentials",
         lambda *args, **kwargs: {
             "base_url": "https://inference.example.com/v1",
             "api_key": "nous-key",
         },
     )
     monkeypatch.setattr(
-        "satan_cli.auth.fetch_nous_models",
+        "satanclaw_cli.auth.fetch_nous_models",
         lambda *args, **kwargs: ["claude-opus-4-6"],
     )
-    monkeypatch.setattr("satan_cli.auth._prompt_model_selection", lambda model_ids, current_model="": "claude-opus-4-6")
-    monkeypatch.setattr("satan_cli.auth._save_model_choice", lambda model: None)
-    monkeypatch.setattr("satan_cli.auth._update_config_for_provider", lambda provider, url: None)
+    monkeypatch.setattr("satanclaw_cli.auth._prompt_model_selection", lambda model_ids, current_model="": "claude-opus-4-6")
+    monkeypatch.setattr("satanclaw_cli.auth._save_model_choice", lambda model: None)
+    monkeypatch.setattr("satanclaw_cli.auth._update_config_for_provider", lambda provider, url: None)
     monkeypatch.setattr(
-        "satan_cli.nous_subscription.get_nous_subscription_explainer_lines",
+        "satanclaw_cli.nous_subscription.get_nous_subscription_explainer_lines",
         lambda: ["Nous subscription enables managed web tools."],
     )
 
-    satan_main._model_flow_nous(config, current_model="claude-opus-4-6")
+    satanclaw_main._model_flow_nous(config, current_model="claude-opus-4-6")
 
     out = capsys.readouterr().out
     assert "Nous subscription enables managed web tools." in out
@@ -354,29 +354,29 @@ def test_model_flow_nous_applies_managed_tts_default_when_unconfigured(monkeypat
     }
 
     monkeypatch.setattr(
-        "satan_cli.auth.get_provider_auth_state",
+        "satanclaw_cli.auth.get_provider_auth_state",
         lambda provider: {"access_token": "nous-token"},
     )
     monkeypatch.setattr(
-        "satan_cli.auth.resolve_nous_runtime_credentials",
+        "satanclaw_cli.auth.resolve_nous_runtime_credentials",
         lambda *args, **kwargs: {
             "base_url": "https://inference.example.com/v1",
             "api_key": "nous-key",
         },
     )
     monkeypatch.setattr(
-        "satan_cli.auth.fetch_nous_models",
+        "satanclaw_cli.auth.fetch_nous_models",
         lambda *args, **kwargs: ["claude-opus-4-6"],
     )
-    monkeypatch.setattr("satan_cli.auth._prompt_model_selection", lambda model_ids, current_model="": "claude-opus-4-6")
-    monkeypatch.setattr("satan_cli.auth._save_model_choice", lambda model: None)
-    monkeypatch.setattr("satan_cli.auth._update_config_for_provider", lambda provider, url: None)
+    monkeypatch.setattr("satanclaw_cli.auth._prompt_model_selection", lambda model_ids, current_model="": "claude-opus-4-6")
+    monkeypatch.setattr("satanclaw_cli.auth._save_model_choice", lambda model: None)
+    monkeypatch.setattr("satanclaw_cli.auth._update_config_for_provider", lambda provider, url: None)
     monkeypatch.setattr(
-        "satan_cli.nous_subscription.get_nous_subscription_explainer_lines",
+        "satanclaw_cli.nous_subscription.get_nous_subscription_explainer_lines",
         lambda: ["Nous subscription enables managed web tools."],
     )
 
-    satan_main._model_flow_nous(config, current_model="claude-opus-4-6")
+    satanclaw_main._model_flow_nous(config, current_model="claude-opus-4-6")
 
     out = capsys.readouterr().out
     assert "Nous subscription enables managed web tools." in out
@@ -409,15 +409,15 @@ def test_codex_provider_uses_config_model(monkeypatch):
             "source": "env/config",
         }
 
-    monkeypatch.setattr("satan_cli.runtime_provider.resolve_runtime_provider", _runtime_resolve)
-    monkeypatch.setattr("satan_cli.runtime_provider.format_runtime_provider_error", lambda exc: str(exc))
+    monkeypatch.setattr("satanclaw_cli.runtime_provider.resolve_runtime_provider", _runtime_resolve)
+    monkeypatch.setattr("satanclaw_cli.runtime_provider.format_runtime_provider_error", lambda exc: str(exc))
     # Prevent live API call from overriding the config model
     monkeypatch.setattr(
-        "satan_cli.codex_models.get_codex_model_ids",
+        "satanclaw_cli.codex_models.get_codex_model_ids",
         lambda access_token=None: ["gpt-5.2-codex"],
     )
 
-    shell = cli.SatanCLI(compact=True, max_turns=1)
+    shell = cli.SatanClawCLI(compact=True, max_turns=1)
 
     assert shell._ensure_runtime_credentials() is True
     assert shell.provider == "openai-codex"
@@ -452,15 +452,15 @@ def test_codex_config_model_not_replaced_by_normalization(monkeypatch):
             "source": "env/config",
         }
 
-    monkeypatch.setattr("satan_cli.runtime_provider.resolve_runtime_provider", _runtime_resolve)
-    monkeypatch.setattr("satan_cli.runtime_provider.format_runtime_provider_error", lambda exc: str(exc))
+    monkeypatch.setattr("satanclaw_cli.runtime_provider.resolve_runtime_provider", _runtime_resolve)
+    monkeypatch.setattr("satanclaw_cli.runtime_provider.format_runtime_provider_error", lambda exc: str(exc))
     # API returns a DIFFERENT model than what the user configured
     monkeypatch.setattr(
-        "satan_cli.codex_models.get_codex_model_ids",
+        "satanclaw_cli.codex_models.get_codex_model_ids",
         lambda access_token=None: ["gpt-5.4", "gpt-5.3-codex"],
     )
 
-    shell = cli.SatanCLI(compact=True, max_turns=1)
+    shell = cli.SatanClawCLI(compact=True, max_turns=1)
 
     # Config model is NOT the global default — user made a deliberate choice
     assert shell._model_is_default is False
@@ -487,10 +487,10 @@ def test_codex_provider_preserves_explicit_codex_model(monkeypatch):
             "source": "env/config",
         }
 
-    monkeypatch.setattr("satan_cli.runtime_provider.resolve_runtime_provider", _runtime_resolve)
-    monkeypatch.setattr("satan_cli.runtime_provider.format_runtime_provider_error", lambda exc: str(exc))
+    monkeypatch.setattr("satanclaw_cli.runtime_provider.resolve_runtime_provider", _runtime_resolve)
+    monkeypatch.setattr("satanclaw_cli.runtime_provider.format_runtime_provider_error", lambda exc: str(exc))
 
-    shell = cli.SatanCLI(model="gpt-5.1-codex-mini", compact=True, max_turns=1)
+    shell = cli.SatanClawCLI(model="gpt-5.1-codex-mini", compact=True, max_turns=1)
 
     assert shell._model_is_default is False
     assert shell._ensure_runtime_credentials() is True
@@ -514,10 +514,10 @@ def test_codex_provider_strips_provider_prefix_from_model(monkeypatch):
             "source": "env/config",
         }
 
-    monkeypatch.setattr("satan_cli.runtime_provider.resolve_runtime_provider", _runtime_resolve)
-    monkeypatch.setattr("satan_cli.runtime_provider.format_runtime_provider_error", lambda exc: str(exc))
+    monkeypatch.setattr("satanclaw_cli.runtime_provider.resolve_runtime_provider", _runtime_resolve)
+    monkeypatch.setattr("satanclaw_cli.runtime_provider.format_runtime_provider_error", lambda exc: str(exc))
 
-    shell = cli.SatanCLI(model="openai/gpt-5.3-codex", compact=True, max_turns=1)
+    shell = cli.SatanClawCLI(model="openai/gpt-5.3-codex", compact=True, max_turns=1)
 
     assert shell._ensure_runtime_credentials() is True
     assert shell.model == "gpt-5.3-codex"
@@ -525,23 +525,23 @@ def test_codex_provider_strips_provider_prefix_from_model(monkeypatch):
 
 def test_cmd_model_falls_back_to_auto_on_invalid_provider(monkeypatch, capsys):
     monkeypatch.setattr(
-        "satan_cli.config.load_config",
+        "satanclaw_cli.config.load_config",
         lambda: {"model": {"default": "gpt-5", "provider": "invalid-provider"}},
     )
-    monkeypatch.setattr("satan_cli.config.save_config", lambda cfg: None)
-    monkeypatch.setattr("satan_cli.config.get_env_value", lambda key: "")
-    monkeypatch.setattr("satan_cli.config.save_env_value", lambda key, value: None)
+    monkeypatch.setattr("satanclaw_cli.config.save_config", lambda cfg: None)
+    monkeypatch.setattr("satanclaw_cli.config.get_env_value", lambda key: "")
+    monkeypatch.setattr("satanclaw_cli.config.save_env_value", lambda key, value: None)
 
     def _resolve_provider(requested, **kwargs):
         if requested == "invalid-provider":
             raise AuthError("Unknown provider 'invalid-provider'.", code="invalid_provider")
         return "openrouter"
 
-    monkeypatch.setattr("satan_cli.auth.resolve_provider", _resolve_provider)
-    monkeypatch.setattr(satan_main, "_prompt_provider_choice", lambda choices: len(choices) - 1)
+    monkeypatch.setattr("satanclaw_cli.auth.resolve_provider", _resolve_provider)
+    monkeypatch.setattr(satanclaw_main, "_prompt_provider_choice", lambda choices: len(choices) - 1)
     monkeypatch.setattr("sys.stdin", type("FakeTTY", (), {"isatty": lambda self: True})())
 
-    satan_main.cmd_model(SimpleNamespace())
+    satanclaw_main.cmd_model(SimpleNamespace())
     output = capsys.readouterr().out
 
     assert "Warning:" in output
@@ -551,16 +551,16 @@ def test_cmd_model_falls_back_to_auto_on_invalid_provider(monkeypatch, capsys):
 
 def test_model_flow_custom_saves_verified_v1_base_url(monkeypatch, capsys):
     monkeypatch.setattr(
-        "satan_cli.config.get_env_value",
+        "satanclaw_cli.config.get_env_value",
         lambda key: "" if key in {"OPENAI_BASE_URL", "OPENAI_API_KEY"} else "",
     )
     saved_env = {}
-    monkeypatch.setattr("satan_cli.config.save_env_value", lambda key, value: saved_env.__setitem__(key, value))
-    monkeypatch.setattr("satan_cli.auth._save_model_choice", lambda model: saved_env.__setitem__("MODEL", model))
-    monkeypatch.setattr("satan_cli.auth.deactivate_provider", lambda: None)
-    monkeypatch.setattr("satan_cli.main._save_custom_provider", lambda *args, **kwargs: None)
+    monkeypatch.setattr("satanclaw_cli.config.save_env_value", lambda key, value: saved_env.__setitem__(key, value))
+    monkeypatch.setattr("satanclaw_cli.auth._save_model_choice", lambda model: saved_env.__setitem__("MODEL", model))
+    monkeypatch.setattr("satanclaw_cli.auth.deactivate_provider", lambda: None)
+    monkeypatch.setattr("satanclaw_cli.main._save_custom_provider", lambda *args, **kwargs: None)
     monkeypatch.setattr(
-        "satan_cli.models.probe_api_models",
+        "satanclaw_cli.models.probe_api_models",
         lambda api_key, base_url: {
             "models": ["llm"],
             "probed_url": "http://localhost:8000/v1/models",
@@ -570,17 +570,17 @@ def test_model_flow_custom_saves_verified_v1_base_url(monkeypatch, capsys):
         },
     )
     monkeypatch.setattr(
-        "satan_cli.config.load_config",
+        "satanclaw_cli.config.load_config",
         lambda: {"model": {"default": "", "provider": "custom", "base_url": ""}},
     )
-    monkeypatch.setattr("satan_cli.config.save_config", lambda cfg: None)
+    monkeypatch.setattr("satanclaw_cli.config.save_config", lambda cfg: None)
 
     # After the probe detects a single model ("llm"), the flow asks
     # "Use this model? [Y/n]:" — confirm with Enter, then context length.
     answers = iter(["http://localhost:8000", "local-key", "", ""])
     monkeypatch.setattr("builtins.input", lambda _prompt="": next(answers))
 
-    satan_main._model_flow_custom({})
+    satanclaw_main._model_flow_custom({})
     output = capsys.readouterr().out
 
     assert "Saving the working base URL instead" in output
@@ -591,17 +591,17 @@ def test_model_flow_custom_saves_verified_v1_base_url(monkeypatch, capsys):
 
 
 def test_cmd_model_forwards_nous_login_tls_options(monkeypatch):
-    monkeypatch.setattr(satan_main, "_require_tty", lambda *a: None)
+    monkeypatch.setattr(satanclaw_main, "_require_tty", lambda *a: None)
     monkeypatch.setattr(
-        "satan_cli.config.load_config",
+        "satanclaw_cli.config.load_config",
         lambda: {"model": {"default": "gpt-5", "provider": "nous"}},
     )
-    monkeypatch.setattr("satan_cli.config.save_config", lambda cfg: None)
-    monkeypatch.setattr("satan_cli.config.get_env_value", lambda key: "")
-    monkeypatch.setattr("satan_cli.config.save_env_value", lambda key, value: None)
-    monkeypatch.setattr("satan_cli.auth.resolve_provider", lambda requested, **kwargs: "nous")
-    monkeypatch.setattr("satan_cli.auth.get_provider_auth_state", lambda provider_id: None)
-    monkeypatch.setattr(satan_main, "_prompt_provider_choice", lambda choices: 0)
+    monkeypatch.setattr("satanclaw_cli.config.save_config", lambda cfg: None)
+    monkeypatch.setattr("satanclaw_cli.config.get_env_value", lambda key: "")
+    monkeypatch.setattr("satanclaw_cli.config.save_env_value", lambda key, value: None)
+    monkeypatch.setattr("satanclaw_cli.auth.resolve_provider", lambda requested, **kwargs: "nous")
+    monkeypatch.setattr("satanclaw_cli.auth.get_provider_auth_state", lambda provider_id: None)
+    monkeypatch.setattr(satanclaw_main, "_prompt_provider_choice", lambda choices: 0)
 
     captured = {}
 
@@ -615,13 +615,13 @@ def test_cmd_model_forwards_nous_login_tls_options(monkeypatch):
         captured["ca_bundle"] = login_args.ca_bundle
         captured["insecure"] = login_args.insecure
 
-    monkeypatch.setattr("satan_cli.auth._login_nous", _fake_login)
+    monkeypatch.setattr("satanclaw_cli.auth._login_nous", _fake_login)
 
-    satan_main.cmd_model(
+    satanclaw_main.cmd_model(
         SimpleNamespace(
-            portal_url="https://portal.nousresearch.com",
-            inference_url="https://inference.nousresearch.com/v1",
-            client_id="satan-local",
+            portal_url="https://portal.eskayML.com",
+            inference_url="https://inference.eskayML.com/v1",
+            client_id="satanclaw-local",
             scope="openid profile",
             no_browser=True,
             timeout=7.5,
@@ -631,9 +631,9 @@ def test_cmd_model_forwards_nous_login_tls_options(monkeypatch):
     )
 
     assert captured == {
-        "portal_url": "https://portal.nousresearch.com",
-        "inference_url": "https://inference.nousresearch.com/v1",
-        "client_id": "satan-local",
+        "portal_url": "https://portal.eskayML.com",
+        "inference_url": "https://inference.eskayML.com/v1",
+        "client_id": "satanclaw-local",
         "scope": "openid profile",
         "no_browser": True,
         "timeout": 7.5,

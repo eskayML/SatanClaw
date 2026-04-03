@@ -1,42 +1,42 @@
 ---
 sidebar_position: 8
 title: "Open WebUI"
-description: "Connect Open WebUI to Satan Agent via the OpenAI-compatible API server"
+description: "Connect Open WebUI to SatanClaw Agent via the OpenAI-compatible API server"
 ---
 
 # Open WebUI Integration
 
-[Open WebUI](https://github.com/open-webui/open-webui) (126k★) is the most popular self-hosted chat interface for AI. With Satan Agent's built-in API server, you can use Open WebUI as a polished web frontend for your agent — complete with conversation management, user accounts, and a modern chat interface.
+[Open WebUI](https://github.com/open-webui/open-webui) (126k★) is the most popular self-hosted chat interface for AI. With SatanClaw Agent's built-in API server, you can use Open WebUI as a polished web frontend for your agent — complete with conversation management, user accounts, and a modern chat interface.
 
 ## Architecture
 
 ```mermaid
 flowchart LR
     A["Open WebUI<br/>browser UI<br/>port 3000"]
-    B["satan-agent<br/>gateway API server<br/>port 8642"]
+    B["satanclaw-agent<br/>gateway API server<br/>port 8642"]
     A -->|POST /v1/chat/completions| B
     B -->|SSE streaming response| A
 ```
 
-Open WebUI connects to Satan Agent's API server just like it would connect to OpenAI. Your agent handles the requests with its full toolset — terminal, file operations, web search, memory, skills — and returns the final response.
+Open WebUI connects to SatanClaw Agent's API server just like it would connect to OpenAI. Your agent handles the requests with its full toolset — terminal, file operations, web search, memory, skills — and returns the final response.
 
-Open WebUI talks to Satan server-to-server, so you do not need `API_SERVER_CORS_ORIGINS` for this integration.
+Open WebUI talks to SatanClaw server-to-server, so you do not need `API_SERVER_CORS_ORIGINS` for this integration.
 
 ## Quick Setup
 
 ### 1. Enable the API server
 
-Add to `~/.satan/.env`:
+Add to `~/.satanclaw/.env`:
 
 ```bash
 API_SERVER_ENABLED=true
 API_SERVER_KEY=your-secret-key
 ```
 
-### 2. Start Satan Agent gateway
+### 2. Start SatanClaw Agent gateway
 
 ```bash
-satan gateway
+satanclaw gateway
 ```
 
 You should see:
@@ -60,7 +60,7 @@ docker run -d -p 3000:8080 \
 
 ### 4. Open the UI
 
-Go to **http://localhost:3000**. Create your admin account (the first user becomes admin). You should see **satan-agent** in the model dropdown. Start chatting!
+Go to **http://localhost:3000**. Create your admin account (the first user becomes admin). You should see **satanclaw-agent** in the model dropdown. Start chatting!
 
 ## Docker Compose Setup
 
@@ -106,7 +106,7 @@ If you prefer to configure the connection through the UI instead of environment 
 7. Click the **checkmark** to verify the connection
 8. **Save**
 
-The **satan-agent** model should now appear in the model dropdown.
+The **satanclaw-agent** model should now appear in the model dropdown.
 
 :::warning
 Environment variables only take effect on Open WebUI's **first launch**. After that, connection settings are stored in its internal database. To change them later, use the Admin UI or delete the Docker volume and start fresh.
@@ -123,18 +123,18 @@ Open WebUI supports two API modes when connecting to a backend:
 
 ### Using Chat Completions (recommended)
 
-This is the default and requires no extra configuration. Open WebUI sends standard OpenAI-format requests and Satan Agent responds accordingly. Each request includes the full conversation history.
+This is the default and requires no extra configuration. Open WebUI sends standard OpenAI-format requests and SatanClaw Agent responds accordingly. Each request includes the full conversation history.
 
 ### Using Responses API
 
 To use the Responses API mode:
 
 1. Go to **Admin Settings** → **Connections** → **OpenAI** → **Manage**
-2. Edit your satan-agent connection
+2. Edit your satanclaw-agent connection
 3. Change **API Type** from "Chat Completions" to **"Responses (Experimental)"**
 4. Save
 
-With the Responses API, Open WebUI sends requests in the Responses format (`input` array + `instructions`), and Satan Agent can preserve full tool call history across turns via `previous_response_id`.
+With the Responses API, Open WebUI sends requests in the Responses format (`input` array + `instructions`), and SatanClaw Agent can preserve full tool call history across turns via `previous_response_id`.
 
 :::note
 Open WebUI currently manages conversation history client-side even in Responses mode — it sends the full message history in each request rather than using `previous_response_id`. The Responses API mode is mainly useful for future compatibility as frontends evolve.
@@ -145,7 +145,7 @@ Open WebUI currently manages conversation history client-side even in Responses 
 When you send a message in Open WebUI:
 
 1. Open WebUI sends a `POST /v1/chat/completions` request with your message and conversation history
-2. Satan Agent creates an AIAgent instance with its full toolset
+2. SatanClaw Agent creates an AIAgent instance with its full toolset
 3. The agent processes your request — it may call tools (terminal, file operations, web search, etc.)
 4. As tools execute, **inline progress messages stream to the UI** so you can see what the agent is doing (e.g. `` `💻 ls -la` ``, `` `🔍 Python 3.12 release` ``)
 5. The agent's final text response streams back to Open WebUI
@@ -159,7 +159,7 @@ With streaming enabled (the default), you'll see brief inline indicators as tool
 
 ## Configuration Reference
 
-### Satan Agent (API server)
+### SatanClaw Agent (API server)
 
 | Variable | Default | Description |
 |----------|---------|-------------|
@@ -172,7 +172,7 @@ With streaming enabled (the default), you'll see brief inline indicators as tool
 
 | Variable | Description |
 |----------|-------------|
-| `OPENAI_API_BASE_URL` | Satan Agent's API URL (include `/v1`) |
+| `OPENAI_API_BASE_URL` | SatanClaw Agent's API URL (include `/v1`) |
 | `OPENAI_API_KEY` | Must be non-empty. Match your `API_SERVER_KEY`. |
 
 ## Troubleshooting
@@ -181,7 +181,7 @@ With streaming enabled (the default), you'll see brief inline indicators as tool
 
 - **Check the URL has `/v1` suffix**: `http://host.docker.internal:8642/v1` (not just `:8642`)
 - **Verify the gateway is running**: `curl http://localhost:8642/health` should return `{"status": "ok"}`
-- **Check model listing**: `curl http://localhost:8642/v1/models` should return a list with `satan-agent`
+- **Check model listing**: `curl http://localhost:8642/v1/models` should return a list with `satanclaw-agent`
 - **Docker networking**: From inside Docker, `localhost` means the container, not your host. Use `host.docker.internal` or `--network=host`.
 
 ### Connection test passes but no models load
@@ -190,11 +190,11 @@ This is almost always the missing `/v1` suffix. Open WebUI's connection test is 
 
 ### Response takes a long time
 
-Satan Agent may be executing multiple tool calls (reading files, running commands, searching the web) before producing its final response. This is normal for complex queries. The response appears all at once when the agent finishes.
+SatanClaw Agent may be executing multiple tool calls (reading files, running commands, searching the web) before producing its final response. This is normal for complex queries. The response appears all at once when the agent finishes.
 
 ### "Invalid API key" errors
 
-Make sure your `OPENAI_API_KEY` in Open WebUI matches the `API_SERVER_KEY` in Satan Agent.
+Make sure your `OPENAI_API_KEY` in Open WebUI matches the `API_SERVER_KEY` in SatanClaw Agent.
 
 ## Linux Docker (no Docker Desktop)
 

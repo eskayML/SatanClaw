@@ -2,7 +2,7 @@ class SatanClawAgent < Formula
   include Language::Python::Virtualenv
 
   desc "Self-improving AI agent that creates skills from experience"
-  homepage "https://satanclaw-agent.nousresearch.com"
+  homepage "https://satanclaw-agent.eskayML.com"
   # Stable source should point at the semver-named sdist asset attached by
   # scripts/release.py, not the CalVer tag tarball.
   url "https://github.com/NousResearch/satanclaw-agent/releases/download/v2026.3.30/satanclaw_agent-0.6.0.tar.gz"

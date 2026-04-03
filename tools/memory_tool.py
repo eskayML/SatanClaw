@@ -31,13 +31,13 @@ import re
 import tempfile
 from contextlib import contextmanager
 from pathlib import Path
-from satan_constants import get_satan_home
+from satanclaw_constants import get_satanclaw_home
 from typing import Dict, Any, List, Optional
 
 logger = logging.getLogger(__name__)
 
 # Where memory files live
-MEMORY_DIR = get_satan_home() / "memories"
+MEMORY_DIR = get_satanclaw_home() / "memories"
 
 ENTRY_DELIMITER = "\n§\n"
 
@@ -62,7 +62,7 @@ _MEMORY_THREAT_PATTERNS = [
     # Persistence via shell rc
     (r'authorized_keys', "ssh_backdoor"),
     (r'\$HOME/\.ssh|\~/\.ssh', "ssh_access"),
-    (r'\$HOME/\.satan/\.env|\~/\.satan/\.env', "satan_env"),
+    (r'\$HOME/\.satanclaw/\.env|\~/\.satanclaw/\.env', "satanclaw_env"),
 ]
 
 # Subset of invisible chars for injection detection

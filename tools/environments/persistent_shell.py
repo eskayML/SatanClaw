@@ -45,7 +45,7 @@ class PersistentShellMixin:
 
     @property
     def _temp_prefix(self) -> str:
-        return f"/tmp/satan-persistent-{self._session_id}"
+        return f"/tmp/satanclaw-persistent-{self._session_id}"
 
     # ------------------------------------------------------------------
     # Lifecycle

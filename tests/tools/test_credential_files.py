@@ -30,26 +30,26 @@ def _clean_state():
 
 class TestRegisterCredentialFiles:
     def test_dict_with_path_key(self, tmp_path):
-        satan_home = tmp_path / ".satan"
-        satan_home.mkdir()
-        (satan_home / "token.json").write_text("{}")
+        satanclaw_home = tmp_path / ".satanclaw"
+        satanclaw_home.mkdir()
+        (satanclaw_home / "token.json").write_text("{}")
 
-        with patch.dict(os.environ, {"HERMES_HOME": str(satan_home)}):
+        with patch.dict(os.environ, {"HERMES_HOME": str(satanclaw_home)}):
             missing = register_credential_files([{"path": "token.json"}])
 
         assert missing == []
         mounts = get_credential_file_mounts()
         assert len(mounts) == 1
-        assert mounts[0]["host_path"] == str(satan_home / "token.json")
-        assert mounts[0]["container_path"] == "/root/.satan/token.json"
+        assert mounts[0]["host_path"] == str(satanclaw_home / "token.json")
+        assert mounts[0]["container_path"] == "/root/.satanclaw/token.json"
 
     def test_dict_with_name_key_fallback(self, tmp_path):
         """Skills use 'name' instead of 'path' — both should work."""
-        satan_home = tmp_path / ".satan"
-        satan_home.mkdir()
-        (satan_home / "google_token.json").write_text("{}")
+        satanclaw_home = tmp_path / ".satanclaw"
+        satanclaw_home.mkdir()
+        (satanclaw_home / "google_token.json").write_text("{}")
 
-        with patch.dict(os.environ, {"HERMES_HOME": str(satan_home)}):
+        with patch.dict(os.environ, {"HERMES_HOME": str(satanclaw_home)}):
             missing = register_credential_files([
                 {"name": "google_token.json", "description": "OAuth token"},
             ])
@@ -60,11 +60,11 @@ class TestRegisterCredentialFiles:
         assert "google_token.json" in mounts[0]["container_path"]
 
     def test_string_entry(self, tmp_path):
-        satan_home = tmp_path / ".satan"
-        satan_home.mkdir()
-        (satan_home / "secret.key").write_text("key")
+        satanclaw_home = tmp_path / ".satanclaw"
+        satanclaw_home.mkdir()
+        (satanclaw_home / "secret.key").write_text("key")
 
-        with patch.dict(os.environ, {"HERMES_HOME": str(satan_home)}):
+        with patch.dict(os.environ, {"HERMES_HOME": str(satanclaw_home)}):
             missing = register_credential_files(["secret.key"])
 
         assert missing == []
@@ -72,10 +72,10 @@ class TestRegisterCredentialFiles:
         assert len(mounts) == 1
 
     def test_missing_file_reported(self, tmp_path):
-        satan_home = tmp_path / ".satan"
-        satan_home.mkdir()
+        satanclaw_home = tmp_path / ".satanclaw"
+        satanclaw_home.mkdir()
 
-        with patch.dict(os.environ, {"HERMES_HOME": str(satan_home)}):
+        with patch.dict(os.environ, {"HERMES_HOME": str(satanclaw_home)}):
             missing = register_credential_files([
                 {"name": "does_not_exist.json"},
             ])
@@ -85,11 +85,11 @@ class TestRegisterCredentialFiles:
 
     def test_path_takes_precedence_over_name(self, tmp_path):
         """When both path and name are present, path wins."""
-        satan_home = tmp_path / ".satan"
-        satan_home.mkdir()
-        (satan_home / "real.json").write_text("{}")
+        satanclaw_home = tmp_path / ".satanclaw"
+        satanclaw_home.mkdir()
+        (satanclaw_home / "real.json").write_text("{}")
 
-        with patch.dict(os.environ, {"HERMES_HOME": str(satan_home)}):
+        with patch.dict(os.environ, {"HERMES_HOME": str(satanclaw_home)}):
             missing = register_credential_files([
                 {"path": "real.json", "name": "wrong.json"},
             ])
@@ -101,41 +101,41 @@ class TestRegisterCredentialFiles:
 
 class TestSkillsDirectoryMount:
     def test_returns_mount_when_skills_dir_exists(self, tmp_path):
-        satan_home = tmp_path / ".satan"
-        skills_dir = satan_home / "skills"
+        satanclaw_home = tmp_path / ".satanclaw"
+        skills_dir = satanclaw_home / "skills"
         skills_dir.mkdir(parents=True)
         (skills_dir / "test-skill").mkdir()
         (skills_dir / "test-skill" / "SKILL.md").write_text("# test")
 
-        with patch.dict(os.environ, {"HERMES_HOME": str(satan_home)}):
+        with patch.dict(os.environ, {"HERMES_HOME": str(satanclaw_home)}):
             mount = get_skills_directory_mount()
 
         assert mount is not None
         assert mount["host_path"] == str(skills_dir)
-        assert mount["container_path"] == "/root/.satan/skills"
+        assert mount["container_path"] == "/root/.satanclaw/skills"
 
     def test_returns_none_when_no_skills_dir(self, tmp_path):
-        satan_home = tmp_path / ".satan"
-        satan_home.mkdir()
+        satanclaw_home = tmp_path / ".satanclaw"
+        satanclaw_home.mkdir()
 
-        with patch.dict(os.environ, {"HERMES_HOME": str(satan_home)}):
+        with patch.dict(os.environ, {"HERMES_HOME": str(satanclaw_home)}):
             mount = get_skills_directory_mount()
 
         assert mount is None
 
     def test_custom_container_base(self, tmp_path):
-        satan_home = tmp_path / ".satan"
-        (satan_home / "skills").mkdir(parents=True)
+        satanclaw_home = tmp_path / ".satanclaw"
+        (satanclaw_home / "skills").mkdir(parents=True)
 
-        with patch.dict(os.environ, {"HERMES_HOME": str(satan_home)}):
-            mount = get_skills_directory_mount(container_base="/home/user/.satan")
+        with patch.dict(os.environ, {"HERMES_HOME": str(satanclaw_home)}):
+            mount = get_skills_directory_mount(container_base="/home/user/.satanclaw")
 
-        assert mount["container_path"] == "/home/user/.satan/skills"
+        assert mount["container_path"] == "/home/user/.satanclaw/skills"
 
     def test_symlinks_are_sanitized(self, tmp_path):
         """Symlinks in skills dir should be excluded from the mount."""
-        satan_home = tmp_path / ".satan"
-        skills_dir = satan_home / "skills"
+        satanclaw_home = tmp_path / ".satanclaw"
+        skills_dir = satanclaw_home / "skills"
         skills_dir.mkdir(parents=True)
         (skills_dir / "legit.md").write_text("# real skill")
         # Create a symlink pointing outside the skills tree
@@ -143,7 +143,7 @@ class TestSkillsDirectoryMount:
         secret.write_text("TOP SECRET")
         (skills_dir / "evil_link").symlink_to(secret)
 
-        with patch.dict(os.environ, {"HERMES_HOME": str(satan_home)}):
+        with patch.dict(os.environ, {"HERMES_HOME": str(satanclaw_home)}):
             mount = get_skills_directory_mount()
 
         assert mount is not None
@@ -158,12 +158,12 @@ class TestSkillsDirectoryMount:
 
     def test_no_symlinks_returns_original_dir(self, tmp_path):
         """When no symlinks exist, the original dir is returned (no copy)."""
-        satan_home = tmp_path / ".satan"
-        skills_dir = satan_home / "skills"
+        satanclaw_home = tmp_path / ".satanclaw"
+        skills_dir = satanclaw_home / "skills"
         skills_dir.mkdir(parents=True)
         (skills_dir / "skill.md").write_text("ok")
 
-        with patch.dict(os.environ, {"HERMES_HOME": str(satan_home)}):
+        with patch.dict(os.environ, {"HERMES_HOME": str(satanclaw_home)}):
             mount = get_skills_directory_mount()
 
         assert mount["host_path"] == str(skills_dir)
@@ -171,8 +171,8 @@ class TestSkillsDirectoryMount:
 
 class TestIterSkillsFiles:
     def test_returns_files_skipping_symlinks(self, tmp_path):
-        satan_home = tmp_path / ".satan"
-        skills_dir = satan_home / "skills"
+        satanclaw_home = tmp_path / ".satanclaw"
+        skills_dir = satanclaw_home / "skills"
         (skills_dir / "cat" / "myskill").mkdir(parents=True)
         (skills_dir / "cat" / "myskill" / "SKILL.md").write_text("# skill")
         (skills_dir / "cat" / "myskill" / "scripts").mkdir()
@@ -182,20 +182,20 @@ class TestIterSkillsFiles:
         secret.write_text("nope")
         (skills_dir / "cat" / "myskill" / "evil").symlink_to(secret)
 
-        with patch.dict(os.environ, {"HERMES_HOME": str(satan_home)}):
+        with patch.dict(os.environ, {"HERMES_HOME": str(satanclaw_home)}):
             files = iter_skills_files()
 
         paths = {f["container_path"] for f in files}
-        assert "/root/.satan/skills/cat/myskill/SKILL.md" in paths
-        assert "/root/.satan/skills/cat/myskill/scripts/run.sh" in paths
+        assert "/root/.satanclaw/skills/cat/myskill/SKILL.md" in paths
+        assert "/root/.satanclaw/skills/cat/myskill/scripts/run.sh" in paths
         # Symlink should be excluded
         assert not any("evil" in f["container_path"] for f in files)
 
     def test_empty_when_no_skills_dir(self, tmp_path):
-        satan_home = tmp_path / ".satan"
-        satan_home.mkdir()
+        satanclaw_home = tmp_path / ".satanclaw"
+        satanclaw_home.mkdir()
 
-        with patch.dict(os.environ, {"HERMES_HOME": str(satan_home)}):
+        with patch.dict(os.environ, {"HERMES_HOME": str(satanclaw_home)}):
             assert iter_skills_files() == []
 
 class TestPathTraversalSecurity:
@@ -212,10 +212,10 @@ class TestPathTraversalSecurity:
 
     def test_dotdot_traversal_rejected(self, tmp_path, monkeypatch):
         """'../sensitive' must not escape HERMES_HOME."""
-        monkeypatch.setenv("HERMES_HOME", str(tmp_path / ".satan"))
-        (tmp_path / ".satan").mkdir()
+        monkeypatch.setenv("HERMES_HOME", str(tmp_path / ".satanclaw"))
+        (tmp_path / ".satanclaw").mkdir()
 
-        # Create a sensitive file one level above satan_home
+        # Create a sensitive file one level above satanclaw_home
         sensitive = tmp_path / "sensitive.json"
         sensitive.write_text('{"secret": "value"}')
 
@@ -226,11 +226,11 @@ class TestPathTraversalSecurity:
 
     def test_deep_traversal_rejected(self, tmp_path, monkeypatch):
         """'../../etc/passwd' style traversal must be rejected."""
-        satan_home = tmp_path / ".satan"
-        satan_home.mkdir()
-        monkeypatch.setenv("HERMES_HOME", str(satan_home))
+        satanclaw_home = tmp_path / ".satanclaw"
+        satanclaw_home.mkdir()
+        monkeypatch.setenv("HERMES_HOME", str(satanclaw_home))
 
-        # Create a fake sensitive file outside satan_home
+        # Create a fake sensitive file outside satanclaw_home
         ssh_dir = tmp_path / ".ssh"
         ssh_dir.mkdir()
         (ssh_dir / "id_rsa").write_text("PRIVATE KEY")
@@ -242,9 +242,9 @@ class TestPathTraversalSecurity:
 
     def test_absolute_path_rejected(self, tmp_path, monkeypatch):
         """Absolute paths must be rejected regardless of whether they exist."""
-        satan_home = tmp_path / ".satan"
-        satan_home.mkdir()
-        monkeypatch.setenv("HERMES_HOME", str(satan_home))
+        satanclaw_home = tmp_path / ".satanclaw"
+        satanclaw_home.mkdir()
+        monkeypatch.setenv("HERMES_HOME", str(satanclaw_home))
 
         # Create a file at an absolute path
         sensitive = tmp_path / "absolute.json"
@@ -257,10 +257,10 @@ class TestPathTraversalSecurity:
 
     def test_legitimate_file_still_works(self, tmp_path, monkeypatch):
         """Normal files inside HERMES_HOME must still be registered."""
-        satan_home = tmp_path / ".satan"
-        satan_home.mkdir()
-        monkeypatch.setenv("HERMES_HOME", str(satan_home))
-        (satan_home / "token.json").write_text('{"token": "abc"}')
+        satanclaw_home = tmp_path / ".satanclaw"
+        satanclaw_home.mkdir()
+        monkeypatch.setenv("HERMES_HOME", str(satanclaw_home))
+        (satanclaw_home / "token.json").write_text('{"token": "abc"}')
 
         result = register_credential_file("token.json")
 
@@ -269,14 +269,14 @@ class TestPathTraversalSecurity:
         assert len(mounts) == 1
         assert "token.json" in mounts[0]["container_path"]
 
-    def test_nested_subdir_inside_satan_home_allowed(self, tmp_path, monkeypatch):
+    def test_nested_subdir_inside_satanclaw_home_allowed(self, tmp_path, monkeypatch):
         """Files in subdirectories of HERMES_HOME must be allowed."""
-        satan_home = tmp_path / ".satan"
-        satan_home.mkdir()
-        subdir = satan_home / "creds"
+        satanclaw_home = tmp_path / ".satanclaw"
+        satanclaw_home.mkdir()
+        subdir = satanclaw_home / "creds"
         subdir.mkdir()
         (subdir / "oauth.json").write_text("{}")
-        monkeypatch.setenv("HERMES_HOME", str(satan_home))
+        monkeypatch.setenv("HERMES_HOME", str(satanclaw_home))
 
         result = register_credential_file("creds/oauth.json")
 
@@ -284,16 +284,16 @@ class TestPathTraversalSecurity:
 
     def test_symlink_traversal_rejected(self, tmp_path, monkeypatch):
         """A symlink inside HERMES_HOME pointing outside must be rejected."""
-        satan_home = tmp_path / ".satan"
-        satan_home.mkdir()
-        monkeypatch.setenv("HERMES_HOME", str(satan_home))
+        satanclaw_home = tmp_path / ".satanclaw"
+        satanclaw_home.mkdir()
+        monkeypatch.setenv("HERMES_HOME", str(satanclaw_home))
 
-        # Create a sensitive file outside satan_home
+        # Create a sensitive file outside satanclaw_home
         sensitive = tmp_path / "sensitive.json"
         sensitive.write_text('{"secret": "value"}')
 
-        # Create a symlink inside satan_home pointing outside
-        symlink = satan_home / "evil_link.json"
+        # Create a symlink inside satanclaw_home pointing outside
+        symlink = satanclaw_home / "evil_link.json"
         try:
             symlink.symlink_to(sensitive)
         except (OSError, NotImplementedError):
@@ -313,20 +313,20 @@ class TestPathTraversalSecurity:
 class TestConfigPathTraversal:
     """terminal.credential_files in config.yaml must also reject traversal."""
 
-    def _write_config(self, satan_home: Path, cred_files: list):
+    def _write_config(self, satanclaw_home: Path, cred_files: list):
         import yaml
-        config_path = satan_home / "config.yaml"
+        config_path = satanclaw_home / "config.yaml"
         config_path.write_text(yaml.dump({"terminal": {"credential_files": cred_files}}))
 
     def test_config_traversal_rejected(self, tmp_path, monkeypatch):
         """'../secret' in config.yaml must not escape HERMES_HOME."""
-        satan_home = tmp_path / ".satan"
-        satan_home.mkdir()
-        monkeypatch.setenv("HERMES_HOME", str(satan_home))
+        satanclaw_home = tmp_path / ".satanclaw"
+        satanclaw_home.mkdir()
+        monkeypatch.setenv("HERMES_HOME", str(satanclaw_home))
 
         sensitive = tmp_path / "secret.json"
         sensitive.write_text("{}")
-        self._write_config(satan_home, ["../secret.json"])
+        self._write_config(satanclaw_home, ["../secret.json"])
 
         mounts = get_credential_file_mounts()
         host_paths = [m["host_path"] for m in mounts]
@@ -335,25 +335,25 @@ class TestConfigPathTraversal:
 
     def test_config_absolute_path_rejected(self, tmp_path, monkeypatch):
         """Absolute paths in config.yaml must be rejected."""
-        satan_home = tmp_path / ".satan"
-        satan_home.mkdir()
-        monkeypatch.setenv("HERMES_HOME", str(satan_home))
+        satanclaw_home = tmp_path / ".satanclaw"
+        satanclaw_home.mkdir()
+        monkeypatch.setenv("HERMES_HOME", str(satanclaw_home))
 
         sensitive = tmp_path / "abs.json"
         sensitive.write_text("{}")
-        self._write_config(satan_home, [str(sensitive)])
+        self._write_config(satanclaw_home, [str(sensitive)])
 
         mounts = get_credential_file_mounts()
         assert mounts == []
 
     def test_config_legitimate_file_works(self, tmp_path, monkeypatch):
         """Normal files inside HERMES_HOME via config must still mount."""
-        satan_home = tmp_path / ".satan"
-        satan_home.mkdir()
-        monkeypatch.setenv("HERMES_HOME", str(satan_home))
+        satanclaw_home = tmp_path / ".satanclaw"
+        satanclaw_home.mkdir()
+        monkeypatch.setenv("HERMES_HOME", str(satanclaw_home))
 
-        (satan_home / "oauth.json").write_text("{}")
-        self._write_config(satan_home, ["oauth.json"])
+        (satanclaw_home / "oauth.json").write_text("{}")
+        self._write_config(satanclaw_home, ["oauth.json"])
 
         mounts = get_credential_file_mounts()
         assert len(mounts) == 1

@@ -1,6 +1,6 @@
-"""Anthropic Messages API adapter for Satan Agent.
+"""Anthropic Messages API adapter for SatanClaw Agent.
 
-Translates between Satan's internal OpenAI-style message format and
+Translates between SatanClaw's internal OpenAI-style message format and
 Anthropic's Messages API. Follows the same pattern as the codex_responses
 adapter — all provider-specific logic is isolated here.
 
@@ -16,7 +16,7 @@ import logging
 import os
 from pathlib import Path
 
-from satan_constants import get_satan_home
+from satanclaw_constants import get_satanclaw_home
 from types import SimpleNamespace
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -454,7 +454,7 @@ def _resolve_claude_code_token_from_credentials(creds: Optional[Dict[str, Any]] 
 def _prefer_refreshable_claude_code_token(env_token: str, creds: Optional[Dict[str, Any]]) -> Optional[str]:
     """Prefer Claude Code creds when a persisted env OAuth token would shadow refresh.
 
-    Satan historically persisted setup tokens into ANTHROPIC_TOKEN. That makes
+    SatanClaw historically persisted setup tokens into ANTHROPIC_TOKEN. That makes
     later refresh impossible because the static env token wins before we ever
     inspect Claude Code's refreshable credential file. If we have a refreshable
     Claude Code credential record, prefer it over the static env OAuth token.
@@ -506,7 +506,7 @@ def resolve_anthropic_token() -> Optional[str]:
     """Resolve an Anthropic token from all available sources.
 
     Priority:
-      1. ANTHROPIC_TOKEN env var (OAuth/setup token saved by Satan)
+      1. ANTHROPIC_TOKEN env var (OAuth/setup token saved by SatanClaw)
       2. CLAUDE_CODE_OAUTH_TOKEN env var
       3. Claude Code credentials (~/.claude.json or ~/.claude/.credentials.json)
          — with automatic refresh if expired and a refresh token is available
@@ -516,7 +516,7 @@ def resolve_anthropic_token() -> Optional[str]:
     """
     creds = read_claude_code_credentials()
 
-    # 1. Satan-managed OAuth/setup token env var
+    # 1. SatanClaw-managed OAuth/setup token env var
     token = os.getenv("ANTHROPIC_TOKEN", "").strip()
     if token:
         preferred = _prefer_refreshable_claude_code_token(token, creds)
@@ -538,7 +538,7 @@ def resolve_anthropic_token() -> Optional[str]:
         return resolved_claude_token
 
     # 4. Regular API key, or a legacy OAuth token saved in ANTHROPIC_API_KEY.
-    # This remains as a compatibility fallback for pre-migration Satan configs.
+    # This remains as a compatibility fallback for pre-migration SatanClaw configs.
     api_key = os.getenv("ANTHROPIC_API_KEY", "").strip()
     if api_key:
         return api_key
@@ -586,15 +586,15 @@ def run_oauth_setup_token() -> Optional[str]:
     return None
 
 
-# ── Satan-native PKCE OAuth flow ────────────────────────────────────────
+# ── SatanClaw-native PKCE OAuth flow ────────────────────────────────────────
 # Mirrors the flow used by Claude Code, pi-ai, and OpenCode.
-# Stores credentials in ~/.satan/.anthropic_oauth.json (our own file).
+# Stores credentials in ~/.satanclaw/.anthropic_oauth.json (our own file).
 
 _OAUTH_CLIENT_ID = "9d1c250a-e61b-44d9-88ed-5944d1962f5e"
 _OAUTH_TOKEN_URL = "https://console.anthropic.com/v1/oauth/token"
 _OAUTH_REDIRECT_URI = "https://console.anthropic.com/oauth/code/callback"
 _OAUTH_SCOPES = "org:create_api_key user:profile user:inference"
-_HERMES_OAUTH_FILE = get_satan_home() / ".anthropic_oauth.json"
+_HERMES_OAUTH_FILE = get_satanclaw_home() / ".anthropic_oauth.json"
 
 
 def _generate_pkce() -> tuple:
@@ -610,8 +610,8 @@ def _generate_pkce() -> tuple:
     return verifier, challenge
 
 
-def run_satan_oauth_login_pure() -> Optional[Dict[str, Any]]:
-    """Run Satan-native OAuth PKCE flow and return credential state."""
+def run_satanclaw_oauth_login_pure() -> Optional[Dict[str, Any]]:
+    """Run SatanClaw-native OAuth PKCE flow and return credential state."""
     import time
     import webbrowser
 
@@ -632,7 +632,7 @@ def run_satan_oauth_login_pure() -> Optional[Dict[str, Any]]:
     auth_url = f"https://claude.ai/oauth/authorize?{urlencode(params)}"
 
     print()
-    print("Authorize Satan with your Claude Pro/Max subscription.")
+    print("Authorize SatanClaw with your Claude Pro/Max subscription.")
     print()
     print("╭─ Claude Pro/Max Authorization ────────────────────╮")
     print("│                                                   │")
@@ -708,15 +708,15 @@ def run_satan_oauth_login_pure() -> Optional[Dict[str, Any]]:
     }
 
 
-def run_satan_oauth_login() -> Optional[str]:
-    """Run Satan-native OAuth PKCE flow for Claude Pro/Max subscription.
+def run_satanclaw_oauth_login() -> Optional[str]:
+    """Run SatanClaw-native OAuth PKCE flow for Claude Pro/Max subscription.
 
     Opens a browser to claude.ai for authorization, prompts for the code,
-    exchanges it for tokens, and stores them in ~/.satan/.anthropic_oauth.json.
+    exchanges it for tokens, and stores them in ~/.satanclaw/.anthropic_oauth.json.
 
     Returns the access token on success, None on failure.
     """
-    result = run_satan_oauth_login_pure()
+    result = run_satanclaw_oauth_login_pure()
     if not result:
         return None
 
@@ -724,15 +724,15 @@ def run_satan_oauth_login() -> Optional[str]:
     refresh_token = result["refresh_token"]
     expires_at_ms = result["expires_at_ms"]
 
-    _save_satan_oauth_credentials(access_token, refresh_token, expires_at_ms)
+    _save_satanclaw_oauth_credentials(access_token, refresh_token, expires_at_ms)
     _write_claude_code_credentials(access_token, refresh_token, expires_at_ms)
 
     print("Authentication successful!")
     return access_token
 
 
-def _save_satan_oauth_credentials(access_token: str, refresh_token: str, expires_at_ms: int) -> None:
-    """Save OAuth credentials to ~/.satan/.anthropic_oauth.json."""
+def _save_satanclaw_oauth_credentials(access_token: str, refresh_token: str, expires_at_ms: int) -> None:
+    """Save OAuth credentials to ~/.satanclaw/.anthropic_oauth.json."""
     data = {
         "accessToken": access_token,
         "refreshToken": refresh_token,
@@ -743,27 +743,27 @@ def _save_satan_oauth_credentials(access_token: str, refresh_token: str, expires
         _HERMES_OAUTH_FILE.write_text(json.dumps(data, indent=2), encoding="utf-8")
         _HERMES_OAUTH_FILE.chmod(0o600)
     except (OSError, IOError) as e:
-        logger.debug("Failed to save Satan OAuth credentials: %s", e)
+        logger.debug("Failed to save SatanClaw OAuth credentials: %s", e)
 
 
-def read_satan_oauth_credentials() -> Optional[Dict[str, Any]]:
-    """Read Satan-managed OAuth credentials from ~/.satan/.anthropic_oauth.json."""
+def read_satanclaw_oauth_credentials() -> Optional[Dict[str, Any]]:
+    """Read SatanClaw-managed OAuth credentials from ~/.satanclaw/.anthropic_oauth.json."""
     if _HERMES_OAUTH_FILE.exists():
         try:
             data = json.loads(_HERMES_OAUTH_FILE.read_text(encoding="utf-8"))
             if data.get("accessToken"):
                 return data
         except (json.JSONDecodeError, OSError, IOError) as e:
-            logger.debug("Failed to read Satan OAuth credentials: %s", e)
+            logger.debug("Failed to read SatanClaw OAuth credentials: %s", e)
     return None
 
 
-def refresh_satan_oauth_token() -> Optional[str]:
-    """Refresh the Satan-managed OAuth token using the stored refresh token.
+def refresh_satanclaw_oauth_token() -> Optional[str]:
+    """Refresh the SatanClaw-managed OAuth token using the stored refresh token.
 
     Returns the new access token, or None if refresh fails.
     """
-    creds = read_satan_oauth_credentials()
+    creds = read_satanclaw_oauth_credentials()
     if not creds or not creds.get("refreshToken"):
         return None
 
@@ -772,7 +772,7 @@ def refresh_satan_oauth_token() -> Optional[str]:
             creds["refreshToken"],
             use_json=True,
         )
-        _save_satan_oauth_credentials(
+        _save_satanclaw_oauth_credentials(
             refreshed["access_token"],
             refreshed["refresh_token"],
             refreshed["expires_at_ms"],
@@ -782,10 +782,10 @@ def refresh_satan_oauth_token() -> Optional[str]:
             refreshed["refresh_token"],
             refreshed["expires_at_ms"],
         )
-        logger.debug("Successfully refreshed Satan OAuth token")
+        logger.debug("Successfully refreshed SatanClaw OAuth token")
         return refreshed["access_token"]
     except Exception as e:
-        logger.debug("Failed to refresh Satan OAuth token: %s", e)
+        logger.debug("Failed to refresh SatanClaw OAuth token: %s", e)
 
     return None
 
@@ -1260,10 +1260,10 @@ def build_anthropic_kwargs(
         for block in system:
             if isinstance(block, dict) and block.get("type") == "text":
                 text = block.get("text", "")
-                text = text.replace("Satan Agent", "Claude Code")
-                text = text.replace("Satan agent", "Claude Code")
-                text = text.replace("satan-agent", "claude-code")
-                text = text.replace("Nous Research", "Anthropic")
+                text = text.replace("SatanClaw Agent", "Claude Code")
+                text = text.replace("SatanClaw agent", "Claude Code")
+                text = text.replace("satanclaw-agent", "claude-code")
+                text = text.replace("Samuel Kalu", "Anthropic")
                 block["text"] = text
 
         # 3. Prefix tool names with mcp_ (Claude Code convention)

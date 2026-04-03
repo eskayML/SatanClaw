@@ -6,17 +6,17 @@ description: "External memory provider plugins — Honcho, OpenViking, Mem0, Hin
 
 # Memory Providers
 
-Satan Agent ships with 7 external memory provider plugins that give the agent persistent, cross-session knowledge beyond the built-in MEMORY.md and USER.md. Only **one** external provider can be active at a time — the built-in memory is always active alongside it.
+SatanClaw Agent ships with 7 external memory provider plugins that give the agent persistent, cross-session knowledge beyond the built-in MEMORY.md and USER.md. Only **one** external provider can be active at a time — the built-in memory is always active alongside it.
 
 ## Quick Start
 
 ```bash
-satan memory setup      # interactive picker + configuration
-satan memory status     # check what's active
-satan memory off        # disable external provider
+satanclaw memory setup      # interactive picker + configuration
+satanclaw memory status     # check what's active
+satanclaw memory off        # disable external provider
 ```
 
-Or set manually in `~/.satan/config.yaml`:
+Or set manually in `~/.satanclaw/config.yaml`:
 
 ```yaml
 memory:
@@ -25,7 +25,7 @@ memory:
 
 ## How It Works
 
-When a memory provider is active, Satan automatically:
+When a memory provider is active, SatanClaw automatically:
 
 1. **Injects provider context** into the system prompt (what the provider knows)
 2. **Prefetches relevant memories** before each turn (background, non-blocking)
@@ -53,16 +53,16 @@ AI-native cross-session user modeling with dialectic Q&A, semantic search, and p
 
 **Setup:**
 ```bash
-satan memory setup    # select "honcho"
+satanclaw memory setup    # select "honcho"
 # Or manually:
-satan config set memory.provider honcho
-echo "HONCHO_API_KEY=your-key" >> ~/.satan/.env
+satanclaw config set memory.provider honcho
+echo "HONCHO_API_KEY=your-key" >> ~/.satanclaw/.env
 ```
 
 **Config:** `$HERMES_HOME/honcho.json` — existing Honcho users' configuration and data are fully preserved.
 
-:::tip Migrating from `satan honcho`
-If you previously used `satan honcho setup`, your config and all server-side data are intact. Just set `memory.provider: honcho` to reactivate via the new system.
+:::tip Migrating from `satanclaw honcho`
+If you previously used `satanclaw honcho setup`, your config and all server-side data are intact. Just set `memory.provider: honcho` to reactivate via the new system.
 :::
 
 ---
@@ -86,11 +86,11 @@ Context database by Volcengine (ByteDance) with filesystem-style knowledge hiera
 pip install openviking
 openviking-server
 
-# Then configure Satan
-satan memory setup    # select "openviking"
+# Then configure SatanClaw
+satanclaw memory setup    # select "openviking"
 # Or manually:
-satan config set memory.provider openviking
-echo "OPENVIKING_ENDPOINT=http://localhost:1933" >> ~/.satan/.env
+satanclaw config set memory.provider openviking
+echo "OPENVIKING_ENDPOINT=http://localhost:1933" >> ~/.satanclaw/.env
 ```
 
 **Key features:**
@@ -115,18 +115,18 @@ Server-side LLM fact extraction with semantic search, reranking, and automatic d
 
 **Setup:**
 ```bash
-satan memory setup    # select "mem0"
+satanclaw memory setup    # select "mem0"
 # Or manually:
-satan config set memory.provider mem0
-echo "MEM0_API_KEY=your-key" >> ~/.satan/.env
+satanclaw config set memory.provider mem0
+echo "MEM0_API_KEY=your-key" >> ~/.satanclaw/.env
 ```
 
 **Config:** `$HERMES_HOME/mem0.json`
 
 | Key | Default | Description |
 |-----|---------|-------------|
-| `user_id` | `satan-user` | User identifier |
-| `agent_id` | `satan` | Agent identifier |
+| `user_id` | `satanclaw-user` | User identifier |
+| `agent_id` | `satanclaw` | Agent identifier |
 
 ---
 
@@ -145,10 +145,10 @@ Long-term memory with knowledge graph, entity resolution, and multi-strategy ret
 
 **Setup:**
 ```bash
-satan memory setup    # select "hindsight"
+satanclaw memory setup    # select "hindsight"
 # Or manually:
-satan config set memory.provider hindsight
-echo "HINDSIGHT_API_KEY=your-key" >> ~/.satan/.env
+satanclaw config set memory.provider hindsight
+echo "HINDSIGHT_API_KEY=your-key" >> ~/.satanclaw/.env
 ```
 
 **Config:** `$HERMES_HOME/hindsight/config.json`
@@ -156,7 +156,7 @@ echo "HINDSIGHT_API_KEY=your-key" >> ~/.satan/.env
 | Key | Default | Description |
 |-----|---------|-------------|
 | `mode` | `cloud` | `cloud` or `local` |
-| `bank_id` | `satan` | Memory bank identifier |
+| `bank_id` | `satanclaw` | Memory bank identifier |
 | `budget` | `mid` | Recall thoroughness: `low` / `mid` / `high` |
 
 ---
@@ -176,12 +176,12 @@ Local SQLite fact store with FTS5 full-text search, trust scoring, and HRR (Holo
 
 **Setup:**
 ```bash
-satan memory setup    # select "holographic"
+satanclaw memory setup    # select "holographic"
 # Or manually:
-satan config set memory.provider holographic
+satanclaw config set memory.provider holographic
 ```
 
-**Config:** `config.yaml` under `plugins.satan-memory-store`
+**Config:** `config.yaml` under `plugins.satanclaw-memory-store`
 
 | Key | Default | Description |
 |-----|---------|-------------|
@@ -212,10 +212,10 @@ Cloud memory API with hybrid search (Vector + BM25 + Reranking), 7 memory types,
 
 **Setup:**
 ```bash
-satan memory setup    # select "retaindb"
+satanclaw memory setup    # select "retaindb"
 # Or manually:
-satan config set memory.provider retaindb
-echo "RETAINDB_API_KEY=your-key" >> ~/.satan/.env
+satanclaw config set memory.provider retaindb
+echo "RETAINDB_API_KEY=your-key" >> ~/.satanclaw/.env
 ```
 
 ---
@@ -238,10 +238,10 @@ Persistent memory via the `brv` CLI — hierarchical knowledge tree with tiered 
 # Install the CLI first
 curl -fsSL https://byterover.dev/install.sh | sh
 
-# Then configure Satan
-satan memory setup    # select "byterover"
+# Then configure SatanClaw
+satanclaw memory setup    # select "byterover"
 # Or manually:
-satan config set memory.provider byterover
+satanclaw config set memory.provider byterover
 ```
 
 **Key features:**

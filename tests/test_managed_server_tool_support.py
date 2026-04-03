@@ -2,11 +2,11 @@
 Tests for ManagedServer / tool-parser integration.
 
 Validates that:
-1. The installed atroposlib API still matches Satan's expectations
-2. Satan's parser registry remains compatible with ManagedServer parsing
-3. SatanAgentBaseEnv wires the selected parser into ServerManager correctly
+1. The installed atroposlib API still matches SatanClaw's expectations
+2. SatanClaw's parser registry remains compatible with ManagedServer parsing
+3. SatanClawAgentBaseEnv wires the selected parser into ServerManager correctly
 
-These tests verify the contract between satan-agent's environments/ code
+These tests verify the contract between satanclaw-agent's environments/ code
 and atroposlib's ManagedServer. They detect API incompatibilities early.
 """
 
@@ -25,7 +25,7 @@ except ImportError:
 
 
 class TestManagedServerAPI:
-    """Test that ManagedServer's API matches what satan-agent expects."""
+    """Test that ManagedServer's API matches what satanclaw-agent expects."""
 
     def test_managed_server_init_signature(self):
         """ManagedServer should accept tool_call_parser parameter."""
@@ -93,7 +93,7 @@ class TestManagedServerAPI:
 
 
 class TestParserCompatibility:
-    """Test that satan-agent's parsers match ManagedServer's expectations."""
+    """Test that satanclaw-agent's parsers match ManagedServer's expectations."""
 
     def test_parser_parse_returns_correct_format(self):
         """
@@ -102,7 +102,7 @@ class TestParserCompatibility:
         """
         from environments.tool_call_parsers import get_parser
 
-        parser = get_parser("satan")
+        parser = get_parser("satanclaw")
         text = '<tool_call>{"name": "terminal", "arguments": {"command": "ls"}}</tool_call>'
         content, tool_calls = parser.parse(text)
 
@@ -120,7 +120,7 @@ class TestParserCompatibility:
         """ManagedServer checks `if parsed_tool_calls:` — None should be falsy."""
         from environments.tool_call_parsers import get_parser
 
-        parser = get_parser("satan")
+        parser = get_parser("satanclaw")
         content, tool_calls = parser.parse("Just text, no tools")
         assert tool_calls is None
 
@@ -128,7 +128,7 @@ class TestParserCompatibility:
         """ManagedServer uses `parsed_content or ""` — must be str or None."""
         from environments.tool_call_parsers import get_parser
 
-        parser = get_parser("satan")
+        parser = get_parser("satanclaw")
 
         # With tool calls
         text = '<tool_call>{"name": "terminal", "arguments": {"command": "ls"}}</tool_call>'
@@ -141,13 +141,13 @@ class TestParserCompatibility:
 
 
 class TestBaseEnvCompatibility:
-    """Test that satan_base_env.py's tool-parser wiring matches the current API."""
+    """Test that satanclaw_base_env.py's tool-parser wiring matches the current API."""
 
-    def test_satan_base_env_sets_server_manager_tool_parser(self):
-        """Satan wires parser selection through ServerManager.tool_parser."""
+    def test_satanclaw_base_env_sets_server_manager_tool_parser(self):
+        """SatanClaw wires parser selection through ServerManager.tool_parser."""
         import ast
 
-        base_env_path = Path(__file__).parent.parent / "environments" / "satan_base_env.py"
+        base_env_path = Path(__file__).parent.parent / "environments" / "satanclaw_base_env.py"
         source = base_env_path.read_text()
         tree = ast.parse(source)
 
@@ -166,12 +166,12 @@ class TestBaseEnvCompatibility:
                             found_assignment = True
 
         assert found_assignment, (
-            "satan_base_env.py should set self.server.tool_parser from config.tool_call_parser"
+            "satanclaw_base_env.py should set self.server.tool_parser from config.tool_call_parser"
         )
 
-    def test_satan_base_env_uses_config_tool_call_parser(self):
-        """Verify satan_base_env uses the config field rather than a local parser instance."""
-        base_env_path = Path(__file__).parent.parent / "environments" / "satan_base_env.py"
+    def test_satanclaw_base_env_uses_config_tool_call_parser(self):
+        """Verify satanclaw_base_env uses the config field rather than a local parser instance."""
+        base_env_path = Path(__file__).parent.parent / "environments" / "satanclaw_base_env.py"
         source = base_env_path.read_text()
 
         assert 'tool_call_parser: str = Field(' in source

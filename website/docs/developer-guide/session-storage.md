@@ -1,16 +1,16 @@
 # Session Storage
 
-Satan Agent uses a SQLite database (`~/.satan/state.db`) to persist session
+SatanClaw Agent uses a SQLite database (`~/.satanclaw/state.db`) to persist session
 metadata, full message history, and model configuration across CLI and gateway
 sessions. This replaces the earlier per-session JSONL file approach.
 
-Source file: `satan_state.py`
+Source file: `satanclaw_state.py`
 
 
 ## Architecture Overview
 
 ```
-~/.satan/state.db (SQLite, WAL mode)
+~/.satanclaw/state.db (SQLite, WAL mode)
 ├── sessions          — Session metadata, token counts, billing
 ├── messages          — Full message history per session
 ├── messages_fts      — FTS5 virtual table for full-text search
@@ -149,7 +149,7 @@ each successful migration block.
 
 ## Write Contention Handling
 
-Multiple satan processes (gateway + CLI sessions + worktree agents) share one
+Multiple satanclaw processes (gateway + CLI sessions + worktree agents) share one
 `state.db`. The `SessionDB` class handles write contention with:
 
 - **Short SQLite timeout** (1 second) instead of the default 30s
@@ -173,9 +173,9 @@ _CHECKPOINT_EVERY_N_WRITES = 50
 ### Initialize
 
 ```python
-from satan_state import SessionDB
+from satanclaw_state import SessionDB
 
-db = SessionDB()                           # Default: ~/.satan/state.db
+db = SessionDB()                           # Default: ~/.satanclaw/state.db
 db = SessionDB(db_path=Path("/tmp/test.db"))  # Custom path
 ```
 
@@ -379,10 +379,10 @@ db.delete_session("sess_abc123")
 
 ## Database Location
 
-Default path: `~/.satan/state.db`
+Default path: `~/.satanclaw/state.db`
 
-This is derived from `satan_constants.get_satan_home()` which resolves to
-`~/.satan/` by default, or the value of `HERMES_HOME` environment variable.
+This is derived from `satanclaw_constants.get_satanclaw_home()` which resolves to
+`~/.satanclaw/` by default, or the value of `HERMES_HOME` environment variable.
 
 The database file, WAL file (`state.db-wal`), and shared-memory file
 (`state.db-shm`) are all created in the same directory.

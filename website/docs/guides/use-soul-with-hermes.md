@@ -1,14 +1,14 @@
 ---
 sidebar_position: 6
-title: "Use SOUL.md with Satan"
-description: "How to use SOUL.md to shape Satan Agent's default voice, what belongs there, and how it differs from AGENTS.md and /personality"
+title: "Use SOUL.md with SatanClaw"
+description: "How to use SOUL.md to shape SatanClaw Agent's default voice, what belongs there, and how it differs from AGENTS.md and /personality"
 ---
 
-# Use SOUL.md with Satan
+# Use SOUL.md with SatanClaw
 
-`SOUL.md` is the **primary identity** for your Satan instance. It's the first thing in the system prompt — it defines who the agent is, how it speaks, and what it avoids.
+`SOUL.md` is the **primary identity** for your SatanClaw instance. It's the first thing in the system prompt — it defines who the agent is, how it speaks, and what it avoids.
 
-If you want Satan to feel like the same assistant every time you talk to it — or if you want to replace the Satan persona entirely with your own — this is the file to use.
+If you want SatanClaw to feel like the same assistant every time you talk to it — or if you want to replace the SatanClaw persona entirely with your own — this is the file to use.
 
 ## What SOUL.md is for
 
@@ -16,12 +16,12 @@ Use `SOUL.md` for:
 - tone
 - personality
 - communication style
-- how direct or warm Satan should be
-- what Satan should avoid stylistically
-- how Satan should relate to uncertainty, disagreement, and ambiguity
+- how direct or warm SatanClaw should be
+- what SatanClaw should avoid stylistically
+- how SatanClaw should relate to uncertainty, disagreement, and ambiguity
 
 In short:
-- `SOUL.md` is about who Satan is and how Satan speaks
+- `SOUL.md` is about who SatanClaw is and how SatanClaw speaks
 
 ## What SOUL.md is not for
 
@@ -41,13 +41,13 @@ A good rule:
 
 ## Where it lives
 
-Satan now uses only the global SOUL file for the current instance:
+SatanClaw now uses only the global SOUL file for the current instance:
 
 ```text
-~/.satan/SOUL.md
+~/.satanclaw/SOUL.md
 ```
 
-If you run Satan with a custom home directory, it becomes:
+If you run SatanClaw with a custom home directory, it becomes:
 
 ```text
 $HERMES_HOME/SOUL.md
@@ -55,19 +55,19 @@ $HERMES_HOME/SOUL.md
 
 ## First-run behavior
 
-Satan automatically seeds a starter `SOUL.md` for you if one does not already exist.
+SatanClaw automatically seeds a starter `SOUL.md` for you if one does not already exist.
 
 That means most users now begin with a real file they can read and edit immediately.
 
 Important:
-- if you already have a `SOUL.md`, Satan does not overwrite it
-- if the file exists but is empty, Satan adds nothing from it to the prompt
+- if you already have a `SOUL.md`, SatanClaw does not overwrite it
+- if the file exists but is empty, SatanClaw adds nothing from it to the prompt
 
-## How Satan uses it
+## How SatanClaw uses it
 
-When Satan starts a session, it reads `SOUL.md` from `HERMES_HOME`, scans it for prompt-injection patterns, truncates it if needed, and uses it as the **agent identity** — slot #1 in the system prompt. This means SOUL.md completely replaces the built-in default identity text.
+When SatanClaw starts a session, it reads `SOUL.md` from `HERMES_HOME`, scans it for prompt-injection patterns, truncates it if needed, and uses it as the **agent identity** — slot #1 in the system prompt. This means SOUL.md completely replaces the built-in default identity text.
 
-If SOUL.md is missing, empty, or cannot be loaded, Satan falls back to a built-in default identity.
+If SOUL.md is missing, empty, or cannot be loaded, SatanClaw falls back to a built-in default identity.
 
 No wrapper language is added around the file. The content itself matters — write the way you want your agent to think and speak.
 
@@ -84,7 +84,7 @@ Push back clearly when an idea is weak.
 Keep answers compact unless deeper detail is useful.
 ```
 
-That alone can noticeably change how Satan feels.
+That alone can noticeably change how SatanClaw feels.
 
 ## Example styles
 
@@ -159,7 +159,7 @@ A weak `SOUL.md` is:
 - trying to micro-manage every response shape
 - mostly generic filler like "be helpful" and "be clear"
 
-Satan already tries to be helpful and clear. `SOUL.md` should add real personality and style, not restate obvious defaults.
+SatanClaw already tries to be helpful and clear. `SOUL.md` should add real personality and style, not restate obvious defaults.
 
 ## Suggested structure
 
@@ -169,16 +169,16 @@ A simple structure that works well:
 
 ```markdown
 # Identity
-Who Satan is.
+Who SatanClaw is.
 
 # Style
-How Satan should sound.
+How SatanClaw should sound.
 
 # Avoid
-What Satan should not do.
+What SatanClaw should not do.
 
 # Defaults
-How Satan should behave when ambiguity appears.
+How SatanClaw should behave when ambiguity appears.
 ```
 
 ## SOUL.md vs /personality
@@ -212,39 +212,39 @@ This is the most common mistake.
 ## How to edit it
 
 ```bash
-nano ~/.satan/SOUL.md
+nano ~/.satanclaw/SOUL.md
 ```
 
 or
 
 ```bash
-vim ~/.satan/SOUL.md
+vim ~/.satanclaw/SOUL.md
 ```
 
-Then restart Satan or start a new session.
+Then restart SatanClaw or start a new session.
 
 ## A practical workflow
 
 1. Start with the seeded default file
 2. Trim anything that does not feel like the voice you want
 3. Add 4–8 lines that clearly define tone and defaults
-4. Talk to Satan for a while
+4. Talk to SatanClaw for a while
 5. Adjust based on what still feels off
 
 That iterative approach works better than trying to design the perfect personality in one shot.
 
 ## Troubleshooting
 
-### I edited SOUL.md but Satan still sounds the same
+### I edited SOUL.md but SatanClaw still sounds the same
 
 Check:
-- you edited `~/.satan/SOUL.md` or `$HERMES_HOME/SOUL.md`
+- you edited `~/.satanclaw/SOUL.md` or `$HERMES_HOME/SOUL.md`
 - not some repo-local `SOUL.md`
 - the file is not empty
 - your session was restarted after the edit
 - a `/personality` overlay is not dominating the result
 
-### Satan is ignoring parts of my SOUL.md
+### SatanClaw is ignoring parts of my SOUL.md
 
 Possible causes:
 - higher-priority instructions are overriding it

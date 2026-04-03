@@ -34,7 +34,7 @@ import threading
 import time
 import urllib.request
 
-from satan_constants import get_satan_home
+from satanclaw_constants import get_satanclaw_home
 
 logger = logging.getLogger(__name__)
 
@@ -74,7 +74,7 @@ def _load_security_config() -> dict:
         "tirith_fail_open": True,
     }
     try:
-        from satan_cli.config import load_config
+        from satanclaw_cli.config import load_config
         cfg = load_config().get("security", {}) or {}
     except Exception:
         cfg = {}
@@ -105,14 +105,14 @@ _install_thread: threading.Thread | None = None
 _MARKER_TTL = 86400  # 24 hours
 
 
-def _get_satan_home() -> str:
-    """Return the Satan home directory, respecting HERMES_HOME env var."""
-    return str(get_satan_home())
+def _get_satanclaw_home() -> str:
+    """Return the SatanClaw home directory, respecting HERMES_HOME env var."""
+    return str(get_satanclaw_home())
 
 
 def _failure_marker_path() -> str:
     """Return the path to the install-failure marker file."""
-    return os.path.join(_get_satan_home(), ".tirith-install-failed")
+    return os.path.join(_get_satanclaw_home(), ".tirith-install-failed")
 
 
 def _read_failure_reason() -> str | None:
@@ -174,9 +174,9 @@ def _clear_install_failed():
         pass
 
 
-def _satan_bin_dir() -> str:
+def _satanclaw_bin_dir() -> str:
     """Return $HERMES_HOME/bin, creating it if needed."""
-    d = os.path.join(_get_satan_home(), "bin")
+    d = os.path.join(_get_satanclaw_home(), "bin")
     os.makedirs(d, exist_ok=True)
     return d
 
@@ -359,7 +359,7 @@ def _install_tirith(*, log_failures: bool = True) -> tuple[str | None, str]:
                 return None, "binary_not_in_archive"
 
         src = os.path.join(tmpdir, "tirith")
-        dest = os.path.join(_satan_bin_dir(), "tirith")
+        dest = os.path.join(_satanclaw_bin_dir(), "tirith")
         shutil.move(src, dest)
         os.chmod(dest, os.stat(dest).st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
@@ -426,12 +426,12 @@ def _resolve_tirith_path(configured_path: str) -> str:
         _clear_install_failed()
         return found
 
-    satan_bin = os.path.join(_satan_bin_dir(), "tirith")
-    if os.path.isfile(satan_bin) and os.access(satan_bin, os.X_OK):
-        _resolved_path = satan_bin
+    satanclaw_bin = os.path.join(_satanclaw_bin_dir(), "tirith")
+    if os.path.isfile(satanclaw_bin) and os.access(satanclaw_bin, os.X_OK):
+        _resolved_path = satanclaw_bin
         _install_failure_reason = ""
         _clear_install_failed()
-        return satan_bin
+        return satanclaw_bin
 
     # Local checks failed.  If a previous install attempt already failed,
     # skip the network retry — UNLESS the failure was "cosign_missing" and
@@ -490,9 +490,9 @@ def _background_install(*, log_failures: bool = True):
             _install_failure_reason = ""
             return
 
-        satan_bin = os.path.join(_satan_bin_dir(), "tirith")
-        if os.path.isfile(satan_bin) and os.access(satan_bin, os.X_OK):
-            _resolved_path = satan_bin
+        satanclaw_bin = os.path.join(_satanclaw_bin_dir(), "tirith")
+        if os.path.isfile(satanclaw_bin) and os.access(satanclaw_bin, os.X_OK):
+            _resolved_path = satanclaw_bin
             _install_failure_reason = ""
             return
 
@@ -552,12 +552,12 @@ def ensure_installed(*, log_failures: bool = True):
         _clear_install_failed()
         return found
 
-    satan_bin = os.path.join(_satan_bin_dir(), "tirith")
-    if os.path.isfile(satan_bin) and os.access(satan_bin, os.X_OK):
-        _resolved_path = satan_bin
+    satanclaw_bin = os.path.join(_satanclaw_bin_dir(), "tirith")
+    if os.path.isfile(satanclaw_bin) and os.access(satanclaw_bin, os.X_OK):
+        _resolved_path = satanclaw_bin
         _install_failure_reason = ""
         _clear_install_failed()
-        return satan_bin
+        return satanclaw_bin
 
     # If previously failed in-memory, check if the cause is now resolved
     if _resolved_path is _INSTALL_FAILED:

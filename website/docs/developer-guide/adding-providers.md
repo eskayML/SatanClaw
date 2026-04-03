@@ -1,16 +1,16 @@
 ---
 sidebar_position: 5
 title: "Adding Providers"
-description: "How to add a new inference provider to Satan Agent — auth, runtime resolution, CLI flows, adapters, tests, and docs"
+description: "How to add a new inference provider to SatanClaw Agent — auth, runtime resolution, CLI flows, adapters, tests, and docs"
 ---
 
 # Adding Providers
 
-Satan can already talk to any OpenAI-compatible endpoint through the custom provider path. Do not add a built-in provider unless you want first-class UX for that service:
+SatanClaw can already talk to any OpenAI-compatible endpoint through the custom provider path. Do not add a built-in provider unless you want first-class UX for that service:
 
 - provider-specific auth or token refresh
 - a curated model catalog
-- setup / `satan model` menu entries
+- setup / `satanclaw model` menu entries
 - provider aliases for `provider:model` syntax
 - a non-OpenAI API shape that needs an adapter
 
@@ -20,15 +20,15 @@ If the provider is just "another OpenAI-compatible base URL and API key", a name
 
 A built-in provider has to line up across a few layers:
 
-1. `satan_cli/auth.py` decides how credentials are found.
-2. `satan_cli/runtime_provider.py` turns that into runtime data:
+1. `satanclaw_cli/auth.py` decides how credentials are found.
+2. `satanclaw_cli/runtime_provider.py` turns that into runtime data:
    - `provider`
    - `api_mode`
    - `base_url`
    - `api_key`
    - `source`
 3. `run_agent.py` uses `api_mode` to decide how requests are built and sent.
-4. `satan_cli/models.py` and `satan_cli/main.py` make the provider show up in the CLI. (`satan_cli/setup.py` delegates to `main.py` automatically — no changes needed there.)
+4. `satanclaw_cli/models.py` and `satanclaw_cli/main.py` make the provider show up in the CLI. (`satanclaw_cli/setup.py` delegates to `main.py` automatically — no changes needed there.)
 5. `agent/auxiliary_client.py` and `agent/model_metadata.py` keep side tasks and token budgeting working.
 
 The important abstraction is `api_mode`.
@@ -74,17 +74,17 @@ This path includes everything from Path A plus:
 
 ### Required for every built-in provider
 
-1. `satan_cli/auth.py`
-2. `satan_cli/models.py`
-3. `satan_cli/runtime_provider.py`
-4. `satan_cli/main.py`
+1. `satanclaw_cli/auth.py`
+2. `satanclaw_cli/models.py`
+3. `satanclaw_cli/runtime_provider.py`
+4. `satanclaw_cli/main.py`
 5. `agent/auxiliary_client.py`
 6. `agent/model_metadata.py`
 7. tests
 8. user-facing docs under `website/docs/`
 
 :::tip
-`satan_cli/setup.py` does **not** need changes. The setup wizard delegates provider/model selection to `select_provider_and_model()` in `main.py` — any provider added there is automatically available in `satan setup`.
+`satanclaw_cli/setup.py` does **not** need changes. The setup wizard delegates provider/model selection to `select_provider_and_model()` in `main.py` — any provider added there is automatically available in `satanclaw setup`.
 :::
 
 ### Additional for native / non-OpenAI providers
@@ -105,17 +105,17 @@ Examples from the repo:
 
 That same id should appear in:
 
-- `PROVIDER_REGISTRY` in `satan_cli/auth.py`
-- `_PROVIDER_LABELS` in `satan_cli/models.py`
-- `_PROVIDER_ALIASES` in both `satan_cli/auth.py` and `satan_cli/models.py`
-- CLI `--provider` choices in `satan_cli/main.py`
+- `PROVIDER_REGISTRY` in `satanclaw_cli/auth.py`
+- `_PROVIDER_LABELS` in `satanclaw_cli/models.py`
+- `_PROVIDER_ALIASES` in both `satanclaw_cli/auth.py` and `satanclaw_cli/models.py`
+- CLI `--provider` choices in `satanclaw_cli/main.py`
 - setup / model selection branches
 - auxiliary-model defaults
 - tests
 
 If the id differs between those files, the provider will feel half-wired: auth may work while `/model`, setup, or runtime resolution silently misses it.
 
-## Step 2: Add auth metadata in `satan_cli/auth.py`
+## Step 2: Add auth metadata in `satanclaw_cli/auth.py`
 
 For API-key providers, add a `ProviderConfig` entry to `PROVIDER_REGISTRY` with:
 
@@ -137,14 +137,14 @@ Use the existing providers as templates:
 
 Questions to answer here:
 
-- What env vars should Satan check, and in what priority order?
+- What env vars should SatanClaw check, and in what priority order?
 - Does the provider need base-URL overrides?
 - Does it need endpoint probing or token refresh?
 - What should the auth error say when credentials are missing?
 
 If the provider needs something more than "look up an API key", add a dedicated credential resolver instead of shoving logic into unrelated branches.
 
-## Step 3: Add model catalog and aliases in `satan_cli/models.py`
+## Step 3: Add model catalog and aliases in `satanclaw_cli/models.py`
 
 Update the provider catalog so the provider works in menus and in `provider:model` syntax.
 
@@ -167,7 +167,7 @@ kimi:model-name
 
 If aliases are missing here, the provider may authenticate correctly but still fail in `/model` parsing.
 
-## Step 4: Resolve runtime data in `satan_cli/runtime_provider.py`
+## Step 4: Resolve runtime data in `satanclaw_cli/runtime_provider.py`
 
 `resolve_runtime_provider()` is the shared path used by CLI, gateway, cron, ACP, and helper clients.
 
@@ -186,13 +186,13 @@ Add a branch that returns a dict with at least:
 
 If the provider is OpenAI-compatible, `api_mode` should usually stay `chat_completions`.
 
-Be careful with API-key precedence. Satan already contains logic to avoid leaking an OpenRouter key to unrelated endpoints. A new provider should be equally explicit about which key goes to which base URL.
+Be careful with API-key precedence. SatanClaw already contains logic to avoid leaking an OpenRouter key to unrelated endpoints. A new provider should be equally explicit about which key goes to which base URL.
 
-## Step 5: Wire the CLI in `satan_cli/main.py`
+## Step 5: Wire the CLI in `satanclaw_cli/main.py`
 
-A provider is not discoverable until it shows up in the interactive `satan model` flow.
+A provider is not discoverable until it shows up in the interactive `satanclaw model` flow.
 
-Update these in `satan_cli/main.py`:
+Update these in `satanclaw_cli/main.py`:
 
 - `provider_labels` dict
 - `providers` list in `select_provider_and_model()`
@@ -202,7 +202,7 @@ Update these in `satan_cli/main.py`:
 - a `_model_flow_<provider>()` function, or reuse `_model_flow_api_key_provider()` if it fits
 
 :::tip
-`satan_cli/setup.py` does not need changes — it calls `select_provider_and_model()` from `main.py`, so your new provider appears in both `satan model` and `satan setup` automatically.
+`satanclaw_cli/setup.py` does not need changes — it calls `select_provider_and_model()` from `main.py`, so your new provider appears in both `satanclaw model` and `satanclaw setup` automatically.
 :::
 
 ## Step 6: Keep auxiliary calls working
@@ -273,7 +273,7 @@ Examples already in-tree:
 - OpenRouter gets provider-routing fields
 - not every provider should receive every request-side option
 
-When you add a native provider, double-check that Satan is only sending fields that provider actually understands.
+When you add a native provider, double-check that SatanClaw is only sending fields that provider actually understands.
 
 ## Step 8: Tests
 
@@ -318,15 +318,15 @@ After tests, run a real smoke test.
 
 ```bash
 source venv/bin/activate
-python -m satan_cli.main chat -q "Say hello" --provider your-provider --model your-model
+python -m satanclaw_cli.main chat -q "Say hello" --provider your-provider --model your-model
 ```
 
 Also test the interactive flows if you changed menus:
 
 ```bash
 source venv/bin/activate
-python -m satan_cli.main model
-python -m satan_cli.main setup
+python -m satanclaw_cli.main model
+python -m satanclaw_cli.main setup
 ```
 
 For native providers, verify at least one tool call too, not just a plain text response.
@@ -345,11 +345,11 @@ A developer can wire the provider perfectly and still leave users unable to disc
 
 Use this if the provider is standard chat completions.
 
-- [ ] `ProviderConfig` added in `satan_cli/auth.py`
-- [ ] aliases added in `satan_cli/auth.py` and `satan_cli/models.py`
-- [ ] model catalog added in `satan_cli/models.py`
-- [ ] runtime branch added in `satan_cli/runtime_provider.py`
-- [ ] CLI wiring added in `satan_cli/main.py` (setup.py inherits automatically)
+- [ ] `ProviderConfig` added in `satanclaw_cli/auth.py`
+- [ ] aliases added in `satanclaw_cli/auth.py` and `satanclaw_cli/models.py`
+- [ ] model catalog added in `satanclaw_cli/models.py`
+- [ ] runtime branch added in `satanclaw_cli/runtime_provider.py`
+- [ ] CLI wiring added in `satanclaw_cli/main.py` (setup.py inherits automatically)
 - [ ] aux model added in `agent/auxiliary_client.py`
 - [ ] context lengths added in `agent/model_metadata.py`
 - [ ] runtime / CLI tests updated
@@ -394,7 +394,7 @@ Search for `api_mode` and `self.client.`. Do not assume the obvious request path
 
 Fields like provider routing belong only on the providers that support them.
 
-### 7. Updating `satan model` but not `satan setup`
+### 7. Updating `satanclaw model` but not `satanclaw setup`
 
 Both flows need to know about the provider.
 

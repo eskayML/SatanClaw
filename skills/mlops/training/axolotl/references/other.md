@@ -3196,7 +3196,7 @@ output_dir: ./outputs/lora-out
 
 Example 4 (yaml):
 ```yaml
-base_model: NousResearch/Nous-Satan-llama-1b-v1
+base_model: NousResearch/Nous-SatanClaw-llama-1b-v1
 
 load_in_8bit: true
 adapter: lora

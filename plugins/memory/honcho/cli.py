@@ -1,6 +1,6 @@
 """CLI commands for Honcho integration management.
 
-Handles: satan honcho setup | status | sessions | map | peer
+Handles: satanclaw honcho setup | status | sessions | map | peer
 """
 
 from __future__ import annotations
@@ -10,7 +10,7 @@ import os
 import sys
 from pathlib import Path
 
-from satan_constants import get_satan_home
+from satanclaw_constants import get_satanclaw_home
 from plugins.memory.honcho.client import resolve_active_host, resolve_config_path, GLOBAL_CONFIG_PATH, HOST
 
 
@@ -94,7 +94,7 @@ def cmd_enable(args) -> None:
     """Enable Honcho for the active profile."""
     cfg = _read_config()
     host = _host_key()
-    label = f"[{host}] " if host != "satan" else ""
+    label = f"[{host}] " if host != "satanclaw" else ""
     block = cfg.setdefault("hosts", {}).setdefault(host, {})
 
     if block.get("enabled") is True:
@@ -135,7 +135,7 @@ def cmd_disable(args) -> None:
     """Disable Honcho for the active profile."""
     cfg = _read_config()
     host = _host_key()
-    label = f"[{host}] " if host != "satan" else ""
+    label = f"[{host}] " if host != "satanclaw" else ""
     block = cfg.get("hosts", {}).get(host, {})
 
     if not block or block.get("enabled") is False:
@@ -151,11 +151,11 @@ def cmd_disable(args) -> None:
 def cmd_sync(args) -> None:
     """Sync Honcho config to all existing profiles.
 
-    Scans all Satan profiles and creates host blocks for any that don't
+    Scans all SatanClaw profiles and creates host blocks for any that don't
     have one yet. Inherits settings from the default host block.
     """
     try:
-        from satan_cli.profiles import list_profiles
+        from satanclaw_cli.profiles import list_profiles
         profiles = list_profiles()
     except Exception as e:
         print(f"  Could not list profiles: {e}\n")
@@ -163,7 +163,7 @@ def cmd_sync(args) -> None:
 
     cfg = _read_config()
     if not cfg:
-        print("  No Honcho config found. Run 'satan honcho setup' first.\n")
+        print("  No Honcho config found. Run 'satanclaw honcho setup' first.\n")
         return
 
     hosts = cfg.get("hosts", {})
@@ -171,7 +171,7 @@ def cmd_sync(args) -> None:
     has_key = bool(cfg.get("apiKey") or os.environ.get("HONCHO_API_KEY"))
 
     if not default_block and not has_key:
-        print("  Honcho not configured on default profile. Run 'satan honcho setup' first.\n")
+        print("  Honcho not configured on default profile. Run 'satanclaw honcho setup' first.\n")
         return
 
     created = 0
@@ -180,7 +180,7 @@ def cmd_sync(args) -> None:
         if p.name == "default":
             continue
         if clone_honcho_for_profile(p.name):
-            print(f"  + {p.name} -> satan.{p.name}")
+            print(f"  + {p.name} -> satanclaw.{p.name}")
             created += 1
         else:
             skipped += 1
@@ -197,10 +197,10 @@ def cmd_sync(args) -> None:
 def sync_honcho_profiles_quiet() -> int:
     """Sync Honcho host blocks for all profiles. Returns count of newly created blocks.
 
-    Called from `satan update` -- no output, no exceptions.
+    Called from `satanclaw update` -- no output, no exceptions.
     """
     try:
-        from satan_cli.profiles import list_profiles
+        from satanclaw_cli.profiles import list_profiles
         profiles = list_profiles()
     except Exception:
         return 0
@@ -227,7 +227,7 @@ _profile_override: str | None = None
 
 
 def _host_key() -> str:
-    """Return the active Honcho host key, derived from the current Satan profile."""
+    """Return the active Honcho host key, derived from the current SatanClaw profile."""
     if _profile_override:
         if _profile_override in ("default", "custom"):
             return HOST
@@ -247,7 +247,7 @@ def _local_config_path() -> Path:
     its own config file.  The global ~/.honcho/config.json is only used as
     a read fallback (via resolve_config_path) for cross-app interop.
     """
-    return get_satan_home() / "honcho.json"
+    return get_satanclaw_home() / "honcho.json"
 
 
 def _read_config() -> dict:
@@ -328,7 +328,7 @@ def cmd_setup(args) -> None:
     write_path = _local_config_path()
     read_path = _config_path()
     print("\nHoncho memory setup\n" + "─" * 40)
-    print("  Honcho gives Satan persistent cross-session memory.")
+    print("  Honcho gives SatanClaw persistent cross-session memory.")
     print(f"  Config: {write_path}")
     if read_path != write_path and read_path.exists():
         print(f"  (seeding from existing config at {read_path})")
@@ -340,7 +340,7 @@ def cmd_setup(args) -> None:
     # All writes go to the active host block — root keys are managed by
     # the user or the honcho CLI only.
     hosts = cfg.setdefault("hosts", {})
-    satan_host = hosts.setdefault(_host_key(), {})
+    satanclaw_host = hosts.setdefault(_host_key(), {})
 
     # API key — shared credential, lives at root so all hosts can read it
     current_key = cfg.get("apiKey", "")
@@ -353,35 +353,35 @@ def cmd_setup(args) -> None:
     effective_key = cfg.get("apiKey", "")
     if not effective_key:
         print("\n  No API key configured. Get your API key at https://app.honcho.dev")
-        print("  Run 'satan honcho setup' again once you have a key.\n")
+        print("  Run 'satanclaw honcho setup' again once you have a key.\n")
         return
 
     # Peer name
-    current_peer = satan_host.get("peerName") or cfg.get("peerName", "")
+    current_peer = satanclaw_host.get("peerName") or cfg.get("peerName", "")
     new_peer = _prompt("Your name (user peer)", default=current_peer or os.getenv("USER", "user"))
     if new_peer:
-        satan_host["peerName"] = new_peer
+        satanclaw_host["peerName"] = new_peer
 
-    current_workspace = satan_host.get("workspace") or cfg.get("workspace", "satan")
+    current_workspace = satanclaw_host.get("workspace") or cfg.get("workspace", "satanclaw")
     new_workspace = _prompt("Workspace ID", default=current_workspace)
     if new_workspace:
-        satan_host["workspace"] = new_workspace
+        satanclaw_host["workspace"] = new_workspace
 
-    satan_host.setdefault("aiPeer", _host_key())
+    satanclaw_host.setdefault("aiPeer", _host_key())
 
     # Memory mode
-    current_mode = satan_host.get("memoryMode") or cfg.get("memoryMode", "hybrid")
+    current_mode = satanclaw_host.get("memoryMode") or cfg.get("memoryMode", "hybrid")
     print("\n  Memory mode options:")
     print("    hybrid  — write to both Honcho and local MEMORY.md (default)")
     print("    honcho  — Honcho only, skip MEMORY.md writes")
     new_mode = _prompt("Memory mode", default=current_mode)
     if new_mode in ("hybrid", "honcho"):
-        satan_host["memoryMode"] = new_mode
+        satanclaw_host["memoryMode"] = new_mode
     else:
-        satan_host["memoryMode"] = "hybrid"
+        satanclaw_host["memoryMode"] = "hybrid"
 
     # Write frequency
-    current_wf = str(satan_host.get("writeFrequency") or cfg.get("writeFrequency", "async"))
+    current_wf = str(satanclaw_host.get("writeFrequency") or cfg.get("writeFrequency", "async"))
     print("\n  Write frequency options:")
     print("    async   — background thread, no token cost (recommended)")
     print("    turn    — sync write after every turn")
@@ -389,12 +389,12 @@ def cmd_setup(args) -> None:
     print("    N       — write every N turns (e.g. 5)")
     new_wf = _prompt("Write frequency", default=current_wf)
     try:
-        satan_host["writeFrequency"] = int(new_wf)
+        satanclaw_host["writeFrequency"] = int(new_wf)
     except (ValueError, TypeError):
-        satan_host["writeFrequency"] = new_wf if new_wf in ("async", "turn", "session") else "async"
+        satanclaw_host["writeFrequency"] = new_wf if new_wf in ("async", "turn", "session") else "async"
 
     # Recall mode
-    _raw_recall = satan_host.get("recallMode") or cfg.get("recallMode", "hybrid")
+    _raw_recall = satanclaw_host.get("recallMode") or cfg.get("recallMode", "hybrid")
     current_recall = "hybrid" if _raw_recall not in ("hybrid", "context", "tools") else _raw_recall
     print("\n  Recall mode options:")
     print("    hybrid  — auto-injected context + Honcho tools available (default)")
@@ -402,21 +402,21 @@ def cmd_setup(args) -> None:
     print("    tools   — Honcho tools only, no auto-injected context")
     new_recall = _prompt("Recall mode", default=current_recall)
     if new_recall in ("hybrid", "context", "tools"):
-        satan_host["recallMode"] = new_recall
+        satanclaw_host["recallMode"] = new_recall
 
     # Session strategy
-    current_strat = satan_host.get("sessionStrategy") or cfg.get("sessionStrategy", "per-directory")
+    current_strat = satanclaw_host.get("sessionStrategy") or cfg.get("sessionStrategy", "per-directory")
     print("\n  Session strategy options:")
     print("    per-directory — one session per working directory (default)")
-    print("    per-session   — new Honcho session each run, named by Satan session ID")
+    print("    per-session   — new Honcho session each run, named by SatanClaw session ID")
     print("    per-repo      — one session per git repository (uses repo root name)")
     print("    global        — single session across all directories")
     new_strat = _prompt("Session strategy", default=current_strat)
     if new_strat in ("per-session", "per-repo", "per-directory", "global"):
-        satan_host["sessionStrategy"] = new_strat
+        satanclaw_host["sessionStrategy"] = new_strat
 
-    satan_host.setdefault("enabled", True)
-    satan_host.setdefault("saveMessages", True)
+    satanclaw_host.setdefault("enabled", True)
+    satanclaw_host.setdefault("saveMessages", True)
 
     _write_config(cfg)
     print(f"\n  Config written to {write_path}")
@@ -449,19 +449,19 @@ def cmd_setup(args) -> None:
     print("    honcho_profile      — your peer card, key facts (no LLM)")
     print("    honcho_conclude     — persist a user fact to Honcho memory (no LLM)")
     print("\n  Other commands:")
-    print("    satan honcho status     — show full config")
-    print("    satan honcho mode       — show or change memory mode")
-    print("    satan honcho tokens     — show or set token budgets")
-    print("    satan honcho identity   — seed or show AI peer identity")
-    print("    satan honcho map <name> — map this directory to a session name\n")
+    print("    satanclaw honcho status     — show full config")
+    print("    satanclaw honcho mode       — show or change memory mode")
+    print("    satanclaw honcho tokens     — show or set token budgets")
+    print("    satanclaw honcho identity   — seed or show AI peer identity")
+    print("    satanclaw honcho map <name> — map this directory to a session name\n")
 
 
 def _active_profile_name() -> str:
-    """Return the active Satan profile name (respects --target-profile override)."""
+    """Return the active SatanClaw profile name (respects --target-profile override)."""
     if _profile_override:
         return _profile_override
     try:
-        from satan_cli.profiles import get_active_profile_name
+        from satanclaw_cli.profiles import get_active_profile_name
         return get_active_profile_name()
     except Exception:
         return "default"
@@ -473,7 +473,7 @@ def _all_profile_host_configs() -> list[tuple[str, str, dict]]:
     Reads honcho.json once and maps each profile to its host block.
     """
     try:
-        from satan_cli.profiles import list_profiles
+        from satanclaw_cli.profiles import list_profiles
         profiles = list_profiles()
     except Exception:
         return [(_active_profile_name(), _host_key(), {})]
@@ -506,7 +506,7 @@ def cmd_status(args) -> None:
     try:
         import honcho  # noqa: F401
     except ImportError:
-        print("  honcho-ai is not installed. Run: satan honcho setup\n")
+        print("  honcho-ai is not installed. Run: satanclaw honcho setup\n")
         return
 
     cfg = _read_config()
@@ -516,7 +516,7 @@ def cmd_status(args) -> None:
 
     if not cfg:
         print(f"  No Honcho config found at {active_path}")
-        print("  Run 'satan honcho setup' to configure.\n")
+        print("  Run 'satanclaw honcho setup' to configure.\n")
         return
 
     try:
@@ -657,7 +657,7 @@ def cmd_sessions(args) -> None:
 
     if not sessions:
         print("  No session mappings configured.\n")
-        print("  Add one with: satan honcho map <session-name>")
+        print("  Add one with: satanclaw honcho map <session-name>")
         print(f"  Or edit {_config_path()} directly.\n")
         return
 
@@ -708,16 +708,16 @@ def cmd_peer(args) -> None:
     if user_name is None and ai_name is None and reasoning is None:
         # Show current values
         hosts = cfg.get("hosts", {})
-        satan = hosts.get(_host_key(), {})
-        user = satan.get('peerName') or cfg.get('peerName') or '(not set)'
-        ai = satan.get('aiPeer') or cfg.get('aiPeer') or _host_key()
-        lvl = satan.get("dialecticReasoningLevel") or cfg.get("dialecticReasoningLevel") or "low"
-        max_chars = satan.get("dialecticMaxChars") or cfg.get("dialecticMaxChars") or 600
+        satanclaw = hosts.get(_host_key(), {})
+        user = satanclaw.get('peerName') or cfg.get('peerName') or '(not set)'
+        ai = satanclaw.get('aiPeer') or cfg.get('aiPeer') or _host_key()
+        lvl = satanclaw.get("dialecticReasoningLevel") or cfg.get("dialecticReasoningLevel") or "low"
+        max_chars = satanclaw.get("dialecticMaxChars") or cfg.get("dialecticMaxChars") or 600
         print("\nHoncho peers\n" + "─" * 40)
         print(f"  User peer:   {user}")
         print("    Your identity in Honcho. Messages you send build this peer's card.")
         print(f"  AI peer:     {ai}")
-        print("    Satan' identity in Honcho. Seed with 'satan honcho identity <file>'.")
+        print("    SatanClaw' identity in Honcho. Seed with 'satanclaw honcho identity <file>'.")
         print("    Dialectic calls ask this peer questions to warm session context.")
         print()
         print(f"  Dialectic reasoning:  {lvl}  ({', '.join(REASONING_LEVELS)})")
@@ -725,7 +725,7 @@ def cmd_peer(args) -> None:
         return
 
     host = _host_key()
-    label = f"[{host}] " if host != "satan" else ""
+    label = f"[{host}] " if host != "satanclaw" else ""
 
     if user_name is not None:
         cfg.setdefault("hosts", {}).setdefault(host, {})["peerName"] = user_name.strip()
@@ -769,7 +769,7 @@ def cmd_mode(args) -> None:
         for m, desc in MODES.items():
             marker = " ←" if m == current else ""
             print(f"  {m:<8}  {desc}{marker}")
-        print("\n  Set with: satan honcho mode [hybrid|honcho]\n")
+        print("\n  Set with: satanclaw honcho mode [hybrid|honcho]\n")
         return
 
     if mode_arg not in MODES:
@@ -777,7 +777,7 @@ def cmd_mode(args) -> None:
         return
 
     host = _host_key()
-    label = f"[{host}] " if host != "satan" else ""
+    label = f"[{host}] " if host != "satanclaw" else ""
     cfg.setdefault("hosts", {}).setdefault(host, {})["memoryMode"] = mode_arg
     _write_config(cfg)
     print(f"  {label}Memory mode -> {mode_arg}  ({MODES[mode_arg]})\n")
@@ -787,15 +787,15 @@ def cmd_tokens(args) -> None:
     """Show or set token budget settings."""
     cfg = _read_config()
     hosts = cfg.get("hosts", {})
-    satan = hosts.get(_host_key(), {})
+    satanclaw = hosts.get(_host_key(), {})
 
     context = getattr(args, "context", None)
     dialectic = getattr(args, "dialectic", None)
 
     if context is None and dialectic is None:
-        ctx_tokens = satan.get("contextTokens") or cfg.get("contextTokens") or "(Honcho default)"
-        d_chars = satan.get("dialecticMaxChars") or cfg.get("dialecticMaxChars") or 600
-        d_level = satan.get("dialecticReasoningLevel") or cfg.get("dialecticReasoningLevel") or "low"
+        ctx_tokens = satanclaw.get("contextTokens") or cfg.get("contextTokens") or "(Honcho default)"
+        d_chars = satanclaw.get("dialecticMaxChars") or cfg.get("dialecticMaxChars") or 600
+        d_level = satanclaw.get("dialecticReasoningLevel") or cfg.get("dialecticReasoningLevel") or "low"
         print("\nHoncho budgets\n" + "─" * 40)
         print()
         print(f"  Context     {ctx_tokens} tokens")
@@ -803,15 +803,15 @@ def cmd_tokens(args) -> None:
         print("    the user and session, injected directly into the system prompt.")
         print()
         print(f"  Dialectic   {d_chars} chars, reasoning: {d_level}")
-        print("    AI-to-AI inference. Satan asks Honcho's AI peer a question")
+        print("    AI-to-AI inference. SatanClaw asks Honcho's AI peer a question")
         print("    (e.g. \"what were we working on?\") and Honcho runs its own model")
         print("    to synthesize an answer. Used for first-turn session continuity.")
         print("    Level controls how much reasoning Honcho spends on the answer.")
-        print("\n  Set with: satan honcho tokens [--context N] [--dialectic N]\n")
+        print("\n  Set with: satanclaw honcho tokens [--context N] [--dialectic N]\n")
         return
 
     host = _host_key()
-    label = f"[{host}] " if host != "satan" else ""
+    label = f"[{host}] " if host != "satanclaw" else ""
     changed = False
     if context is not None:
         cfg.setdefault("hosts", {}).setdefault(host, {})["contextTokens"] = context
@@ -831,7 +831,7 @@ def cmd_identity(args) -> None:
     """Seed AI peer identity or show both peer representations."""
     cfg = _read_config()
     if not _resolve_api_key(cfg):
-        print("  No API key configured. Run 'satan honcho setup' first.\n")
+        print("  No API key configured. Run 'satanclaw honcho setup' first.\n")
         return
 
     file_path = getattr(args, "file", None)
@@ -868,7 +868,7 @@ def cmd_identity(args) -> None:
             print(ai_rep["card"])
         else:
             print("  No representation built yet.")
-            print("  Run 'satan honcho identity <file>' to seed one.")
+            print("  Run 'satanclaw honcho identity <file>' to seed one.")
         print()
         return
 
@@ -877,8 +877,8 @@ def cmd_identity(args) -> None:
         print(f"  User peer: {hcfg.peer_name or 'not set'}")
         print(f"  AI peer:   {hcfg.ai_peer}")
         print()
-        print("    satan honcho identity --show        — show both peer representations")
-        print("    satan honcho identity <file>        — seed AI peer from SOUL.md or any .md/.txt\n")
+        print("    satanclaw honcho identity --show        — show both peer representations")
+        print("    satanclaw honcho identity <file>        — seed AI peer from SOUL.md or any .md/.txt\n")
         return
 
     from pathlib import Path
@@ -902,7 +902,7 @@ def cmd_identity(args) -> None:
 
 
 def cmd_migrate(args) -> None:
-    """Step-by-step migration guide: OpenClaw native memory → Satan + Honcho."""
+    """Step-by-step migration guide: OpenClaw native memory → SatanClaw + Honcho."""
     from pathlib import Path
 
     # ── Detect OpenClaw native memory files ──────────────────────────────────
@@ -930,7 +930,7 @@ def cmd_migrate(args) -> None:
     cfg = _read_config()
     has_key = bool(_resolve_api_key(cfg))
 
-    print("\nHoncho migration: OpenClaw native memory → Satan\n" + "─" * 50)
+    print("\nHoncho migration: OpenClaw native memory → SatanClaw\n" + "─" * 50)
     print()
     print("  OpenClaw's native memory stores context in local markdown files")
     print("  (USER.md, MEMORY.md, SOUL.md, ...) and injects them via QMD search.")
@@ -947,21 +947,21 @@ def cmd_migrate(args) -> None:
         print(f"  Honcho API key already configured: {masked}")
         print("  Skip to Step 2.")
     else:
-        print("  Honcho is a cloud memory service that gives Satan persistent memory")
+        print("  Honcho is a cloud memory service that gives SatanClaw persistent memory")
         print("  across sessions. You need an API key to use it.")
         print()
         print("  1. Get your API key at https://app.honcho.dev")
-        print("  2. Run:  satan honcho setup")
+        print("  2. Run:  satanclaw honcho setup")
         print("     Paste the key when prompted.")
         print()
-        answer = _prompt("  Run 'satan honcho setup' now?", default="y")
+        answer = _prompt("  Run 'satanclaw honcho setup' now?", default="y")
         if answer.lower() in ("y", "yes"):
             cmd_setup(args)
             cfg = _read_config()
             has_key = bool(cfg.get("apiKey", ""))
         else:
             print()
-            print("  Run 'satan honcho setup' when ready, then re-run this walkthrough.")
+            print("  Run 'satanclaw honcho setup' when ready, then re-run this walkthrough.")
 
     # ── Step 2: Detected files ────────────────────────────────────────────────
     print()
@@ -979,7 +979,7 @@ def cmd_migrate(args) -> None:
     else:
         print("  No OpenClaw native memory files found in cwd or ~/.openclaw/.")
         print("  If your files are elsewhere, copy them here before continuing,")
-        print("  or seed them manually:  satan honcho identity <path/to/file>")
+        print("  or seed them manually:  satanclaw honcho identity <path/to/file>")
 
     # ── Step 3: Migrate user memory ───────────────────────────────────────────
     print()
@@ -992,13 +992,13 @@ def cmd_migrate(args) -> None:
     if user_files:
         print(f"  Found: {', '.join(f.name for f in user_files)}")
         print()
-        print("  These are picked up automatically the first time you run 'satan'")
+        print("  These are picked up automatically the first time you run 'satanclaw'")
         print("  with Honcho configured and no prior session history.")
-        print("  (Satan calls migrate_memory_files() on first session init.)")
+        print("  (SatanClaw calls migrate_memory_files() on first session init.)")
         print()
         print("  If you want to migrate them now without starting a session:")
         for f in user_files:
-            print("    satan honcho migrate  — this step handles it interactively")
+            print("    satanclaw honcho migrate  — this step handles it interactively")
         if has_key:
             answer = _prompt("  Upload user memory files to Honcho now?", default="y")
             if answer.lower() in ("y", "yes"):
@@ -1029,7 +1029,7 @@ def cmd_migrate(args) -> None:
                 except Exception as e:
                     print(f"  Failed: {e}")
         else:
-            print("  Run 'satan honcho setup' first, then re-run this step.")
+            print("  Run 'satanclaw honcho setup' first, then re-run this step.")
     else:
         print("  No user memory files detected. Nothing to migrate here.")
 
@@ -1041,7 +1041,7 @@ def cmd_migrate(args) -> None:
     print("  agent's character, capabilities, and behavioral rules. In OpenClaw")
     print("  these are injected via file search at prompt-build time.")
     print()
-    print("  In Satan, they are seeded once into Honcho's AI peer through the")
+    print("  In SatanClaw, they are seeded once into Honcho's AI peer through the")
     print("  observation pipeline. Honcho builds a representation from them and")
     print("  from every subsequent assistant message (observe_me=True). Over time")
     print("  the representation reflects actual behavior, not just declaration.")
@@ -1075,12 +1075,12 @@ def cmd_migrate(args) -> None:
                 except Exception as e:
                     print(f"  Failed: {e}")
         else:
-            print("  Run 'satan honcho setup' first, then seed manually:")
+            print("  Run 'satanclaw honcho setup' first, then seed manually:")
             for f in agent_files:
-                print(f"    satan honcho identity {f}")
+                print(f"    satanclaw honcho identity {f}")
     else:
         print("  No agent identity files detected.")
-        print("  To seed manually:  satan honcho identity <path/to/SOUL.md>")
+        print("  To seed manually:  satanclaw honcho identity <path/to/SOUL.md>")
 
     # ── Step 5: What changes ──────────────────────────────────────────────────
     print()
@@ -1088,17 +1088,17 @@ def cmd_migrate(args) -> None:
     print()
     print("  Storage")
     print("    OpenClaw: markdown files on disk, searched via QMD at prompt-build time.")
-    print("    Satan:   cloud-backed Honcho peers. Files can stay on disk as source")
+    print("    SatanClaw:   cloud-backed Honcho peers. Files can stay on disk as source")
     print("              of truth; Honcho holds the live representation.")
     print()
     print("  Context injection")
     print("    OpenClaw: file excerpts injected synchronously before each LLM call.")
-    print("    Satan:   Honcho context fetched async at turn end, injected next turn.")
+    print("    SatanClaw:   Honcho context fetched async at turn end, injected next turn.")
     print("              First turn has no Honcho context; subsequent turns are loaded.")
     print()
     print("  Memory growth")
     print("    OpenClaw: you edit files manually to update memory.")
-    print("    Satan:   Honcho observes every message and updates representations")
+    print("    SatanClaw:   Honcho observes every message and updates representations")
     print("              automatically. Files become the seed, not the live store.")
     print()
     print("  Honcho tools (available to the agent during conversation)")
@@ -1109,23 +1109,23 @@ def cmd_migrate(args) -> None:
     print()
     print("  Session naming")
     print("    OpenClaw: no persistent session concept — files are global.")
-    print("    Satan:   per-session by default — each run gets its own session")
-    print("              Map a custom name:  satan honcho map <session-name>")
+    print("    SatanClaw:   per-session by default — each run gets its own session")
+    print("              Map a custom name:  satanclaw honcho map <session-name>")
 
     # ── Step 6: Next steps ────────────────────────────────────────────────────
     print()
     print("Step 6  Next steps")
     print()
     if not has_key:
-        print("  1. satan honcho setup              — configure API key (required)")
-        print("  2. satan honcho migrate            — re-run this walkthrough")
+        print("  1. satanclaw honcho setup              — configure API key (required)")
+        print("  2. satanclaw honcho migrate            — re-run this walkthrough")
     else:
-        print("  1. satan honcho status             — verify Honcho connection")
-        print("  2. satan                           — start a session")
+        print("  1. satanclaw honcho status             — verify Honcho connection")
+        print("  2. satanclaw                           — start a session")
         print("     (user memory files auto-uploaded on first turn if not done above)")
-        print("  3. satan honcho identity --show    — verify AI peer representation")
-        print("  4. satan honcho tokens             — tune context and dialectic budgets")
-        print("  5. satan honcho mode               — view or change memory mode")
+        print("  3. satanclaw honcho identity --show    — verify AI peer representation")
+        print("  4. satanclaw honcho tokens             — tune context and dialectic budgets")
+        print("  5. satanclaw honcho mode               — view or change memory mode")
     print()
 
 

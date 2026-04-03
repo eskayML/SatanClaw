@@ -1,19 +1,19 @@
 """
 Qwen 2.5 tool call parser.
 
-Uses the same <tool_call> format as Satan.
+Uses the same <tool_call> format as SatanClaw.
 Registered as a separate parser name for clarity when using --tool-parser=qwen.
 """
 
 from environments.tool_call_parsers import register_parser
-from environments.tool_call_parsers.satan_parser import SatanToolCallParser
+from environments.tool_call_parsers.satanclaw_parser import SatanClawToolCallParser
 
 
 @register_parser("qwen")
-class QwenToolCallParser(SatanToolCallParser):
+class QwenToolCallParser(SatanClawToolCallParser):
     """
     Parser for Qwen 2.5 tool calls.
-    Same <tool_call>{"name": ..., "arguments": ...}</tool_call> format as Satan.
+    Same <tool_call>{"name": ..., "arguments": ...}</tool_call> format as SatanClaw.
     """
 
-    pass  # Identical format -- inherits everything from Satan
+    pass  # Identical format -- inherits everything from SatanClaw

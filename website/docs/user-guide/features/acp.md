@@ -1,12 +1,12 @@
 ---
 sidebar_position: 11
 title: "ACP Editor Integration"
-description: "Use Satan Agent inside ACP-compatible editors such as VS Code, Zed, and JetBrains"
+description: "Use SatanClaw Agent inside ACP-compatible editors such as VS Code, Zed, and JetBrains"
 ---
 
 # ACP Editor Integration
 
-Satan Agent can run as an ACP server, letting ACP-compatible editors talk to Satan over stdio and render:
+SatanClaw Agent can run as an ACP server, letting ACP-compatible editors talk to SatanClaw over stdio and render:
 
 - chat messages
 - tool activity
@@ -15,11 +15,11 @@ Satan Agent can run as an ACP server, letting ACP-compatible editors talk to Sat
 - approval prompts
 - streamed thinking / response chunks
 
-ACP is a good fit when you want Satan to behave like an editor-native coding agent instead of a standalone CLI or messaging bot.
+ACP is a good fit when you want SatanClaw to behave like an editor-native coding agent instead of a standalone CLI or messaging bot.
 
-## What Satan exposes in ACP mode
+## What SatanClaw exposes in ACP mode
 
-Satan runs with a curated `satan-acp` toolset designed for editor workflows. It includes:
+SatanClaw runs with a curated `satanclaw-acp` toolset designed for editor workflows. It includes:
 
 - file tools: `read_file`, `write_file`, `patch`, `search_files`
 - terminal tools: `terminal`, `process`
@@ -33,7 +33,7 @@ It intentionally excludes things that do not fit typical editor UX, such as mess
 
 ## Installation
 
-Install Satan normally, then add the ACP extra:
+Install SatanClaw normally, then add the ACP extra:
 
 ```bash
 pip install -e '.[acp]'
@@ -41,27 +41,27 @@ pip install -e '.[acp]'
 
 This installs the `agent-client-protocol` dependency and enables:
 
-- `satan acp`
-- `satan-acp`
+- `satanclaw acp`
+- `satanclaw-acp`
 - `python -m acp_adapter`
 
 ## Launching the ACP server
 
-Any of the following starts Satan in ACP mode:
+Any of the following starts SatanClaw in ACP mode:
 
 ```bash
-satan acp
+satanclaw acp
 ```
 
 ```bash
-satan-acp
+satanclaw-acp
 ```
 
 ```bash
 python -m acp_adapter
 ```
 
-Satan logs to stderr so stdout remains reserved for ACP JSON-RPC traffic.
+SatanClaw logs to stderr so stdout remains reserved for ACP JSON-RPC traffic.
 
 ## Editor setup
 
@@ -75,8 +75,8 @@ Example settings snippet:
 {
   "acpClient.agents": [
     {
-      "name": "satan-agent",
-      "registryDir": "/path/to/satan-agent/acp_registry"
+      "name": "satanclaw-agent",
+      "registryDir": "/path/to/satanclaw-agent/acp_registry"
     }
   ]
 }
@@ -89,9 +89,9 @@ Example settings snippet:
 ```json
 {
   "agent_servers": {
-    "satan-agent": {
+    "satanclaw-agent": {
       "type": "custom",
-      "command": "satan",
+      "command": "satanclaw",
       "args": ["acp"],
     },
   },
@@ -103,7 +103,7 @@ Example settings snippet:
 Use an ACP-compatible plugin and point it at:
 
 ```text
-/path/to/satan-agent/acp_registry
+/path/to/satanclaw-agent/acp_registry
 ```
 
 ## Registry manifest
@@ -117,19 +117,19 @@ acp_registry/agent.json
 It advertises a command-based agent whose launch command is:
 
 ```text
-satan acp
+satanclaw acp
 ```
 
 ## Configuration and credentials
 
-ACP mode uses the same Satan configuration as the CLI:
+ACP mode uses the same SatanClaw configuration as the CLI:
 
-- `~/.satan/.env`
-- `~/.satan/config.yaml`
-- `~/.satan/skills/`
-- `~/.satan/state.db`
+- `~/.satanclaw/.env`
+- `~/.satanclaw/config.yaml`
+- `~/.satanclaw/skills/`
+- `~/.satanclaw/state.db`
 
-Provider resolution uses Satan' normal runtime resolver, so ACP inherits the currently configured provider and credentials.
+Provider resolution uses SatanClaw' normal runtime resolver, so ACP inherits the currently configured provider and credentials.
 
 ## Session behavior
 
@@ -143,11 +143,11 @@ Each session stores:
 - current conversation history
 - cancel event
 
-The underlying `AIAgent` still uses Satan' normal persistence/logging paths, but ACP `list/load/resume/fork` are scoped to the currently running ACP server process.
+The underlying `AIAgent` still uses SatanClaw' normal persistence/logging paths, but ACP `list/load/resume/fork` are scoped to the currently running ACP server process.
 
 ## Working directory behavior
 
-ACP sessions bind the editor's cwd to the Satan task ID so file and terminal tools run relative to the editor workspace, not the server process cwd.
+ACP sessions bind the editor's cwd to the SatanClaw task ID so file and terminal tools run relative to the editor workspace, not the server process cwd.
 
 ## Approvals
 
@@ -166,7 +166,7 @@ On timeout or error, the approval bridge denies the request.
 Check:
 
 - the editor is pointed at the correct `acp_registry/` path
-- Satan is installed and on your PATH
+- SatanClaw is installed and on your PATH
 - the ACP extra is installed (`pip install -e '.[acp]'`)
 
 ### ACP starts but immediately errors
@@ -174,20 +174,20 @@ Check:
 Try these checks:
 
 ```bash
-satan doctor
-satan status
-satan acp
+satanclaw doctor
+satanclaw status
+satanclaw acp
 ```
 
 ### Missing credentials
 
-ACP mode does not have its own login flow. It uses Satan' existing provider setup. Configure credentials with:
+ACP mode does not have its own login flow. It uses SatanClaw' existing provider setup. Configure credentials with:
 
 ```bash
-satan model
+satanclaw model
 ```
 
-or by editing `~/.satan/.env`.
+or by editing `~/.satanclaw/.env`.
 
 ## See also
 

@@ -87,9 +87,9 @@ class TestConfigFilePermissions(unittest.TestCase):
 
     def test_save_config_sets_0600(self):
         config_path = Path(self.tmpdir) / "config.yaml"
-        with patch("satan_cli.config.get_config_path", return_value=config_path), \
-             patch("satan_cli.config.ensure_satan_home"):
-            from satan_cli.config import save_config
+        with patch("satanclaw_cli.config.get_config_path", return_value=config_path), \
+             patch("satanclaw_cli.config.ensure_satanclaw_home"):
+            from satanclaw_cli.config import save_config
             save_config({"model": "test/model"})
 
             file_mode = stat.S_IMODE(os.stat(config_path).st_mode)
@@ -97,19 +97,19 @@ class TestConfigFilePermissions(unittest.TestCase):
 
     def test_save_env_value_sets_0600(self):
         env_path = Path(self.tmpdir) / ".env"
-        with patch("satan_cli.config.get_env_path", return_value=env_path), \
-             patch("satan_cli.config.ensure_satan_home"):
-            from satan_cli.config import save_env_value
+        with patch("satanclaw_cli.config.get_env_path", return_value=env_path), \
+             patch("satanclaw_cli.config.ensure_satanclaw_home"):
+            from satanclaw_cli.config import save_env_value
             save_env_value("TEST_KEY", "test_value")
 
             file_mode = stat.S_IMODE(os.stat(env_path).st_mode)
             self.assertEqual(file_mode, 0o600)
 
-    def test_ensure_satan_home_sets_0700(self):
-        home = Path(self.tmpdir) / ".satan"
-        with patch("satan_cli.config.get_satan_home", return_value=home):
-            from satan_cli.config import ensure_satan_home
-            ensure_satan_home()
+    def test_ensure_satanclaw_home_sets_0700(self):
+        home = Path(self.tmpdir) / ".satanclaw"
+        with patch("satanclaw_cli.config.get_satanclaw_home", return_value=home):
+            from satanclaw_cli.config import ensure_satanclaw_home
+            ensure_satanclaw_home()
 
             home_mode = stat.S_IMODE(os.stat(home).st_mode)
             self.assertEqual(home_mode, 0o700)

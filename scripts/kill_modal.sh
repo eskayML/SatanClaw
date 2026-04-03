@@ -2,7 +2,7 @@
 # Kill all running Modal apps (sandboxes, deployments, etc.)
 #
 # Usage:
-#   bash scripts/kill_modal.sh          # Stop satan-agent sandboxes
+#   bash scripts/kill_modal.sh          # Stop satanclaw-agent sandboxes
 #   bash scripts/kill_modal.sh --all    # Stop ALL Modal apps
 
 set -uo pipefail
@@ -17,10 +17,10 @@ if [[ "${1:-}" == "--all" ]]; then
         modal app stop "$app_id" 2>/dev/null || true
     done
 else
-    echo "Stopping satan-agent sandboxes..."
-    APPS=$(echo "$APP_LIST" | grep 'satan-agent' | grep -oE 'ap-[A-Za-z0-9]+' || true)
+    echo "Stopping satanclaw-agent sandboxes..."
+    APPS=$(echo "$APP_LIST" | grep 'satanclaw-agent' | grep -oE 'ap-[A-Za-z0-9]+' || true)
     if [[ -z "$APPS" ]]; then
-        echo "  No satan-agent apps found."
+        echo "  No satanclaw-agent apps found."
     else
         echo "$APPS" | while read app_id; do
             echo "  Stopping $app_id"
@@ -30,5 +30,5 @@ else
 fi
 
 echo ""
-echo "Current satan-agent status:"
-modal app list 2>/dev/null | grep -E 'State|satan-agent' || echo "  (none)"
+echo "Current satanclaw-agent status:"
+modal app list 2>/dev/null | grep -E 'State|satanclaw-agent' || echo "  (none)"

@@ -1,4 +1,4 @@
-"""ACP auth helpers — detect the currently configured Satan provider."""
+"""ACP auth helpers — detect the currently configured SatanClaw provider."""
 
 from __future__ import annotations
 
@@ -6,9 +6,9 @@ from typing import Optional
 
 
 def detect_provider() -> Optional[str]:
-    """Resolve the active Satan runtime provider, or None if unavailable."""
+    """Resolve the active SatanClaw runtime provider, or None if unavailable."""
     try:
-        from satan_cli.runtime_provider import resolve_runtime_provider
+        from satanclaw_cli.runtime_provider import resolve_runtime_provider
         runtime = resolve_runtime_provider()
         api_key = runtime.get("api_key")
         provider = runtime.get("provider")
@@ -20,5 +20,5 @@ def detect_provider() -> Optional[str]:
 
 
 def has_provider() -> bool:
-    """Return True if Satan can resolve any runtime provider credentials."""
+    """Return True if SatanClaw can resolve any runtime provider credentials."""
     return detect_provider() is not None

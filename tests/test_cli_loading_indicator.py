@@ -2,12 +2,12 @@
 
 from unittest.mock import patch
 
-from cli import SatanCLI
+from cli import SatanClawCLI
 
 
 class TestCLILoadingIndicator:
     def _make_cli(self):
-        cli_obj = SatanCLI.__new__(SatanCLI)
+        cli_obj = SatanClawCLI.__new__(SatanClawCLI)
         cli_obj._app = None
         cli_obj._last_invalidate = 0.0
         cli_obj._command_running = False

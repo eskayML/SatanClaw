@@ -14,11 +14,11 @@ import logging
 from datetime import datetime
 from typing import Optional
 
-from satan_cli.config import get_satan_home
+from satanclaw_cli.config import get_satanclaw_home
 
 logger = logging.getLogger(__name__)
 
-_SESSIONS_DIR = get_satan_home() / "sessions"
+_SESSIONS_DIR = get_satanclaw_home() / "sessions"
 _SESSIONS_INDEX = _SESSIONS_DIR / "sessions.json"
 
 
@@ -118,7 +118,7 @@ def _append_to_sqlite(session_id: str, message: dict) -> None:
     """Append a message to the SQLite session database."""
     db = None
     try:
-        from satan_state import SessionDB
+        from satanclaw_state import SessionDB
         db = SessionDB()
         db.append_message(
             session_id=session_id,

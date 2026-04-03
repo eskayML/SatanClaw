@@ -1,12 +1,12 @@
 ---
 sidebar_position: 10
 title: "Skins & Themes"
-description: "Customize the Satan CLI with built-in and user-defined skins"
+description: "Customize the SatanClaw CLI with built-in and user-defined skins"
 ---
 
 # Skins & Themes
 
-Skins control the **visual presentation** of the Satan CLI: banner colors, spinner faces and verbs, response-box labels, branding text, and the tool activity prefix.
+Skins control the **visual presentation** of the SatanClaw CLI: banner colors, spinner faces and verbs, response-box labels, branding text, and the tool activity prefix.
 
 Conversational style and visual style are separate concepts:
 
@@ -18,10 +18,10 @@ Conversational style and visual style are separate concepts:
 ```bash
 /skin                # show the current skin and list available skins
 /skin ares           # switch to a built-in skin
-/skin mytheme        # switch to a custom skin from ~/.satan/skins/mytheme.yaml
+/skin mytheme        # switch to a custom skin from ~/.satanclaw/skins/mytheme.yaml
 ```
 
-Or set the default skin in `~/.satan/config.yaml`:
+Or set the default skin in `~/.satanclaw/config.yaml`:
 
 ```yaml
 display:
@@ -32,10 +32,10 @@ display:
 
 | Skin | Description | Agent branding | Visual character |
 |------|-------------|----------------|------------------|
-| `default` | Classic Satan — gold and kawaii | `Satan Agent` | Warm gold borders, cornsilk text, kawaii faces in spinners. The familiar caduceus banner. Clean and inviting. |
+| `default` | Classic SatanClaw — gold and kawaii | `SatanClaw Agent` | Warm gold borders, cornsilk text, kawaii faces in spinners. The familiar caduceus banner. Clean and inviting. |
 | `ares` | War-god theme — crimson and bronze | `Ares Agent` | Deep crimson borders with bronze accents. Aggressive spinner verbs ("forging", "marching", "tempering steel"). Custom sword-and-shield ASCII art banner. |
-| `mono` | Monochrome — clean grayscale | `Satan Agent` | All grays — no color. Borders are `#555555`, text is `#c9d1d9`. Ideal for minimal terminal setups or screen recordings. |
-| `slate` | Cool blue — developer-focused | `Satan Agent` | Royal blue borders (`#4169e1`), soft blue text. Calm and professional. No custom spinner — uses default faces. |
+| `mono` | Monochrome — clean grayscale | `SatanClaw Agent` | All grays — no color. Borders are `#555555`, text is `#c9d1d9`. Ideal for minimal terminal setups or screen recordings. |
+| `slate` | Cool blue — developer-focused | `SatanClaw Agent` | Royal blue borders (`#4169e1`), soft blue text. Calm and professional. No custom spinner — uses default faces. |
 | `poseidon` | Ocean-god theme — deep blue and seafoam | `Poseidon Agent` | Deep blue to seafoam gradient. Ocean-themed spinners ("charting currents", "sounding the depth"). Trident ASCII art banner. |
 | `sisyphus` | Sisyphean theme — austere grayscale with persistence | `Sisyphus Agent` | Light grays with stark contrast. Boulder-themed spinners ("pushing uphill", "resetting the boulder", "enduring the loop"). Boulder-and-hill ASCII art banner. |
 | `charizard` | Volcanic theme — burnt orange and ember | `Charizard Agent` | Warm burnt orange to ember gradient. Fire-themed spinners ("banking into the draft", "measuring burn"). Dragon-silhouette ASCII art banner. |
@@ -83,10 +83,10 @@ Text strings used throughout the CLI interface.
 
 | Key | Description | Default |
 |-----|-------------|---------|
-| `agent_name` | Name shown in banner title and status display | `Satan Agent` |
-| `welcome` | Welcome message shown at CLI startup | `Welcome to Satan Agent! Type your message or /help for commands.` |
+| `agent_name` | Name shown in banner title and status display | `SatanClaw Agent` |
+| `welcome` | Welcome message shown at CLI startup | `Welcome to SatanClaw Agent! Type your message or /help for commands.` |
 | `goodbye` | Message shown on exit | `Goodbye! ⚕` |
-| `response_label` | Label on the response box header | ` ⚕ Satan ` |
+| `response_label` | Label on the response box header | ` ⚕ SatanClaw ` |
 | `prompt_symbol` | Symbol before the user input prompt | `❯ ` |
 | `help_header` | Header text for the `/help` command output | `(^_^)? Available Commands` |
 
@@ -101,12 +101,12 @@ Text strings used throughout the CLI interface.
 
 ## Custom skins
 
-Create YAML files under `~/.satan/skins/`. User skins inherit missing values from the built-in `default` skin, so you only need to specify the keys you want to change.
+Create YAML files under `~/.satanclaw/skins/`. User skins inherit missing values from the built-in `default` skin, so you only need to specify the keys you want to change.
 
 ### Full custom skin YAML template
 
 ```yaml
-# ~/.satan/skins/mytheme.yaml
+# ~/.satanclaw/skins/mytheme.yaml
 # Complete skin template — all keys shown. Delete any you don't need;
 # missing values automatically inherit from the 'default' skin.
 
@@ -198,9 +198,9 @@ tool_prefix: "▏"
 
 ## Operational notes
 
-- Built-in skins load from `satan_cli/skin_engine.py`.
+- Built-in skins load from `satanclaw_cli/skin_engine.py`.
 - Unknown skins automatically fall back to `default`.
 - `/skin` updates the active CLI theme immediately for the current session.
-- User skins in `~/.satan/skins/` take precedence over built-in skins with the same name.
+- User skins in `~/.satanclaw/skins/` take precedence over built-in skins with the same name.
 - Skin changes via `/skin` are session-only. To make a skin your permanent default, set it in `config.yaml`.
 - The `banner_logo` and `banner_hero` fields support Rich console markup (e.g., `[bold #FF0000]text[/]`) for colored ASCII art.

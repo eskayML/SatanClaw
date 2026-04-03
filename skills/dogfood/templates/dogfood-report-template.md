@@ -3,7 +3,7 @@
 **Target:** {target_url}
 **Date:** {date}
 **Scope:** {scope_description}
-**Tester:** Satan Agent (automated exploratory QA)
+**Tester:** SatanClaw Agent (automated exploratory QA)
 
 ---
 

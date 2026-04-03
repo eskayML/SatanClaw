@@ -19,11 +19,11 @@ from tools.approval import (
 
 class TestApprovalModeParsing:
     def test_unquoted_yaml_off_boolean_false_maps_to_off(self):
-        with mock_patch("satan_cli.config.load_config", return_value={"approvals": {"mode": False}}):
+        with mock_patch("satanclaw_cli.config.load_config", return_value={"approvals": {"mode": False}}):
             assert _get_approval_mode() == "off"
 
     def test_string_off_still_maps_to_off(self):
-        with mock_patch("satan_cli.config.load_config", return_value={"approvals": {"mode": "off"}}):
+        with mock_patch("satanclaw_cli.config.load_config", return_value={"approvals": {"mode": "off"}}):
             assert _get_approval_mode() == "off"
 
 
@@ -334,17 +334,17 @@ class TestTeePattern:
         assert dangerous is True
         assert key is not None
 
-    def test_tee_satan_env(self):
-        dangerous, key, desc = detect_dangerous_command("echo x | tee ~/.satan/.env")
+    def test_tee_satanclaw_env(self):
+        dangerous, key, desc = detect_dangerous_command("echo x | tee ~/.satanclaw/.env")
         assert dangerous is True
         assert key is not None
 
-    def test_tee_custom_satan_home_env(self):
+    def test_tee_custom_satanclaw_home_env(self):
         dangerous, key, desc = detect_dangerous_command("echo x | tee $HERMES_HOME/.env")
         assert dangerous is True
         assert key is not None
 
-    def test_tee_quoted_custom_satan_home_env(self):
+    def test_tee_quoted_custom_satanclaw_home_env(self):
         dangerous, key, desc = detect_dangerous_command('echo x | tee "$HERMES_HOME/.env"')
         assert dangerous is True
         assert key is not None
@@ -387,7 +387,7 @@ class TestFindExecFullPathRm:
 class TestSensitiveRedirectPattern:
     """Detect shell redirection writes to sensitive user-managed paths."""
 
-    def test_redirect_to_custom_satan_home_env(self):
+    def test_redirect_to_custom_satanclaw_home_env(self):
         dangerous, key, desc = detect_dangerous_command("echo x > $HERMES_HOME/.env")
         assert dangerous is True
         assert key is not None
@@ -514,47 +514,47 @@ class TestGatewayProtection:
     """Prevent agents from starting the gateway outside systemd management."""
 
     def test_gateway_run_with_disown_detected(self):
-        cmd = "kill 1605 && cd ~/.satan/satan-agent && source venv/bin/activate && python -m satan_cli.main gateway run --replace &disown; echo done"
+        cmd = "kill 1605 && cd ~/.satanclaw/satanclaw-agent && source venv/bin/activate && python -m satanclaw_cli.main gateway run --replace &disown; echo done"
         dangerous, key, desc = detect_dangerous_command(cmd)
         assert dangerous is True
         assert "systemctl" in desc
 
     def test_gateway_run_with_ampersand_detected(self):
-        cmd = "python -m satan_cli.main gateway run --replace &"
+        cmd = "python -m satanclaw_cli.main gateway run --replace &"
         dangerous, key, desc = detect_dangerous_command(cmd)
         assert dangerous is True
 
     def test_gateway_run_with_nohup_detected(self):
-        cmd = "nohup python -m satan_cli.main gateway run --replace"
+        cmd = "nohup python -m satanclaw_cli.main gateway run --replace"
         dangerous, key, desc = detect_dangerous_command(cmd)
         assert dangerous is True
 
     def test_gateway_run_with_setsid_detected(self):
-        cmd = "satan_cli.main gateway run --replace &disown"
+        cmd = "satanclaw_cli.main gateway run --replace &disown"
         dangerous, key, desc = detect_dangerous_command(cmd)
         assert dangerous is True
 
     def test_gateway_run_foreground_not_flagged(self):
         """Normal foreground gateway run (as in systemd ExecStart) is fine."""
-        cmd = "python -m satan_cli.main gateway run --replace"
+        cmd = "python -m satanclaw_cli.main gateway run --replace"
         dangerous, key, desc = detect_dangerous_command(cmd)
         assert dangerous is False
 
     def test_systemctl_restart_not_flagged(self):
         """Using systemctl to manage the gateway is the correct approach."""
-        cmd = "systemctl --user restart satan-gateway"
+        cmd = "systemctl --user restart satanclaw-gateway"
         dangerous, key, desc = detect_dangerous_command(cmd)
         assert dangerous is False
 
-    def test_pkill_satan_detected(self):
-        """pkill targeting satan/gateway processes must be caught."""
+    def test_pkill_satanclaw_detected(self):
+        """pkill targeting satanclaw/gateway processes must be caught."""
         cmd = 'pkill -f "cli.py --gateway"'
         dangerous, key, desc = detect_dangerous_command(cmd)
         assert dangerous is True
         assert "self-termination" in desc
 
-    def test_killall_satan_detected(self):
-        cmd = "killall satan"
+    def test_killall_satanclaw_detected(self):
+        cmd = "killall satanclaw"
         dangerous, key, desc = detect_dangerous_command(cmd)
         assert dangerous is True
         assert "self-termination" in desc

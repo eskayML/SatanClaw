@@ -1,4 +1,4 @@
-"""Shared utility functions for satan-agent."""
+"""Shared utility functions for satanclaw-agent."""
 
 import json
 import os

@@ -1,7 +1,7 @@
 ---
 sidebar_position: 1
 title: "CLI Commands Reference"
-description: "Authoritative reference for Satan terminal commands and command families"
+description: "Authoritative reference for SatanClaw terminal commands and command families"
 ---
 
 # CLI Commands Reference
@@ -13,7 +13,7 @@ For in-chat slash commands, see [Slash Commands Reference](./slash-commands.md).
 ## Global entrypoint
 
 ```bash
-satan [global-options] <command> [subcommand/options]
+satanclaw [global-options] <command> [subcommand/options]
 ```
 
 ### Global options
@@ -21,7 +21,7 @@ satan [global-options] <command> [subcommand/options]
 | Option | Description |
 |--------|-------------|
 | `--version`, `-V` | Show version and exit. |
-| `--profile <name>`, `-p <name>` | Select which Satan profile to use for this invocation. Overrides the sticky default set by `satan profile use`. |
+| `--profile <name>`, `-p <name>` | Select which SatanClaw profile to use for this invocation. Overrides the sticky default set by `satanclaw profile use`. |
 | `--resume <session>`, `-r <session>` | Resume a previous session by ID or title. |
 | `--continue [name]`, `-c [name]` | Resume the most recent session, or the most recent session matching a title. |
 | `--worktree`, `-w` | Start in an isolated git worktree for parallel-agent workflows. |
@@ -32,38 +32,38 @@ satan [global-options] <command> [subcommand/options]
 
 | Command | Purpose |
 |---------|---------|
-| `satan chat` | Interactive or one-shot chat with the agent. |
-| `satan model` | Interactively choose the default provider and model. |
-| `satan gateway` | Run or manage the messaging gateway service. |
-| `satan setup` | Interactive setup wizard for all or part of the configuration. |
-| `satan whatsapp` | Configure and pair the WhatsApp bridge. |
-| `satan login` / `logout` | Authenticate with OAuth-backed providers. |
-| `satan auth` | Manage credential pools — add, list, remove, reset, set strategy. |
-| `satan status` | Show agent, auth, and platform status. |
-| `satan cron` | Inspect and tick the cron scheduler. |
-| `satan webhook` | Manage dynamic webhook subscriptions for event-driven activation. |
-| `satan doctor` | Diagnose config and dependency issues. |
-| `satan config` | Show, edit, migrate, and query configuration files. |
-| `satan pairing` | Approve or revoke messaging pairing codes. |
-| `satan skills` | Browse, install, publish, audit, and configure skills. |
-| `satan honcho` | Manage Honcho cross-session memory integration. |
-| `satan acp` | Run Satan as an ACP server for editor integration. |
-| `satan mcp` | Manage MCP server configurations and run Satan as an MCP server. |
-| `satan plugins` | Manage Satan Agent plugins (install, enable, disable, remove). |
-| `satan tools` | Configure enabled tools per platform. |
-| `satan sessions` | Browse, export, prune, rename, and delete sessions. |
-| `satan insights` | Show token/cost/activity analytics. |
-| `satan claw` | OpenClaw migration helpers. |
-| `satan profile` | Manage profiles — multiple isolated Satan instances. |
-| `satan completion` | Print shell completion scripts (bash/zsh). |
-| `satan version` | Show version information. |
-| `satan update` | Pull latest code and reinstall dependencies. |
-| `satan uninstall` | Remove Satan from the system. |
+| `satanclaw chat` | Interactive or one-shot chat with the agent. |
+| `satanclaw model` | Interactively choose the default provider and model. |
+| `satanclaw gateway` | Run or manage the messaging gateway service. |
+| `satanclaw setup` | Interactive setup wizard for all or part of the configuration. |
+| `satanclaw whatsapp` | Configure and pair the WhatsApp bridge. |
+| `satanclaw login` / `logout` | Authenticate with OAuth-backed providers. |
+| `satanclaw auth` | Manage credential pools — add, list, remove, reset, set strategy. |
+| `satanclaw status` | Show agent, auth, and platform status. |
+| `satanclaw cron` | Inspect and tick the cron scheduler. |
+| `satanclaw webhook` | Manage dynamic webhook subscriptions for event-driven activation. |
+| `satanclaw doctor` | Diagnose config and dependency issues. |
+| `satanclaw config` | Show, edit, migrate, and query configuration files. |
+| `satanclaw pairing` | Approve or revoke messaging pairing codes. |
+| `satanclaw skills` | Browse, install, publish, audit, and configure skills. |
+| `satanclaw honcho` | Manage Honcho cross-session memory integration. |
+| `satanclaw acp` | Run SatanClaw as an ACP server for editor integration. |
+| `satanclaw mcp` | Manage MCP server configurations and run SatanClaw as an MCP server. |
+| `satanclaw plugins` | Manage SatanClaw Agent plugins (install, enable, disable, remove). |
+| `satanclaw tools` | Configure enabled tools per platform. |
+| `satanclaw sessions` | Browse, export, prune, rename, and delete sessions. |
+| `satanclaw insights` | Show token/cost/activity analytics. |
+| `satanclaw claw` | OpenClaw migration helpers. |
+| `satanclaw profile` | Manage profiles — multiple isolated SatanClaw instances. |
+| `satanclaw completion` | Print shell completion scripts (bash/zsh). |
+| `satanclaw version` | Show version information. |
+| `satanclaw update` | Pull latest code and reinstall dependencies. |
+| `satanclaw uninstall` | Remove SatanClaw from the system. |
 
-## `satan chat`
+## `satanclaw chat`
 
 ```bash
-satan chat [options]
+satanclaw chat [options]
 ```
 
 Common options:
@@ -87,20 +87,20 @@ Common options:
 Examples:
 
 ```bash
-satan
-satan chat -q "Summarize the latest PRs"
-satan chat --provider openrouter --model anthropic/claude-sonnet-4.6
-satan chat --toolsets web,terminal,skills
-satan chat --quiet -q "Return only JSON"
-satan chat --worktree -q "Review this repo and open a PR"
+satanclaw
+satanclaw chat -q "Summarize the latest PRs"
+satanclaw chat --provider openrouter --model anthropic/claude-sonnet-4.6
+satanclaw chat --toolsets web,terminal,skills
+satanclaw chat --quiet -q "Return only JSON"
+satanclaw chat --worktree -q "Review this repo and open a PR"
 ```
 
-## `satan model`
+## `satanclaw model`
 
 Interactive provider + model selector.
 
 ```bash
-satan model
+satanclaw model
 ```
 
 Use this when you want to:
@@ -126,10 +126,10 @@ Switch models without leaving a session:
 
 Provider and base URL changes are persisted to `config.yaml` automatically. When switching away from a custom endpoint, the stale base URL is cleared to prevent it leaking into other providers.
 
-## `satan gateway`
+## `satanclaw gateway`
 
 ```bash
-satan gateway <subcommand>
+satanclaw gateway <subcommand>
 ```
 
 Subcommands:
@@ -145,10 +145,10 @@ Subcommands:
 | `uninstall` | Remove the installed service. |
 | `setup` | Interactive messaging-platform setup. |
 
-## `satan setup`
+## `satanclaw setup`
 
 ```bash
-satan setup [model|terminal|gateway|tools|agent] [--non-interactive] [--reset]
+satanclaw setup [model|terminal|gateway|tools|agent] [--non-interactive] [--reset]
 ```
 
 Use the full wizard or jump into one section:
@@ -168,19 +168,19 @@ Options:
 | `--non-interactive` | Use defaults / environment values without prompts. |
 | `--reset` | Reset configuration to defaults before setup. |
 
-## `satan whatsapp`
+## `satanclaw whatsapp`
 
 ```bash
-satan whatsapp
+satanclaw whatsapp
 ```
 
 Runs the WhatsApp pairing/setup flow, including mode selection and QR-code pairing.
 
-## `satan login` / `satan logout`
+## `satanclaw login` / `satanclaw logout`
 
 ```bash
-satan login [--provider nous|openai-codex] [--portal-url ...] [--inference-url ...]
-satan logout [--provider nous|openai-codex]
+satanclaw login [--provider nous|openai-codex] [--portal-url ...] [--inference-url ...]
+satanclaw logout [--provider nous|openai-codex]
 ```
 
 `login` supports:
@@ -193,26 +193,26 @@ Useful options for `login`:
 - `--ca-bundle <pem>`
 - `--insecure`
 
-## `satan auth`
+## `satanclaw auth`
 
 Manage credential pools for same-provider key rotation. See [Credential Pools](/docs/user-guide/features/credential-pools) for full documentation.
 
 ```bash
-satan auth                                              # Interactive wizard
-satan auth list                                         # Show all pools
-satan auth list openrouter                              # Show specific provider
-satan auth add openrouter --api-key sk-or-v1-xxx        # Add API key
-satan auth add anthropic --type oauth                   # Add OAuth credential
-satan auth remove openrouter 2                          # Remove by index
-satan auth reset openrouter                             # Clear cooldowns
+satanclaw auth                                              # Interactive wizard
+satanclaw auth list                                         # Show all pools
+satanclaw auth list openrouter                              # Show specific provider
+satanclaw auth add openrouter --api-key sk-or-v1-xxx        # Add API key
+satanclaw auth add anthropic --type oauth                   # Add OAuth credential
+satanclaw auth remove openrouter 2                          # Remove by index
+satanclaw auth reset openrouter                             # Clear cooldowns
 ```
 
 Subcommands: `add`, `list`, `remove`, `reset`. When called with no subcommand, launches the interactive management wizard.
 
-## `satan status`
+## `satanclaw status`
 
 ```bash
-satan status [--all] [--deep]
+satanclaw status [--all] [--deep]
 ```
 
 | Option | Description |
@@ -220,10 +220,10 @@ satan status [--all] [--deep]
 | `--all` | Show all details in a shareable redacted format. |
 | `--deep` | Run deeper checks that may take longer. |
 
-## `satan cron`
+## `satanclaw cron`
 
 ```bash
-satan cron <list|create|edit|pause|resume|run|remove|status|tick>
+satanclaw cron <list|create|edit|pause|resume|run|remove|status|tick>
 ```
 
 | Subcommand | Description |
@@ -238,10 +238,10 @@ satan cron <list|create|edit|pause|resume|run|remove|status|tick>
 | `status` | Check whether the cron scheduler is running. |
 | `tick` | Run due jobs once and exit. |
 
-## `satan webhook`
+## `satanclaw webhook`
 
 ```bash
-satan webhook <subscribe|list|remove|test>
+satanclaw webhook <subscribe|list|remove|test>
 ```
 
 Manage dynamic webhook subscriptions for event-driven agent activation. Requires the webhook platform to be enabled in config — if not configured, prints setup instructions.
@@ -253,10 +253,10 @@ Manage dynamic webhook subscriptions for event-driven agent activation. Requires
 | `remove` / `rm` | Delete a dynamic subscription. Static routes from config.yaml are not affected. |
 | `test` | Send a test POST to verify a subscription is working. |
 
-### `satan webhook subscribe`
+### `satanclaw webhook subscribe`
 
 ```bash
-satan webhook subscribe <name> [options]
+satanclaw webhook subscribe <name> [options]
 ```
 
 | Option | Description |
@@ -269,22 +269,22 @@ satan webhook subscribe <name> [options]
 | `--deliver-chat-id` | Target chat/channel ID for cross-platform delivery. |
 | `--secret` | Custom HMAC secret. Auto-generated if omitted. |
 
-Subscriptions persist to `~/.satan/webhook_subscriptions.json` and are hot-reloaded by the webhook adapter without a gateway restart.
+Subscriptions persist to `~/.satanclaw/webhook_subscriptions.json` and are hot-reloaded by the webhook adapter without a gateway restart.
 
-## `satan doctor`
+## `satanclaw doctor`
 
 ```bash
-satan doctor [--fix]
+satanclaw doctor [--fix]
 ```
 
 | Option | Description |
 |--------|-------------|
 | `--fix` | Attempt automatic repairs where possible. |
 
-## `satan config`
+## `satanclaw config`
 
 ```bash
-satan config <subcommand>
+satanclaw config <subcommand>
 ```
 
 Subcommands:
@@ -299,10 +299,10 @@ Subcommands:
 | `check` | Check for missing or stale config. |
 | `migrate` | Add newly introduced options interactively. |
 
-## `satan pairing`
+## `satanclaw pairing`
 
 ```bash
-satan pairing <list|approve|revoke|clear-pending>
+satanclaw pairing <list|approve|revoke|clear-pending>
 ```
 
 | Subcommand | Description |
@@ -312,10 +312,10 @@ satan pairing <list|approve|revoke|clear-pending>
 | `revoke <platform> <user-id>` | Revoke a user's access. |
 | `clear-pending` | Clear pending pairing codes. |
 
-## `satan skills`
+## `satanclaw skills`
 
 ```bash
-satan skills <subcommand>
+satanclaw skills <subcommand>
 ```
 
 Subcommands:
@@ -339,29 +339,29 @@ Subcommands:
 Common examples:
 
 ```bash
-satan skills browse
-satan skills browse --source official
-satan skills search react --source skills-sh
-satan skills search https://mintlify.com/docs --source well-known
-satan skills inspect official/security/1password
-satan skills inspect skills-sh/vercel-labs/json-render/json-render-react
-satan skills install official/migration/openclaw-migration
-satan skills install skills-sh/anthropics/skills/pdf --force
-satan skills check
-satan skills update
-satan skills config
+satanclaw skills browse
+satanclaw skills browse --source official
+satanclaw skills search react --source skills-sh
+satanclaw skills search https://mintlify.com/docs --source well-known
+satanclaw skills inspect official/security/1password
+satanclaw skills inspect skills-sh/vercel-labs/json-render/json-render-react
+satanclaw skills install official/migration/openclaw-migration
+satanclaw skills install skills-sh/anthropics/skills/pdf --force
+satanclaw skills check
+satanclaw skills update
+satanclaw skills config
 ```
 
 Notes:
 - `--force` can override non-dangerous policy blocks for third-party/community skills.
 - `--force` does not override a `dangerous` scan verdict.
 - `--source skills-sh` searches the public `skills.sh` directory.
-- `--source well-known` lets you point Satan at a site exposing `/.well-known/skills/index.json`.
+- `--source well-known` lets you point SatanClaw at a site exposing `/.well-known/skills/index.json`.
 
-## `satan honcho`
+## `satanclaw honcho`
 
 ```bash
-satan honcho <subcommand>
+satanclaw honcho <subcommand>
 ```
 
 Subcommands:
@@ -376,20 +376,20 @@ Subcommands:
 | `mode` | Show or set memory mode: `hybrid`, `honcho`, or `local`. |
 | `tokens` | Show or set token budgets for context and dialectic. |
 | `identity` | Seed or show the AI peer identity representation. |
-| `migrate` | Migration guide from openclaw-honcho to Satan Honcho. |
+| `migrate` | Migration guide from openclaw-honcho to SatanClaw Honcho. |
 
-## `satan acp`
+## `satanclaw acp`
 
 ```bash
-satan acp
+satanclaw acp
 ```
 
-Starts Satan as an ACP (Agent Client Protocol) stdio server for editor integration.
+Starts SatanClaw as an ACP (Agent Client Protocol) stdio server for editor integration.
 
 Related entrypoints:
 
 ```bash
-satan-acp
+satanclaw-acp
 python -m acp_adapter
 ```
 
@@ -401,32 +401,32 @@ pip install -e '.[acp]'
 
 See [ACP Editor Integration](../user-guide/features/acp.md) and [ACP Internals](../developer-guide/acp-internals.md).
 
-## `satan mcp`
+## `satanclaw mcp`
 
 ```bash
-satan mcp <subcommand>
+satanclaw mcp <subcommand>
 ```
 
-Manage MCP (Model Context Protocol) server configurations and run Satan as an MCP server.
+Manage MCP (Model Context Protocol) server configurations and run SatanClaw as an MCP server.
 
 | Subcommand | Description |
 |------------|-------------|
-| `serve [-v\|--verbose]` | Run Satan as an MCP server — expose conversations to other agents. |
+| `serve [-v\|--verbose]` | Run SatanClaw as an MCP server — expose conversations to other agents. |
 | `add <name> [--url URL] [--command CMD] [--args ...] [--auth oauth\|header]` | Add an MCP server with automatic tool discovery. |
 | `remove <name>` (alias: `rm`) | Remove an MCP server from config. |
 | `list` (alias: `ls`) | List configured MCP servers. |
 | `test <name>` | Test connection to an MCP server. |
 | `configure <name>` (alias: `config`) | Toggle tool selection for a server. |
 
-See [MCP Config Reference](./mcp-config-reference.md), [Use MCP with Satan](../guides/use-mcp-with-satan.md), and [MCP Server Mode](../user-guide/features/mcp.md#running-satan-as-an-mcp-server).
+See [MCP Config Reference](./mcp-config-reference.md), [Use MCP with SatanClaw](../guides/use-mcp-with-satanclaw.md), and [MCP Server Mode](../user-guide/features/mcp.md#running-satanclaw-as-an-mcp-server).
 
-## `satan plugins`
+## `satanclaw plugins`
 
 ```bash
-satan plugins [subcommand]
+satanclaw plugins [subcommand]
 ```
 
-Manage Satan Agent plugins. Running `satan plugins` with no subcommand launches an interactive curses checklist to enable/disable installed plugins.
+Manage SatanClaw Agent plugins. Running `satanclaw plugins` with no subcommand launches an interactive curses checklist to enable/disable installed plugins.
 
 | Subcommand | Description |
 |------------|-------------|
@@ -440,12 +440,12 @@ Manage Satan Agent plugins. Running `satan plugins` with no subcommand launches 
 
 Disabled plugins are stored in `config.yaml` under `plugins.disabled` and skipped during loading.
 
-See [Plugins](../user-guide/features/plugins.md) and [Build a Satan Plugin](../guides/build-a-satan-plugin.md).
+See [Plugins](../user-guide/features/plugins.md) and [Build a SatanClaw Plugin](../guides/build-a-satanclaw-plugin.md).
 
-## `satan tools`
+## `satanclaw tools`
 
 ```bash
-satan tools [--summary]
+satanclaw tools [--summary]
 ```
 
 | Option | Description |
@@ -454,10 +454,10 @@ satan tools [--summary]
 
 Without `--summary`, this launches the interactive per-platform tool configuration UI.
 
-## `satan sessions`
+## `satanclaw sessions`
 
 ```bash
-satan sessions <subcommand>
+satanclaw sessions <subcommand>
 ```
 
 Subcommands:
@@ -472,10 +472,10 @@ Subcommands:
 | `stats` | Show session-store statistics. |
 | `rename <session-id> <title>` | Set or change a session title. |
 
-## `satan insights`
+## `satanclaw insights`
 
 ```bash
-satan insights [--days N] [--source platform]
+satanclaw insights [--days N] [--source platform]
 ```
 
 | Option | Description |
@@ -483,19 +483,19 @@ satan insights [--days N] [--source platform]
 | `--days <n>` | Analyze the last `n` days (default: 30). |
 | `--source <platform>` | Filter by source such as `cli`, `telegram`, or `discord`. |
 
-## `satan claw`
+## `satanclaw claw`
 
 ```bash
-satan claw migrate [options]
+satanclaw claw migrate [options]
 ```
 
-Migrate your OpenClaw setup to Satan. Reads from `~/.openclaw` (or a custom path) and writes to `~/.satan`. Automatically detects legacy directory names (`~/.clawdbot`, `~/.moldbot`) and config filenames (`clawdbot.json`, `moldbot.json`).
+Migrate your OpenClaw setup to SatanClaw. Reads from `~/.openclaw` (or a custom path) and writes to `~/.satanclaw`. Automatically detects legacy directory names (`~/.clawdbot`, `~/.moldbot`) and config filenames (`clawdbot.json`, `moldbot.json`).
 
 | Option | Description |
 |--------|-------------|
 | `--dry-run` | Preview what would be migrated without writing anything. |
 | `--preset <name>` | Migration preset: `full` (default, includes secrets) or `user-data` (excludes API keys). |
-| `--overwrite` | Overwrite existing Satan files on conflicts (default: skip). |
+| `--overwrite` | Overwrite existing SatanClaw files on conflicts (default: skip). |
 | `--migrate-secrets` | Include API keys in migration (enabled by default with `--preset full`). |
 | `--source <path>` | Custom OpenClaw directory (default: `~/.openclaw`). |
 | `--workspace-target <path>` | Target directory for workspace instructions (AGENTS.md). |
@@ -504,7 +504,7 @@ Migrate your OpenClaw setup to Satan. Reads from `~/.openclaw` (or a custom path
 
 ### What gets migrated
 
-The migration covers 30+ categories across persona, memory, skills, model providers, messaging platforms, agent behavior, session policies, MCP servers, TTS, and more. Items are either **directly imported** into Satan equivalents or **archived** for manual review.
+The migration covers 30+ categories across persona, memory, skills, model providers, messaging platforms, agent behavior, session policies, MCP servers, TTS, and more. Items are either **directly imported** into SatanClaw equivalents or **archived** for manual review.
 
 **Directly imported:** SOUL.md, MEMORY.md, USER.md, AGENTS.md, skills (4 source directories), default model, custom providers, MCP servers, messaging platform tokens and allowlists (Telegram, Discord, Slack, WhatsApp, Signal, Matrix, Mattermost), agent defaults (reasoning effort, compression, human delay, timezone, sandbox), session reset policies, approval rules, TTS config, browser settings, tool settings, exec timeout, command allowlist, gateway config, and API keys from 3 sources.
 
@@ -518,25 +518,25 @@ For the complete config key mapping, SecretRef handling details, and post-migrat
 
 ```bash
 # Preview what would be migrated
-satan claw migrate --dry-run
+satanclaw claw migrate --dry-run
 
 # Full migration including API keys
-satan claw migrate --preset full
+satanclaw claw migrate --preset full
 
 # Migrate user data only (no secrets), overwrite conflicts
-satan claw migrate --preset user-data --overwrite
+satanclaw claw migrate --preset user-data --overwrite
 
 # Migrate from a custom OpenClaw path
-satan claw migrate --source /home/user/old-openclaw
+satanclaw claw migrate --source /home/user/old-openclaw
 ```
 
-## `satan profile`
+## `satanclaw profile`
 
 ```bash
-satan profile <subcommand>
+satanclaw profile <subcommand>
 ```
 
-Manage profiles — multiple isolated Satan instances, each with its own config, sessions, skills, and home directory.
+Manage profiles — multiple isolated SatanClaw instances, each with its own config, sessions, skills, and home directory.
 
 | Subcommand | Description |
 |------------|-------------|
@@ -553,40 +553,40 @@ Manage profiles — multiple isolated Satan instances, each with its own config,
 Examples:
 
 ```bash
-satan profile list
-satan profile create work --clone
-satan profile use work
-satan profile alias work --name h-work
-satan profile export work -o work-backup.tar.gz
-satan profile import work-backup.tar.gz --name restored
-satan -p work chat -q "Hello from work profile"
+satanclaw profile list
+satanclaw profile create work --clone
+satanclaw profile use work
+satanclaw profile alias work --name h-work
+satanclaw profile export work -o work-backup.tar.gz
+satanclaw profile import work-backup.tar.gz --name restored
+satanclaw -p work chat -q "Hello from work profile"
 ```
 
-## `satan completion`
+## `satanclaw completion`
 
 ```bash
-satan completion [bash|zsh]
+satanclaw completion [bash|zsh]
 ```
 
-Print a shell completion script to stdout. Source the output in your shell profile for tab-completion of Satan commands, subcommands, and profile names.
+Print a shell completion script to stdout. Source the output in your shell profile for tab-completion of SatanClaw commands, subcommands, and profile names.
 
 Examples:
 
 ```bash
 # Bash
-satan completion bash >> ~/.bashrc
+satanclaw completion bash >> ~/.bashrc
 
 # Zsh
-satan completion zsh >> ~/.zshrc
+satanclaw completion zsh >> ~/.zshrc
 ```
 
 ## Maintenance commands
 
 | Command | Description |
 |---------|-------------|
-| `satan version` | Print version information. |
-| `satan update` | Pull latest changes and reinstall dependencies. |
-| `satan uninstall [--full] [--yes]` | Remove Satan, optionally deleting all config/data. |
+| `satanclaw version` | Print version information. |
+| `satanclaw update` | Pull latest changes and reinstall dependencies. |
+| `satanclaw uninstall [--full] [--yes]` | Remove SatanClaw, optionally deleting all config/data. |
 
 ## See also
 

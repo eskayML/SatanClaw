@@ -5,17 +5,17 @@ When users send stickers, we describe them via the vision tool and cache
 the descriptions keyed by file_unique_id so we don't re-analyze the same
 sticker image on every send. Descriptions are concise (1-2 sentences).
 
-Cache location: ~/.satan/sticker_cache.json
+Cache location: ~/.satanclaw/sticker_cache.json
 """
 
 import json
 import time
 from typing import Optional
 
-from satan_cli.config import get_satan_home
+from satanclaw_cli.config import get_satanclaw_home
 
 
-CACHE_PATH = get_satan_home() / "sticker_cache.json"
+CACHE_PATH = get_satanclaw_home() / "sticker_cache.json"
 
 # Vision prompt for describing stickers -- kept concise to save tokens
 STICKER_VISION_PROMPT = (

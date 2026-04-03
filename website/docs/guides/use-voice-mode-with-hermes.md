@@ -1,10 +1,10 @@
 ---
 sidebar_position: 7
-title: "Use Voice Mode with Satan"
-description: "A practical guide to setting up and using Satan voice mode across CLI, Telegram, Discord, and Discord voice channels"
+title: "Use Voice Mode with SatanClaw"
+description: "A practical guide to setting up and using SatanClaw voice mode across CLI, Telegram, Discord, and Discord voice channels"
 ---
 
-# Use Voice Mode with Satan
+# Use Voice Mode with SatanClaw
 
 This guide is the practical companion to the [Voice Mode feature reference](/docs/user-guide/features/voice-mode).
 
@@ -15,12 +15,12 @@ If the feature page explains what voice mode can do, this guide shows how to act
 Voice mode is especially useful when:
 - you want a hands-free CLI workflow
 - you want spoken responses in Telegram or Discord
-- you want Satan sitting in a Discord voice channel for live conversation
+- you want SatanClaw sitting in a Discord voice channel for live conversation
 - you want quick idea capture, debugging, or back-and-forth while walking around instead of typing
 
 ## Choose your voice mode setup
 
-There are really three different voice experiences in Satan.
+There are really three different voice experiences in SatanClaw.
 
 | Mode | Best for | Platform |
 |---|---|---|
@@ -33,15 +33,15 @@ A good path is:
 2. enable voice replies second
 3. move to Discord voice channels last if you want the full experience
 
-## Step 1: make sure normal Satan works first
+## Step 1: make sure normal SatanClaw works first
 
 Before touching voice mode, verify that:
-- Satan starts
+- SatanClaw starts
 - your provider is configured
 - the agent can answer text prompts normally
 
 ```bash
-satan
+satanclaw
 ```
 
 Ask something simple:
@@ -57,19 +57,19 @@ If that is not solid yet, fix text mode first.
 ### CLI microphone + playback
 
 ```bash
-pip install "satan-agent[voice]"
+pip install "satanclaw-agent[voice]"
 ```
 
 ### Messaging platforms
 
 ```bash
-pip install "satan-agent[messaging]"
+pip install "satanclaw-agent[messaging]"
 ```
 
 ### Premium ElevenLabs TTS
 
 ```bash
-pip install "satan-agent[tts-premium]"
+pip install "satanclaw-agent[tts-premium]"
 ```
 
 ### Local NeuTTS (optional)
@@ -81,7 +81,7 @@ python -m pip install -U neutts[all]
 ### Everything
 
 ```bash
-pip install "satan-agent[all]"
+pip install "satanclaw-agent[all]"
 ```
 
 ## Step 3: install system dependencies
@@ -108,7 +108,7 @@ Why these matter:
 
 ## Step 4: choose STT and TTS providers
 
-Satan supports both local and cloud speech stacks.
+SatanClaw supports both local and cloud speech stacks.
 
 ### Easiest / cheapest setup
 
@@ -120,7 +120,7 @@ This is usually the best place to start.
 
 ### Environment file example
 
-Add to `~/.satan/.env`:
+Add to `~/.satanclaw/.env`:
 
 ```bash
 # Cloud STT options (local needs no key)
@@ -146,9 +146,9 @@ ELEVENLABS_API_KEY=***
 - `elevenlabs` → best quality
 - `openai` → good middle ground
 
-### If you use `satan setup`
+### If you use `satanclaw setup`
 
-If you choose NeuTTS in the setup wizard, Satan checks whether `neutts` is already installed. If it is missing, the wizard tells you NeuTTS needs the Python package `neutts` and the system package `espeak-ng`, offers to install them for you, installs `espeak-ng` with your platform package manager, and then runs:
+If you choose NeuTTS in the setup wizard, SatanClaw checks whether `neutts` is already installed. If it is missing, the wizard tells you NeuTTS needs the Python package `neutts` and the system package `espeak-ng`, offers to install them for you, installs `espeak-ng` with your platform package manager, and then runs:
 
 ```bash
 python -m pip install -U neutts[all]
@@ -195,10 +195,10 @@ tts:
 
 ## Turn it on
 
-Start Satan:
+Start SatanClaw:
 
 ```bash
-satan
+satanclaw
 ```
 
 Inside the CLI:
@@ -216,7 +216,7 @@ Workflow:
 1. press `Ctrl+B`
 2. speak
 3. wait for silence detection to stop recording automatically
-4. Satan transcribes and responds
+4. SatanClaw transcribes and responds
 5. if TTS is on, it speaks the answer
 6. the loop can automatically restart for continuous use
 
@@ -250,17 +250,17 @@ Then continue hands-free:
 Great for:
 - walking around while thinking
 - dictating half-formed ideas
-- asking Satan to structure your thoughts in real time
+- asking SatanClaw to structure your thoughts in real time
 
 #### Accessibility / low-typing sessions
 
-If typing is inconvenient, voice mode is one of the fastest ways to stay in the full Satan loop.
+If typing is inconvenient, voice mode is one of the fastest ways to stay in the full SatanClaw loop.
 
 ## Tuning CLI behavior
 
 ### Silence threshold
 
-If Satan starts/stops too aggressively, tune:
+If SatanClaw starts/stops too aggressively, tune:
 
 ```yaml
 voice:
@@ -291,12 +291,12 @@ voice:
 
 This mode is simpler than full voice channels.
 
-Satan stays a normal chat bot, but can speak replies.
+SatanClaw stays a normal chat bot, but can speak replies.
 
 ### Start the gateway
 
 ```bash
-satan gateway
+satanclaw gateway
 ```
 
 ### Turn on voice replies
@@ -333,7 +333,7 @@ or
 Use when:
 - you are away from your machine
 - you want to send voice notes and get quick spoken replies
-- you want Satan to function like a portable research or ops assistant
+- you want SatanClaw to function like a portable research or ops assistant
 
 #### Discord DMs with spoken output
 
@@ -343,7 +343,7 @@ Useful when you want private interaction without server-channel mention behavior
 
 This is the most advanced mode.
 
-Satan joins a Discord VC, listens to user speech, transcribes it, runs the normal agent pipeline, and speaks replies back into the channel.
+SatanClaw joins a Discord VC, listens to user speech, transcribes it, runs the normal agent pipeline, and speaks replies back into the channel.
 
 ## Required Discord permissions
 
@@ -370,9 +370,9 @@ In a Discord text channel where the bot is present:
 ### What happens when joined
 
 - users speak in the VC
-- Satan detects speech boundaries
+- SatanClaw detects speech boundaries
 - transcripts are posted in the associated text channel
-- Satan responds in text and audio
+- SatanClaw responds in text and audio
 - the text channel is the one where `/voice join` was issued
 
 ### Best practices for Discord VC use
@@ -437,8 +437,8 @@ By default, the bot needs an `@mention` in Discord server text channels unless c
 
 If you want the shortest path to success:
 
-1. get text Satan working
-2. install `satan-agent[voice]`
+1. get text SatanClaw working
+2. install `satanclaw-agent[voice]`
 3. use CLI voice mode with local STT + Edge TTS
 4. then enable `/voice on` in Telegram or Discord
 5. only after that, try Discord VC mode

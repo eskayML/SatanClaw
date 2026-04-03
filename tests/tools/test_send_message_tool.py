@@ -409,12 +409,12 @@ class TestSendToPlatformWhatsapp:
                     Platform.WHATSAPP,
                     SimpleNamespace(enabled=True, token=None, extra={"bridge_port": 3000}),
                     chat_id,
-                    "hello from satan",
+                    "hello from satanclaw",
                 )
             )
 
         assert result["success"] is True
-        async_mock.assert_awaited_once_with({"bridge_port": 3000}, chat_id, "hello from satan")
+        async_mock.assert_awaited_once_with({"bridge_port": 3000}, chat_id, "hello from satanclaw")
 
 
 class TestSendTelegramHtmlDetection:

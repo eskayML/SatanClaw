@@ -5,7 +5,7 @@ description: Read, search, and create notes in the Obsidian vault.
 
 # Obsidian Vault
 
-**Location:** Set via `OBSIDIAN_VAULT_PATH` environment variable (e.g. in `~/.satan/.env`).
+**Location:** Set via `OBSIDIAN_VAULT_PATH` environment variable (e.g. in `~/.satanclaw/.env`).
 
 If unset, defaults to `~/Documents/Obsidian Vault`.
 

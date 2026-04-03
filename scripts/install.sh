@@ -1,12 +1,12 @@
 #!/bin/bash
 # ============================================================================
-# Satan Agent Installer
+# SatanClaw Agent Installer
 # ============================================================================
 # Installation script for Linux and macOS.
 # Uses uv for fast Python provisioning and package management.
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/NousResearch/satan-agent/main/scripts/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/NousResearch/satanclaw-agent/main/scripts/install.sh | bash
 #
 # Or with options:
 #   curl -fsSL ... | bash -s -- --no-venv --skip-setup
@@ -26,10 +26,10 @@ NC='\033[0m' # No Color
 BOLD='\033[1m'
 
 # Configuration
-REPO_URL_SSH="git@github.com:NousResearch/satan-agent.git"
-REPO_URL_HTTPS="https://github.com/NousResearch/satan-agent.git"
-HERMES_HOME="$HOME/.satan"
-INSTALL_DIR="${HERMES_INSTALL_DIR:-$HERMES_HOME/satan-agent}"
+REPO_URL_SSH="git@github.com:NousResearch/satanclaw-agent.git"
+REPO_URL_HTTPS="https://github.com/NousResearch/satanclaw-agent.git"
+HERMES_HOME="$HOME/.satanclaw"
+INSTALL_DIR="${HERMES_INSTALL_DIR:-$HERMES_HOME/satanclaw-agent}"
 PYTHON_VERSION="3.11"
 NODE_VERSION="22"
 
@@ -67,7 +67,7 @@ while [[ $# -gt 0 ]]; do
             shift 2
             ;;
         -h|--help)
-            echo "Satan Agent Installer"
+            echo "SatanClaw Agent Installer"
             echo ""
             echo "Usage: install.sh [OPTIONS]"
             echo ""
@@ -75,7 +75,7 @@ while [[ $# -gt 0 ]]; do
             echo "  --no-venv      Don't create virtual environment"
             echo "  --skip-setup   Skip interactive setup wizard"
             echo "  --branch NAME  Git branch to install (default: main)"
-            echo "  --dir PATH     Installation directory (default: ~/.satan/satan-agent)"
+            echo "  --dir PATH     Installation directory (default: ~/.satanclaw/satanclaw-agent)"
             echo "  -h, --help     Show this help"
             exit 0
             ;;
@@ -94,9 +94,9 @@ print_banner() {
     echo ""
     echo -e "${MAGENTA}${BOLD}"
     echo "┌─────────────────────────────────────────────────────────┐"
-    echo "│             ⚕ Satan Agent Installer                    │"
+    echo "│             ⚕ SatanClaw Agent Installer                    │"
     echo "├─────────────────────────────────────────────────────────┤"
-    echo "│  An open source AI agent by Nous Research.              │"
+    echo "│  An open source AI agent by Samuel Kalu.              │"
     echo "└─────────────────────────────────────────────────────────┘"
     echo -e "${NC}"
 }
@@ -140,7 +140,7 @@ detect_os() {
             OS="windows"
             DISTRO="windows"
             log_error "Windows detected. Please use the PowerShell installer:"
-            log_info "  irm https://raw.githubusercontent.com/NousResearch/satan-agent/main/scripts/install.ps1 | iex"
+            log_info "  irm https://raw.githubusercontent.com/NousResearch/satanclaw-agent/main/scripts/install.ps1 | iex"
             exit 1
             ;;
         *)
@@ -285,7 +285,7 @@ check_node() {
     if [ -x "$HERMES_HOME/node/bin/node" ]; then
         export PATH="$HERMES_HOME/node/bin:$PATH"
         local found_ver=$("$HERMES_HOME/node/bin/node" --version)
-        log_success "Node.js $found_ver found (Satan-managed)"
+        log_success "Node.js $found_ver found (SatanClaw-managed)"
         HAS_NODE=true
         return 0
     fi
@@ -353,7 +353,7 @@ install_node() {
         return 0
     fi
 
-    log_info "Extracting to ~/.satan/node/..."
+    log_info "Extracting to ~/.satanclaw/node/..."
     if [[ "$tarball_name" == *.tar.xz ]]; then
         tar xf "$tmp_dir/$tarball_name" -C "$tmp_dir"
     else
@@ -370,7 +370,7 @@ install_node() {
         return 0
     fi
 
-    # Place into ~/.satan/node/ and symlink binaries to ~/.local/bin/
+    # Place into ~/.satanclaw/node/ and symlink binaries to ~/.local/bin/
     rm -rf "$HERMES_HOME/node"
     mkdir -p "$HERMES_HOME"
     mv "$extracted_dir" "$HERMES_HOME/node"
@@ -385,7 +385,7 @@ install_node() {
 
     local installed_ver
     installed_ver=$("$HERMES_HOME/node/bin/node" --version 2>/dev/null)
-    log_success "Node.js $installed_ver installed to ~/.satan/node/"
+    log_success "Node.js $installed_ver installed to ~/.satanclaw/node/"
     HAS_NODE=true
 }
 
@@ -484,7 +484,7 @@ install_system_packages() {
             if [ "$IS_INTERACTIVE" = true ]; then
                 echo ""
                 log_info "sudo is needed ONLY to install optional system packages (${pkgs[*]}) via your package manager."
-                log_info "Satan Agent itself does not require or retain root access."
+                log_info "SatanClaw Agent itself does not require or retain root access."
                 read -p "Install ${description}? (requires sudo) [y/N] " -n 1 -r
                 echo
                 if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -499,7 +499,7 @@ install_system_packages() {
                 # Read the prompt from /dev/tty (same approach the setup wizard uses).
                 echo ""
                 log_info "sudo is needed ONLY to install optional system packages (${pkgs[*]}) via your package manager."
-                log_info "Satan Agent itself does not require or retain root access."
+                log_info "SatanClaw Agent itself does not require or retain root access."
                 read -p "Install ${description}? [Y/n] " -n 1 -r < /dev/tty
                 echo
                 if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
@@ -569,7 +569,7 @@ clone_repo() {
             local autostash_ref=""
             if [ -n "$(git status --porcelain)" ]; then
                 local stash_name
-                stash_name="satan-install-autostash-$(date -u +%Y%m%d-%H%M%S)"
+                stash_name="satanclaw-install-autostash-$(date -u +%Y%m%d-%H%M%S)"
                 log_info "Local changes detected, stashing before update..."
                 git stash push --include-untracked -m "$stash_name"
                 autostash_ref="$(git rev-parse --verify refs/stash)"
@@ -598,7 +598,7 @@ clone_repo() {
                     if git stash apply "$autostash_ref"; then
                         git stash drop "$autostash_ref" >/dev/null
                         log_warn "Local changes were restored on top of the updated codebase."
-                        log_warn "Review git diff / git status if Satan behaves unexpectedly."
+                        log_warn "Review git diff / git status if SatanClaw behaves unexpectedly."
                     else
                         log_error "Update succeeded, but restoring local changes failed. Your changes are still preserved in git stash."
                         log_info "Resolve manually with: git stash apply $autostash_ref"
@@ -685,7 +685,7 @@ install_deps() {
                     log_success "Build tools installed"
                 else
                     log_info "sudo is needed ONLY to install build tools (build-essential, python3-dev, libffi-dev) via apt."
-                    log_info "Satan Agent itself does not require or retain root access."
+                    log_info "SatanClaw Agent itself does not require or retain root access."
                     read -p "Install build tools? [Y/n] " -n 1 -r < /dev/tty
                     echo
                     if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
@@ -727,21 +727,21 @@ install_deps() {
 }
 
 setup_path() {
-    log_info "Setting up satan command..."
+    log_info "Setting up satanclaw command..."
 
     if [ "$USE_VENV" = true ]; then
-        HERMES_BIN="$INSTALL_DIR/venv/bin/satan"
+        HERMES_BIN="$INSTALL_DIR/venv/bin/satanclaw"
     else
-        HERMES_BIN="$(which satan 2>/dev/null || echo "")"
+        HERMES_BIN="$(which satanclaw 2>/dev/null || echo "")"
         if [ -z "$HERMES_BIN" ]; then
-            log_warn "satan not found on PATH after install"
+            log_warn "satanclaw not found on PATH after install"
             return 0
         fi
     fi
 
     # Verify the entry point script was actually generated
     if [ ! -x "$HERMES_BIN" ]; then
-        log_warn "satan entry point not found at $HERMES_BIN"
+        log_warn "satanclaw entry point not found at $HERMES_BIN"
         log_info "This usually means the pip install didn't complete successfully."
         log_info "Try: cd $INSTALL_DIR && uv pip install -e '.[all]'"
         return 0
@@ -749,8 +749,8 @@ setup_path() {
 
     # Create symlink in ~/.local/bin (standard user binary location, usually on PATH)
     mkdir -p "$HOME/.local/bin"
-    ln -sf "$HERMES_BIN" "$HOME/.local/bin/satan"
-    log_success "Symlinked satan → ~/.local/bin/satan"
+    ln -sf "$HERMES_BIN" "$HOME/.local/bin/satanclaw"
+    log_success "Symlinked satanclaw → ~/.local/bin/satanclaw"
 
     # Check if ~/.local/bin is on PATH; if not, add it to shell config.
     # Detect the user's actual login shell (not the shell running this script,
@@ -786,7 +786,7 @@ setup_path() {
         for SHELL_CONFIG in "${SHELL_CONFIGS[@]}"; do
             if ! grep -v '^[[:space:]]*#' "$SHELL_CONFIG" 2>/dev/null | grep -qE 'PATH=.*\.local/bin'; then
                 echo "" >> "$SHELL_CONFIG"
-                echo "# Satan Agent — ensure ~/.local/bin is on PATH" >> "$SHELL_CONFIG"
+                echo "# SatanClaw Agent — ensure ~/.local/bin is on PATH" >> "$SHELL_CONFIG"
                 echo "$PATH_LINE" >> "$SHELL_CONFIG"
                 log_success "Added ~/.local/bin to PATH in $SHELL_CONFIG"
             fi
@@ -800,50 +800,50 @@ setup_path() {
         log_info "~/.local/bin already on PATH"
     fi
 
-    # Export for current session so satan works immediately
+    # Export for current session so satanclaw works immediately
     export PATH="$HOME/.local/bin:$PATH"
 
-    log_success "satan command ready"
+    log_success "satanclaw command ready"
 }
 
 copy_config_templates() {
     log_info "Setting up configuration files..."
 
-    # Create ~/.satan directory structure (config at top level, code in subdir)
+    # Create ~/.satanclaw directory structure (config at top level, code in subdir)
     mkdir -p "$HERMES_HOME"/{cron,sessions,logs,pairing,hooks,image_cache,audio_cache,memories,skills,whatsapp/session}
 
-    # Create .env at ~/.satan/.env (top level, easy to find)
+    # Create .env at ~/.satanclaw/.env (top level, easy to find)
     if [ ! -f "$HERMES_HOME/.env" ]; then
         if [ -f "$INSTALL_DIR/.env.example" ]; then
             cp "$INSTALL_DIR/.env.example" "$HERMES_HOME/.env"
-            log_success "Created ~/.satan/.env from template"
+            log_success "Created ~/.satanclaw/.env from template"
         else
             touch "$HERMES_HOME/.env"
-            log_success "Created ~/.satan/.env"
+            log_success "Created ~/.satanclaw/.env"
         fi
     else
-        log_info "~/.satan/.env already exists, keeping it"
+        log_info "~/.satanclaw/.env already exists, keeping it"
     fi
 
-    # Create config.yaml at ~/.satan/config.yaml (top level, easy to find)
+    # Create config.yaml at ~/.satanclaw/config.yaml (top level, easy to find)
     if [ ! -f "$HERMES_HOME/config.yaml" ]; then
         if [ -f "$INSTALL_DIR/cli-config.yaml.example" ]; then
             cp "$INSTALL_DIR/cli-config.yaml.example" "$HERMES_HOME/config.yaml"
-            log_success "Created ~/.satan/config.yaml from template"
+            log_success "Created ~/.satanclaw/config.yaml from template"
         fi
     else
-        log_info "~/.satan/config.yaml already exists, keeping it"
+        log_info "~/.satanclaw/config.yaml already exists, keeping it"
     fi
 
     # Create SOUL.md if it doesn't exist (global persona file)
     if [ ! -f "$HERMES_HOME/SOUL.md" ]; then
         cat > "$HERMES_HOME/SOUL.md" << 'SOUL_EOF'
-# Satan Agent Persona
+# SatanClaw Agent Persona
 
 <!--
 This file defines the agent's personality and tone.
 The agent will embody whatever you write here.
-Edit this to customize how Satan communicates with you.
+Edit this to customize how SatanClaw communicates with you.
 
 Examples:
   - "You are a warm, playful assistant who uses kaomoji occasionally."
@@ -854,20 +854,20 @@ This file is loaded fresh each message -- no restart needed.
 Delete the contents (or this file) to use the default personality.
 -->
 SOUL_EOF
-        log_success "Created ~/.satan/SOUL.md (edit to customize personality)"
+        log_success "Created ~/.satanclaw/SOUL.md (edit to customize personality)"
     fi
 
-    log_success "Configuration directory ready: ~/.satan/"
+    log_success "Configuration directory ready: ~/.satanclaw/"
 
-    # Seed bundled skills into ~/.satan/skills/ (manifest-based, one-time per skill)
-    log_info "Syncing bundled skills to ~/.satan/skills/ ..."
+    # Seed bundled skills into ~/.satanclaw/skills/ (manifest-based, one-time per skill)
+    log_info "Syncing bundled skills to ~/.satanclaw/skills/ ..."
     if "$INSTALL_DIR/venv/bin/python" "$INSTALL_DIR/tools/skills_sync.py" 2>/dev/null; then
-        log_success "Skills synced to ~/.satan/skills/"
+        log_success "Skills synced to ~/.satanclaw/skills/"
     else
         # Fallback: simple directory copy if Python sync fails
         if [ -d "$INSTALL_DIR/skills" ] && [ ! "$(ls -A "$HERMES_HOME/skills/" 2>/dev/null | grep -v '.bundled_manifest')" ]; then
             cp -r "$INSTALL_DIR/skills/"* "$HERMES_HOME/skills/" 2>/dev/null || true
-            log_success "Skills copied to ~/.satan/skills/"
+            log_success "Skills copied to ~/.satanclaw/skills/"
         fi
     fi
 }
@@ -909,7 +909,7 @@ install_node_deps() {
                 ;;
             *)
                 log_info "Playwright may request sudo to install browser system dependencies (shared libraries)."
-                log_info "This is standard Playwright setup — Satan itself does not require root access."
+                log_info "This is standard Playwright setup — SatanClaw itself does not require root access."
                 cd "$INSTALL_DIR" && npx playwright install --with-deps chromium 2>/dev/null || true
                 ;;
         esac
@@ -937,7 +937,7 @@ run_setup_wizard() {
     # install script itself is piped (curl | bash). Only skip if no
     # terminal is available at all (e.g. Docker build, CI).
     if ! [ -e /dev/tty ]; then
-        log_info "Setup wizard skipped (no terminal available). Run 'satan setup' after install."
+        log_info "Setup wizard skipped (no terminal available). Run 'satanclaw setup' after install."
         return 0
     fi
 
@@ -947,12 +947,12 @@ run_setup_wizard() {
 
     cd "$INSTALL_DIR"
 
-    # Run satan setup using the venv Python directly (no activation needed).
+    # Run satanclaw setup using the venv Python directly (no activation needed).
     # Redirect stdin from /dev/tty so interactive prompts work when piped from curl.
     if [ "$USE_VENV" = true ]; then
-        "$INSTALL_DIR/venv/bin/python" -m satan_cli.main setup < /dev/tty
+        "$INSTALL_DIR/venv/bin/python" -m satanclaw_cli.main setup < /dev/tty
     else
-        python -m satan_cli.main setup < /dev/tty
+        python -m satanclaw_cli.main setup < /dev/tty
     fi
 }
 
@@ -978,7 +978,7 @@ maybe_start_gateway() {
 
     echo ""
     log_info "Messaging platform token detected!"
-    log_info "The gateway needs to be running for Satan to send/receive messages."
+    log_info "The gateway needs to be running for SatanClaw to send/receive messages."
 
     # If WhatsApp is enabled and no session exists yet, run foreground first for QR scan
     WHATSAPP_VAL=$(grep "^WHATSAPP_ENABLED=" "$ENV_FILE" 2>/dev/null | cut -d'=' -f2-)
@@ -987,22 +987,22 @@ maybe_start_gateway() {
         if [ "$IS_INTERACTIVE" = true ]; then
             echo ""
             log_info "WhatsApp is enabled but not yet paired."
-            log_info "Running 'satan whatsapp' to pair via QR code..."
+            log_info "Running 'satanclaw whatsapp' to pair via QR code..."
             echo ""
             read -p "Pair WhatsApp now? [Y/n] " -n 1 -r
             echo
             if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
-                HERMES_CMD="$HOME/.local/bin/satan"
-                [ ! -x "$HERMES_CMD" ] && HERMES_CMD="satan"
+                HERMES_CMD="$HOME/.local/bin/satanclaw"
+                [ ! -x "$HERMES_CMD" ] && HERMES_CMD="satanclaw"
                 $HERMES_CMD whatsapp || true
             fi
         else
-            log_info "WhatsApp pairing skipped (non-interactive). Run 'satan whatsapp' to pair."
+            log_info "WhatsApp pairing skipped (non-interactive). Run 'satanclaw whatsapp' to pair."
         fi
     fi
 
     if ! [ -e /dev/tty ]; then
-        log_info "Gateway setup skipped (no terminal available). Run 'satan gateway install' later."
+        log_info "Gateway setup skipped (no terminal available). Run 'satanclaw gateway install' later."
         return 0
     fi
 
@@ -1011,9 +1011,9 @@ maybe_start_gateway() {
     echo
 
     if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
-        HERMES_CMD="$HOME/.local/bin/satan"
+        HERMES_CMD="$HOME/.local/bin/satanclaw"
         if [ ! -x "$HERMES_CMD" ]; then
-            HERMES_CMD="satan"
+            HERMES_CMD="satanclaw"
         fi
 
         if command -v systemctl &> /dev/null; then
@@ -1023,21 +1023,21 @@ maybe_start_gateway() {
                 if $HERMES_CMD gateway start 2>/dev/null; then
                     log_success "Gateway started! Your bot is now online."
                 else
-                    log_warn "Service installed but failed to start. Try: satan gateway start"
+                    log_warn "Service installed but failed to start. Try: satanclaw gateway start"
                 fi
             else
-                log_warn "Systemd install failed. You can start manually: satan gateway"
+                log_warn "Systemd install failed. You can start manually: satanclaw gateway"
             fi
         else
             log_info "systemd not available — starting gateway in background..."
             nohup $HERMES_CMD gateway > "$HERMES_HOME/logs/gateway.log" 2>&1 &
             GATEWAY_PID=$!
-            log_success "Gateway started (PID $GATEWAY_PID). Logs: ~/.satan/logs/gateway.log"
+            log_success "Gateway started (PID $GATEWAY_PID). Logs: ~/.satanclaw/logs/gateway.log"
             log_info "To stop: kill $GATEWAY_PID"
-            log_info "To restart later: satan gateway"
+            log_info "To restart later: satanclaw gateway"
         fi
     else
-        log_info "Skipped. Start the gateway later with: satan gateway"
+        log_info "Skipped. Start the gateway later with: satanclaw gateway"
     fi
 }
 
@@ -1051,29 +1051,29 @@ print_success() {
     echo ""
 
     # Show file locations
-    echo -e "${CYAN}${BOLD}📁 Your files (all in ~/.satan/):${NC}"
+    echo -e "${CYAN}${BOLD}📁 Your files (all in ~/.satanclaw/):${NC}"
     echo ""
-    echo -e "   ${YELLOW}Config:${NC}    ~/.satan/config.yaml"
-    echo -e "   ${YELLOW}API Keys:${NC}  ~/.satan/.env"
-    echo -e "   ${YELLOW}Data:${NC}      ~/.satan/cron/, sessions/, logs/"
-    echo -e "   ${YELLOW}Code:${NC}      ~/.satan/satan-agent/"
+    echo -e "   ${YELLOW}Config:${NC}    ~/.satanclaw/config.yaml"
+    echo -e "   ${YELLOW}API Keys:${NC}  ~/.satanclaw/.env"
+    echo -e "   ${YELLOW}Data:${NC}      ~/.satanclaw/cron/, sessions/, logs/"
+    echo -e "   ${YELLOW}Code:${NC}      ~/.satanclaw/satanclaw-agent/"
     echo ""
 
     echo -e "${CYAN}─────────────────────────────────────────────────────────${NC}"
     echo ""
     echo -e "${CYAN}${BOLD}🚀 Commands:${NC}"
     echo ""
-    echo -e "   ${GREEN}satan${NC}              Start chatting"
-    echo -e "   ${GREEN}satan setup${NC}        Configure API keys & settings"
-    echo -e "   ${GREEN}satan config${NC}       View/edit configuration"
-    echo -e "   ${GREEN}satan config edit${NC}  Open config in editor"
-    echo -e "   ${GREEN}satan gateway install${NC} Install gateway service (messaging + cron)"
-    echo -e "   ${GREEN}satan update${NC}       Update to latest version"
+    echo -e "   ${GREEN}satanclaw${NC}              Start chatting"
+    echo -e "   ${GREEN}satanclaw setup${NC}        Configure API keys & settings"
+    echo -e "   ${GREEN}satanclaw config${NC}       View/edit configuration"
+    echo -e "   ${GREEN}satanclaw config edit${NC}  Open config in editor"
+    echo -e "   ${GREEN}satanclaw gateway install${NC} Install gateway service (messaging + cron)"
+    echo -e "   ${GREEN}satanclaw update${NC}       Update to latest version"
     echo ""
 
     echo -e "${CYAN}─────────────────────────────────────────────────────────${NC}"
     echo ""
-    echo -e "${YELLOW}⚡ Reload your shell to use 'satan' command:${NC}"
+    echo -e "${YELLOW}⚡ Reload your shell to use 'satanclaw' command:${NC}"
     echo ""
     LOGIN_SHELL="$(basename "${SHELL:-/bin/bash}")"
     if [ "$LOGIN_SHELL" = "zsh" ]; then

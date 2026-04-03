@@ -293,12 +293,12 @@ class TestRunJobSessionPersistence:
         }
         fake_db = MagicMock()
 
-        with patch("cron.scheduler._satan_home", tmp_path), \
+        with patch("cron.scheduler._satanclaw_home", tmp_path), \
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("dotenv.load_dotenv"), \
-             patch("satan_state.SessionDB", return_value=fake_db), \
+             patch("satanclaw_state.SessionDB", return_value=fake_db), \
              patch(
-                 "satan_cli.runtime_provider.resolve_runtime_provider",
+                 "satanclaw_cli.runtime_provider.resolve_runtime_provider",
                  return_value={
                      "api_key": "test-key",
                      "base_url": "https://example.invalid/v1",
@@ -341,12 +341,12 @@ class TestRunJobSessionPersistence:
         }
         fake_db = MagicMock()
 
-        with patch("cron.scheduler._satan_home", tmp_path), \
+        with patch("cron.scheduler._satanclaw_home", tmp_path), \
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("dotenv.load_dotenv"), \
-             patch("satan_state.SessionDB", return_value=fake_db), \
+             patch("satanclaw_state.SessionDB", return_value=fake_db), \
              patch(
-                 "satan_cli.runtime_provider.resolve_runtime_provider",
+                 "satanclaw_cli.runtime_provider.resolve_runtime_provider",
                  return_value={
                      "api_key": "test-key",
                      "base_url": "https://example.invalid/v1",
@@ -395,10 +395,10 @@ class TestRunJobSessionPersistence:
                 seen["thread_id"] = os.getenv("HERMES_CRON_AUTO_DELIVER_THREAD_ID")
                 return {"final_response": "ok"}
 
-        with patch("cron.scheduler._satan_home", tmp_path), \
-             patch("satan_state.SessionDB", return_value=fake_db), \
+        with patch("cron.scheduler._satanclaw_home", tmp_path), \
+             patch("satanclaw_state.SessionDB", return_value=fake_db), \
              patch(
-                 "satan_cli.runtime_provider.resolve_runtime_provider",
+                 "satanclaw_cli.runtime_provider.resolve_runtime_provider",
                  return_value={
                      "api_key": "***",
                      "base_url": "https://example.invalid/v1",
@@ -438,7 +438,7 @@ class TestRunJobConfigLogging:
             "prompt": "hello",
         }
 
-        with patch("cron.scheduler._satan_home", tmp_path), \
+        with patch("cron.scheduler._satanclaw_home", tmp_path), \
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("dotenv.load_dotenv"), \
              patch("run_agent.AIAgent") as mock_agent_cls:
@@ -467,7 +467,7 @@ class TestRunJobConfigLogging:
             "prompt": "hello",
         }
 
-        with patch("cron.scheduler._satan_home", tmp_path), \
+        with patch("cron.scheduler._satanclaw_home", tmp_path), \
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("dotenv.load_dotenv"), \
              patch("run_agent.AIAgent") as mock_agent_cls:
@@ -509,11 +509,11 @@ class TestRunJobPerJobOverrides:
             "api_key": "***",
         }
 
-        with patch("cron.scheduler._satan_home", tmp_path), \
+        with patch("cron.scheduler._satanclaw_home", tmp_path), \
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("dotenv.load_dotenv"), \
-             patch("satan_state.SessionDB", return_value=fake_db), \
-             patch("satan_cli.runtime_provider.resolve_runtime_provider", return_value=fake_runtime) as runtime_mock, \
+             patch("satanclaw_state.SessionDB", return_value=fake_db), \
+             patch("satanclaw_cli.runtime_provider.resolve_runtime_provider", return_value=fake_runtime) as runtime_mock, \
              patch("run_agent.AIAgent") as mock_agent_cls:
             mock_agent = MagicMock()
             mock_agent.run_conversation.return_value = {"final_response": "ok"}
@@ -544,12 +544,12 @@ class TestRunJobSkillBacked:
 
         fake_db = MagicMock()
 
-        with patch("cron.scheduler._satan_home", tmp_path), \
+        with patch("cron.scheduler._satanclaw_home", tmp_path), \
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("dotenv.load_dotenv"), \
-             patch("satan_state.SessionDB", return_value=fake_db), \
+             patch("satanclaw_state.SessionDB", return_value=fake_db), \
              patch(
-                 "satan_cli.runtime_provider.resolve_runtime_provider",
+                 "satanclaw_cli.runtime_provider.resolve_runtime_provider",
                  return_value={
                      "api_key": "***",
                      "base_url": "https://example.invalid/v1",
@@ -590,12 +590,12 @@ class TestRunJobSkillBacked:
         def _skill_view(name):
             return json.dumps({"success": True, "content": f"# {name}\nInstructions for {name}."})
 
-        with patch("cron.scheduler._satan_home", tmp_path), \
+        with patch("cron.scheduler._satanclaw_home", tmp_path), \
              patch("cron.scheduler._resolve_origin", return_value=None), \
              patch("dotenv.load_dotenv"), \
-             patch("satan_state.SessionDB", return_value=fake_db), \
+             patch("satanclaw_state.SessionDB", return_value=fake_db), \
              patch(
-                 "satan_cli.runtime_provider.resolve_runtime_provider",
+                 "satanclaw_cli.runtime_provider.resolve_runtime_provider",
                  return_value={
                      "api_key": "***",
                      "base_url": "https://example.invalid/v1",

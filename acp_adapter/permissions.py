@@ -1,4 +1,4 @@
-"""ACP permission bridging — maps ACP approval requests to satan approval callbacks."""
+"""ACP permission bridging — maps ACP approval requests to satanclaw approval callbacks."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ from acp.schema import (
 
 logger = logging.getLogger(__name__)
 
-# Maps ACP PermissionOptionKind -> satan approval result strings
+# Maps ACP PermissionOptionKind -> satanclaw approval result strings
 _KIND_TO_HERMES = {
     "allow_once": "once",
     "allow_always": "always",
@@ -30,7 +30,7 @@ def make_approval_callback(
     timeout: float = 60.0,
 ) -> Callable[[str, str], str]:
     """
-    Return a satan-compatible ``approval_callback(command, description) -> str``
+    Return a satanclaw-compatible ``approval_callback(command, description) -> str``
     that bridges to the ACP client's ``request_permission`` call.
 
     Args:

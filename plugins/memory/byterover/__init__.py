@@ -115,8 +115,8 @@ def _run_brv(args: List[str], timeout: int = _QUERY_TIMEOUT,
 
 def _get_brv_cwd() -> Path:
     """Profile-scoped working directory for the brv context tree."""
-    from satan_constants import get_satan_home
-    return get_satan_home() / "byterover"
+    from satanclaw_constants import get_satanclaw_home
+    return get_satanclaw_home() / "byterover"
 
 
 # ---------------------------------------------------------------------------

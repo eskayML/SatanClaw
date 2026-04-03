@@ -2,34 +2,34 @@
 sidebar_position: 11
 sidebar_label: "Plugins"
 title: "Plugins"
-description: "Extend Satan with custom tools, hooks, and integrations via the plugin system"
+description: "Extend SatanClaw with custom tools, hooks, and integrations via the plugin system"
 ---
 
 # Plugins
 
-Satan has a plugin system for adding custom tools, hooks, and integrations without modifying core code.
+SatanClaw has a plugin system for adding custom tools, hooks, and integrations without modifying core code.
 
-**→ [Build a Satan Plugin](/docs/guides/build-a-satan-plugin)** — step-by-step guide with a complete working example.
+**→ [Build a SatanClaw Plugin](/docs/guides/build-a-satanclaw-plugin)** — step-by-step guide with a complete working example.
 
 ## Quick overview
 
-Drop a directory into `~/.satan/plugins/` with a `plugin.yaml` and Python code:
+Drop a directory into `~/.satanclaw/plugins/` with a `plugin.yaml` and Python code:
 
 ```
-~/.satan/plugins/my-plugin/
+~/.satanclaw/plugins/my-plugin/
 ├── plugin.yaml      # manifest
 ├── __init__.py      # register() — wires schemas to handlers
 ├── schemas.py       # tool schemas (what the LLM sees)
 └── tools.py         # tool handlers (what runs when called)
 ```
 
-Start Satan — your tools appear alongside built-in tools. The model can call them immediately.
+Start SatanClaw — your tools appear alongside built-in tools. The model can call them immediately.
 
 ### Minimal working example
 
 Here is a complete plugin that adds a `hello_world` tool and logs every tool call via a hook.
 
-**`~/.satan/plugins/hello-world/plugin.yaml`**
+**`~/.satanclaw/plugins/hello-world/plugin.yaml`**
 
 ```yaml
 name: hello-world
@@ -37,10 +37,10 @@ version: "1.0"
 description: A minimal example plugin
 ```
 
-**`~/.satan/plugins/hello-world/__init__.py`**
+**`~/.satanclaw/plugins/hello-world/__init__.py`**
 
 ```python
-"""Minimal Satan plugin — registers a tool and a hook."""
+"""Minimal SatanClaw plugin — registers a tool and a hook."""
 
 
 def register(ctx):
@@ -73,9 +73,9 @@ def register(ctx):
     ctx.register_hook("post_tool_call", on_tool_call)
 ```
 
-Drop both files into `~/.satan/plugins/hello-world/`, restart Satan, and the model can immediately call `hello_world`. The hook prints a log line after every tool invocation.
+Drop both files into `~/.satanclaw/plugins/hello-world/`, restart SatanClaw, and the model can immediately call `hello_world`. The hook prints a log line after every tool invocation.
 
-Project-local plugins under `./.satan/plugins/` are disabled by default. Enable them only for trusted repositories by setting `HERMES_ENABLE_PROJECT_PLUGINS=true` before starting Satan.
+Project-local plugins under `./.satanclaw/plugins/` are disabled by default. Enable them only for trusted repositories by setting `HERMES_ENABLE_PROJECT_PLUGINS=true` before starting SatanClaw.
 
 ## What plugins can do
 
@@ -85,17 +85,17 @@ Project-local plugins under `./.satan/plugins/` are disabled by default. Enable 
 | Add hooks | `ctx.register_hook("post_tool_call", callback)` |
 | Inject messages | `ctx.inject_message(content, role="user")` — see [Injecting Messages](#injecting-messages) |
 | Ship data files | `Path(__file__).parent / "data" / "file.yaml"` |
-| Bundle skills | Copy `skill.md` to `~/.satan/skills/` at load time |
+| Bundle skills | Copy `skill.md` to `~/.satanclaw/skills/` at load time |
 | Gate on env vars | `requires_env: [API_KEY]` in plugin.yaml |
-| Distribute via pip | `[project.entry-points."satan_agent.plugins"]` |
+| Distribute via pip | `[project.entry-points."satanclaw_agent.plugins"]` |
 
 ## Plugin discovery
 
 | Source | Path | Use case |
 |--------|------|----------|
-| User | `~/.satan/plugins/` | Personal plugins |
-| Project | `.satan/plugins/` | Project-specific plugins (requires `HERMES_ENABLE_PROJECT_PLUGINS=true`) |
-| pip | `satan_agent.plugins` entry_points | Distributed packages |
+| User | `~/.satanclaw/plugins/` | Personal plugins |
+| Project | `.satanclaw/plugins/` | Project-specific plugins (requires `HERMES_ENABLE_PROJECT_PLUGINS=true`) |
+| pip | `satanclaw_agent.plugins` entry_points | Distributed packages |
 
 ## Available hooks
 
@@ -113,16 +113,16 @@ Plugins can register callbacks for these lifecycle events. See the **[Event Hook
 ## Managing plugins
 
 ```bash
-satan plugins                  # interactive toggle UI — enable/disable with checkboxes
-satan plugins list             # table view with enabled/disabled status
-satan plugins install user/repo  # install from Git
-satan plugins update my-plugin   # pull latest
-satan plugins remove my-plugin   # uninstall
-satan plugins enable my-plugin   # re-enable a disabled plugin
-satan plugins disable my-plugin  # disable without removing
+satanclaw plugins                  # interactive toggle UI — enable/disable with checkboxes
+satanclaw plugins list             # table view with enabled/disabled status
+satanclaw plugins install user/repo  # install from Git
+satanclaw plugins update my-plugin   # pull latest
+satanclaw plugins remove my-plugin   # uninstall
+satanclaw plugins enable my-plugin   # re-enable a disabled plugin
+satanclaw plugins disable my-plugin  # disable without removing
 ```
 
-Running `satan plugins` with no arguments launches an interactive curses checklist (same UI as `satan tools`) where you can toggle plugins on/off with arrow keys and space.
+Running `satanclaw plugins` with no arguments launches an interactive curses checklist (same UI as `satanclaw tools`) where you can toggle plugins on/off with arrow keys and space.
 
 Disabled plugins remain installed but are skipped during loading. The disabled list is stored in `config.yaml` under `plugins.disabled`:
 
@@ -157,4 +157,4 @@ This enables plugins like remote control viewers, messaging bridges, or webhook 
 `inject_message` is only available in CLI mode. In gateway mode, there is no CLI reference and the method returns `False`.
 :::
 
-See the **[full guide](/docs/guides/build-a-satan-plugin)** for handler contracts, schema format, hook behavior, error handling, and common mistakes.
+See the **[full guide](/docs/guides/build-a-satanclaw-plugin)** for handler contracts, schema format, hook behavior, error handling, and common mistakes.

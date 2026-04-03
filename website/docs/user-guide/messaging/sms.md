@@ -2,12 +2,12 @@
 sidebar_position: 8
 sidebar_label: "SMS (Twilio)"
 title: "SMS (Twilio)"
-description: "Set up Satan Agent as an SMS chatbot via Twilio"
+description: "Set up SatanClaw Agent as an SMS chatbot via Twilio"
 ---
 
 # SMS Setup (Twilio)
 
-Satan connects to SMS through the [Twilio](https://www.twilio.com/) API. People text your Twilio phone number and get AI responses back — same conversational experience as Telegram or Discord, but over standard text messages.
+SatanClaw connects to SMS through the [Twilio](https://www.twilio.com/) API. People text your Twilio phone number and get AI responses back — same conversational experience as Telegram or Discord, but over standard text messages.
 
 :::info Shared Credentials
 The SMS gateway shares credentials with the optional [telephony skill](/docs/reference/skills-catalog). If you've already set up Twilio for voice calls or one-off SMS, the gateway works with the same `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, and `TWILIO_PHONE_NUMBER`.
@@ -20,7 +20,7 @@ The SMS gateway shares credentials with the optional [telephony skill](/docs/ref
 - **Twilio account** — [Sign up at twilio.com](https://www.twilio.com/try-twilio) (free trial available)
 - **A Twilio phone number** with SMS capability
 - **A publicly accessible server** — Twilio sends webhooks to your server when SMS arrives
-- **aiohttp** — `pip install 'satan-agent[sms]'`
+- **aiohttp** — `pip install 'satanclaw-agent[sms]'`
 
 ---
 
@@ -32,19 +32,19 @@ The SMS gateway shares credentials with the optional [telephony skill](/docs/ref
 
 ---
 
-## Step 2: Configure Satan
+## Step 2: Configure SatanClaw
 
 ### Interactive setup (recommended)
 
 ```bash
-satan gateway setup
+satanclaw gateway setup
 ```
 
 Select **SMS (Twilio)** from the platform list. The wizard will prompt for your credentials.
 
 ### Manual setup
 
-Add to `~/.satan/.env`:
+Add to `~/.satanclaw/.env`:
 
 ```bash
 TWILIO_ACCOUNT_SID=ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -71,7 +71,7 @@ Twilio needs to know where to send incoming messages. In the [Twilio Console](ht
    - **HTTP Method**: `POST`
 
 :::tip Exposing Your Webhook
-If you're running Satan locally, use a tunnel to expose the webhook:
+If you're running SatanClaw locally, use a tunnel to expose the webhook:
 
 ```bash
 # Using cloudflared
@@ -95,7 +95,7 @@ SMS_WEBHOOK_PORT=3000
 ## Step 4: Start the Gateway
 
 ```bash
-satan gateway
+satanclaw gateway
 ```
 
 You should see:
@@ -104,7 +104,7 @@ You should see:
 [sms] Twilio webhook server listening on port 8080, from: +1555***4567
 ```
 
-Text your Twilio number — Satan will respond via SMS.
+Text your Twilio number — SatanClaw will respond via SMS.
 
 ---
 
@@ -163,7 +163,7 @@ SMS has no built-in encryption. Don't use SMS for sensitive operations unless yo
 
 1. Check `TWILIO_PHONE_NUMBER` is set correctly (E.164 format with `+`)
 2. Verify your Twilio account has SMS-capable numbers
-3. Check Satan gateway logs for Twilio API errors
+3. Check SatanClaw gateway logs for Twilio API errors
 
 ### Webhook port conflicts
 

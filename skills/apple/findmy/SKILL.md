@@ -2,11 +2,11 @@
 name: findmy
 description: Track Apple devices and AirTags via FindMy.app on macOS using AppleScript and screen capture.
 version: 1.0.0
-author: Satan Agent
+author: SatanClaw Agent
 license: MIT
 platforms: [macos]
 metadata:
-  satan:
+  satanclaw:
     tags: [FindMy, AirTag, location, tracking, macOS, Apple]
 ---
 

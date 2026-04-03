@@ -48,12 +48,12 @@ class TestVerboseCommand:
     @pytest.mark.asyncio
     async def test_disabled_by_default(self, tmp_path, monkeypatch):
         """When tool_progress_command is false, /verbose returns an info message."""
-        satan_home = tmp_path / "satan"
-        satan_home.mkdir()
-        config_path = satan_home / "config.yaml"
+        satanclaw_home = tmp_path / "satanclaw"
+        satanclaw_home.mkdir()
+        config_path = satanclaw_home / "config.yaml"
         config_path.write_text("display:\n  tool_progress: all\n", encoding="utf-8")
 
-        monkeypatch.setattr(gateway_run, "_satan_home", satan_home)
+        monkeypatch.setattr(gateway_run, "_satanclaw_home", satanclaw_home)
 
         runner = _make_runner()
         result = await runner._handle_verbose_command(_make_event())
@@ -64,15 +64,15 @@ class TestVerboseCommand:
     @pytest.mark.asyncio
     async def test_enabled_cycles_mode(self, tmp_path, monkeypatch):
         """When enabled, /verbose cycles tool_progress mode."""
-        satan_home = tmp_path / "satan"
-        satan_home.mkdir()
-        config_path = satan_home / "config.yaml"
+        satanclaw_home = tmp_path / "satanclaw"
+        satanclaw_home.mkdir()
+        config_path = satanclaw_home / "config.yaml"
         config_path.write_text(
             "display:\n  tool_progress_command: true\n  tool_progress: all\n",
             encoding="utf-8",
         )
 
-        monkeypatch.setattr(gateway_run, "_satan_home", satan_home)
+        monkeypatch.setattr(gateway_run, "_satanclaw_home", satanclaw_home)
 
         runner = _make_runner()
         result = await runner._handle_verbose_command(_make_event())
@@ -87,15 +87,15 @@ class TestVerboseCommand:
     @pytest.mark.asyncio
     async def test_cycles_through_all_modes(self, tmp_path, monkeypatch):
         """Calling /verbose repeatedly cycles through all four modes."""
-        satan_home = tmp_path / "satan"
-        satan_home.mkdir()
-        config_path = satan_home / "config.yaml"
+        satanclaw_home = tmp_path / "satanclaw"
+        satanclaw_home.mkdir()
+        config_path = satanclaw_home / "config.yaml"
         config_path.write_text(
             "display:\n  tool_progress_command: true\n  tool_progress: 'off'\n",
             encoding="utf-8",
         )
 
-        monkeypatch.setattr(gateway_run, "_satan_home", satan_home)
+        monkeypatch.setattr(gateway_run, "_satanclaw_home", satanclaw_home)
         runner = _make_runner()
 
         # off -> new -> all -> verbose -> off
@@ -109,15 +109,15 @@ class TestVerboseCommand:
     @pytest.mark.asyncio
     async def test_defaults_to_all_when_no_tool_progress_set(self, tmp_path, monkeypatch):
         """When tool_progress is not in config, defaults to 'all' then cycles to verbose."""
-        satan_home = tmp_path / "satan"
-        satan_home.mkdir()
-        config_path = satan_home / "config.yaml"
+        satanclaw_home = tmp_path / "satanclaw"
+        satanclaw_home.mkdir()
+        config_path = satanclaw_home / "config.yaml"
         config_path.write_text(
             "display:\n  tool_progress_command: true\n",
             encoding="utf-8",
         )
 
-        monkeypatch.setattr(gateway_run, "_satan_home", satan_home)
+        monkeypatch.setattr(gateway_run, "_satanclaw_home", satanclaw_home)
 
         runner = _make_runner()
         result = await runner._handle_verbose_command(_make_event())
@@ -130,11 +130,11 @@ class TestVerboseCommand:
     @pytest.mark.asyncio
     async def test_no_config_file_returns_disabled(self, tmp_path, monkeypatch):
         """When config.yaml doesn't exist, command reports disabled."""
-        satan_home = tmp_path / "satan"
-        satan_home.mkdir()
+        satanclaw_home = tmp_path / "satanclaw"
+        satanclaw_home.mkdir()
         # No config.yaml
 
-        monkeypatch.setattr(gateway_run, "_satan_home", satan_home)
+        monkeypatch.setattr(gateway_run, "_satanclaw_home", satanclaw_home)
 
         runner = _make_runner()
         result = await runner._handle_verbose_command(_make_event())
@@ -142,5 +142,5 @@ class TestVerboseCommand:
 
     def test_verbose_is_in_gateway_known_commands(self):
         """The /verbose command is recognized by the gateway dispatch."""
-        from satan_cli.commands import GATEWAY_KNOWN_COMMANDS
+        from satanclaw_cli.commands import GATEWAY_KNOWN_COMMANDS
         assert "verbose" in GATEWAY_KNOWN_COMMANDS

@@ -2,10 +2,10 @@
 name: github-repo-management
 description: Clone, create, fork, configure, and manage GitHub repositories. Manage remotes, secrets, releases, and workflows. Works with gh CLI or falls back to git + GitHub REST API via curl.
 version: 1.1.0
-author: Satan Agent
+author: SatanClaw Agent
 license: MIT
 metadata:
-  satan:
+  satanclaw:
     tags: [GitHub, Repositories, Git, Releases, Secrets, Configuration]
     related_skills: [github-auth, github-pr-workflow, github-issues]
 ---
@@ -26,8 +26,8 @@ if command -v gh &>/dev/null && gh auth status &>/dev/null; then
 else
   AUTH="git"
   if [ -z "$GITHUB_TOKEN" ]; then
-    if [ -f ~/.satan/.env ] && grep -q "^GITHUB_TOKEN=" ~/.satan/.env; then
-      GITHUB_TOKEN=$(grep "^GITHUB_TOKEN=" ~/.satan/.env | head -1 | cut -d= -f2 | tr -d '\n\r')
+    if [ -f ~/.satanclaw/.env ] && grep -q "^GITHUB_TOKEN=" ~/.satanclaw/.env; then
+      GITHUB_TOKEN=$(grep "^GITHUB_TOKEN=" ~/.satanclaw/.env | head -1 | cut -d= -f2 | tr -d '\n\r')
     elif grep -q "github.com" ~/.git-credentials 2>/dev/null; then
       GITHUB_TOKEN=$(grep "github.com" ~/.git-credentials 2>/dev/null | head -1 | sed 's|https://[^:]*:\([^@]*\)@.*|\1|')
     fi

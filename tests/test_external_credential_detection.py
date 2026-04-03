@@ -6,7 +6,7 @@ from unittest.mock import patch
 
 import pytest
 
-from satan_cli.auth import detect_external_credentials
+from satanclaw_cli.auth import detect_external_credentials
 
 
 class TestDetectCodexCLI:

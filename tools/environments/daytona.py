@@ -33,7 +33,7 @@ class DaytonaEnvironment(BaseEnvironment):
         cwd: str = "/home/daytona",
         timeout: int = 60,
         cpu: int = 1,
-        memory: int = 5120,       # MB (satan convention)
+        memory: int = 5120,       # MB (satanclaw convention)
         disk: int = 10240,        # MB (Daytona platform max is 10GB)
         persistent_filesystem: bool = True,
         task_id: str = "default",
@@ -67,8 +67,8 @@ class DaytonaEnvironment(BaseEnvironment):
             disk_gib = 10
         resources = Resources(cpu=cpu, memory=memory_gib, disk=disk_gib)
 
-        labels = {"satan_task_id": task_id}
-        sandbox_name = f"satan-{task_id}"
+        labels = {"satanclaw_task_id": task_id}
+        sandbox_name = f"satanclaw-{task_id}"
 
         # Try to resume an existing sandbox for this task
         if self._persistent:
@@ -154,12 +154,12 @@ class DaytonaEnvironment(BaseEnvironment):
 
     def _sync_skills_and_credentials(self) -> None:
         """Upload changed credential files and skill files into the sandbox."""
-        container_base = f"{self._remote_home}/.satan"
+        container_base = f"{self._remote_home}/.satanclaw"
         try:
             from tools.credential_files import get_credential_file_mounts, iter_skills_files
 
             for mount_entry in get_credential_file_mounts():
-                remote_path = mount_entry["container_path"].replace("/root/.satan", container_base, 1)
+                remote_path = mount_entry["container_path"].replace("/root/.satanclaw", container_base, 1)
                 if self._upload_if_changed(mount_entry["host_path"], remote_path):
                     logger.debug("Daytona: synced credential %s", remote_path)
 

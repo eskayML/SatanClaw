@@ -14,7 +14,7 @@ class TestGatewayPidState:
 
         payload = json.loads((tmp_path / "gateway.pid").read_text())
         assert payload["pid"] == os.getpid()
-        assert payload["kind"] == "satan-gateway"
+        assert payload["kind"] == "satanclaw-gateway"
         assert isinstance(payload["argv"], list)
         assert payload["argv"]
 
@@ -31,8 +31,8 @@ class TestGatewayPidState:
         pid_path = tmp_path / "gateway.pid"
         pid_path.write_text(json.dumps({
             "pid": os.getpid(),
-            "kind": "satan-gateway",
-            "argv": ["python", "-m", "satan_cli.main", "gateway"],
+            "kind": "satanclaw-gateway",
+            "argv": ["python", "-m", "satanclaw_cli.main", "gateway"],
             "start_time": 123,
         }))
 
@@ -47,8 +47,8 @@ class TestGatewayPidState:
         pid_path = tmp_path / "gateway.pid"
         pid_path.write_text(json.dumps({
             "pid": os.getpid(),
-            "kind": "satan-gateway",
-            "argv": ["/venv/bin/python", "/repo/satan_cli/main.py", "gateway", "run", "--replace"],
+            "kind": "satanclaw-gateway",
+            "argv": ["/venv/bin/python", "/repo/satanclaw_cli/main.py", "gateway", "run", "--replace"],
             "start_time": 123,
         }))
 
@@ -57,7 +57,7 @@ class TestGatewayPidState:
         monkeypatch.setattr(
             status,
             "_read_process_cmdline",
-            lambda pid: "/venv/bin/python /repo/satan_cli/main.py gateway run --replace",
+            lambda pid: "/venv/bin/python /repo/satanclaw_cli/main.py gateway run --replace",
         )
 
         assert status.get_running_pid() == os.getpid()
@@ -73,7 +73,7 @@ class TestGatewayRuntimeStatus:
         state_path.write_text(json.dumps({
             "pid": 99999,
             "start_time": 1000.0,
-            "kind": "satan-gateway",
+            "kind": "satanclaw-gateway",
             "platforms": {},
             "updated_at": "2025-01-01T00:00:00Z",
         }))
@@ -112,7 +112,7 @@ class TestScopedLocks:
         lock_path.write_text(json.dumps({
             "pid": 99999,
             "start_time": 123,
-            "kind": "satan-gateway",
+            "kind": "satanclaw-gateway",
         }))
 
         monkeypatch.setattr(status.os, "kill", lambda pid, sig: None)
@@ -130,7 +130,7 @@ class TestScopedLocks:
         lock_path.write_text(json.dumps({
             "pid": 99999,
             "start_time": 123,
-            "kind": "satan-gateway",
+            "kind": "satanclaw-gateway",
         }))
 
         def fake_kill(pid, sig):

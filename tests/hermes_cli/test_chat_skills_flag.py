@@ -2,7 +2,7 @@ import sys
 
 
 def test_top_level_skills_flag_defaults_to_chat(monkeypatch):
-    import satan_cli.main as main_mod
+    import satanclaw_cli.main as main_mod
 
     captured = {}
 
@@ -14,19 +14,19 @@ def test_top_level_skills_flag_defaults_to_chat(monkeypatch):
     monkeypatch.setattr(
         sys,
         "argv",
-        ["satan", "-s", "satan-agent-dev,github-auth"],
+        ["satanclaw", "-s", "satanclaw-agent-dev,github-auth"],
     )
 
     main_mod.main()
 
     assert captured == {
-        "skills": ["satan-agent-dev,github-auth"],
+        "skills": ["satanclaw-agent-dev,github-auth"],
         "command": None,
     }
 
 
 def test_chat_subcommand_accepts_skills_flag(monkeypatch):
-    import satan_cli.main as main_mod
+    import satanclaw_cli.main as main_mod
 
     captured = {}
 
@@ -38,7 +38,7 @@ def test_chat_subcommand_accepts_skills_flag(monkeypatch):
     monkeypatch.setattr(
         sys,
         "argv",
-        ["satan", "chat", "-s", "github-auth", "-q", "hello"],
+        ["satanclaw", "chat", "-s", "github-auth", "-q", "hello"],
     )
 
     main_mod.main()
@@ -50,7 +50,7 @@ def test_chat_subcommand_accepts_skills_flag(monkeypatch):
 
 
 def test_continue_worktree_and_skills_flags_work_together(monkeypatch):
-    import satan_cli.main as main_mod
+    import satanclaw_cli.main as main_mod
 
     captured = {}
 
@@ -64,7 +64,7 @@ def test_continue_worktree_and_skills_flags_work_together(monkeypatch):
     monkeypatch.setattr(
         sys,
         "argv",
-        ["satan", "-c", "-w", "-s", "satan-agent-dev"],
+        ["satanclaw", "-c", "-w", "-s", "satanclaw-agent-dev"],
     )
 
     main_mod.main()
@@ -72,6 +72,6 @@ def test_continue_worktree_and_skills_flags_work_together(monkeypatch):
     assert captured == {
         "continue_last": True,
         "worktree": True,
-        "skills": ["satan-agent-dev"],
+        "skills": ["satanclaw-agent-dev"],
         "command": "chat",
     }

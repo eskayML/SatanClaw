@@ -1,14 +1,14 @@
 ---
 sidebar_position: 1
 title: "Messaging Gateway"
-description: "Chat with Satan from Telegram, Discord, Slack, WhatsApp, Signal, SMS, Email, Home Assistant, Mattermost, Matrix, DingTalk, Webhooks, or any OpenAI-compatible frontend via the API server — architecture and setup overview"
+description: "Chat with SatanClaw from Telegram, Discord, Slack, WhatsApp, Signal, SMS, Email, Home Assistant, Mattermost, Matrix, DingTalk, Webhooks, or any OpenAI-compatible frontend via the API server — architecture and setup overview"
 ---
 
 # Messaging Gateway
 
-Chat with Satan from Telegram, Discord, Slack, WhatsApp, Signal, SMS, Email, Home Assistant, Mattermost, Matrix, DingTalk, Feishu/Lark, WeCom, or your browser. The gateway is a single background process that connects to all your configured platforms, handles sessions, runs cron jobs, and delivers voice messages.
+Chat with SatanClaw from Telegram, Discord, Slack, WhatsApp, Signal, SMS, Email, Home Assistant, Mattermost, Matrix, DingTalk, Feishu/Lark, WeCom, or your browser. The gateway is a single background process that connects to all your configured platforms, handles sessions, runs cron jobs, and delivers voice messages.
 
-For the full voice feature set — including CLI microphone mode, spoken replies in messaging, and Discord voice-channel conversations — see [Voice Mode](/docs/user-guide/features/voice-mode) and [Use Voice Mode with Satan](/docs/guides/use-voice-mode-with-satan).
+For the full voice feature set — including CLI microphone mode, spoken replies in messaging, and Discord voice-channel conversations — see [Voice Mode](/docs/user-guide/features/voice-mode) and [Use Voice Mode with SatanClaw](/docs/guides/use-voice-mode-with-satanclaw).
 
 ## Platform Comparison
 
@@ -34,7 +34,7 @@ For the full voice feature set — including CLI microphone mode, spoken replies
 
 ```mermaid
 flowchart TB
-    subgraph Gateway["Satan Gateway"]
+    subgraph Gateway["SatanClaw Gateway"]
         subgraph Adapters["Platform adapters"]
             tg[Telegram]
             dc[Discord]
@@ -82,7 +82,7 @@ Each platform adapter receives messages, routes them through a per-chat session 
 The easiest way to configure messaging platforms is the interactive wizard:
 
 ```bash
-satan gateway setup        # Interactive setup for all messaging platforms
+satanclaw gateway setup        # Interactive setup for all messaging platforms
 ```
 
 This walks you through configuring each platform with arrow-key selection, shows which platforms are already configured, and offers to start/restart the gateway when done.
@@ -90,14 +90,14 @@ This walks you through configuring each platform with arrow-key selection, shows
 ## Gateway Commands
 
 ```bash
-satan gateway              # Run in foreground
-satan gateway setup        # Configure messaging platforms interactively
-satan gateway install      # Install as a user service (Linux) / launchd service (macOS)
-sudo satan gateway install --system   # Linux only: install a boot-time system service
-satan gateway start        # Start the default service
-satan gateway stop         # Stop the default service
-satan gateway status       # Check default service status
-satan gateway status --system         # Linux only: inspect the system service explicitly
+satanclaw gateway              # Run in foreground
+satanclaw gateway setup        # Configure messaging platforms interactively
+satanclaw gateway install      # Install as a user service (Linux) / launchd service (macOS)
+sudo satanclaw gateway install --system   # Linux only: install a boot-time system service
+satanclaw gateway start        # Start the default service
+satanclaw gateway stop         # Stop the default service
+satanclaw gateway status       # Check default service status
+satanclaw gateway status --system         # Linux only: inspect the system service explicitly
 ```
 
 ## Chat Commands (Inside Messaging)
@@ -125,7 +125,7 @@ satan gateway status --system         # Linux only: inspect the system service e
 | `/rollback [number]` | List or restore filesystem checkpoints |
 | `/background <prompt>` | Run a prompt in a separate background session |
 | `/reload-mcp` | Reload MCP servers from config |
-| `/update` | Update Satan Agent to the latest version |
+| `/update` | Update SatanClaw Agent to the latest version |
 | `/help` | Show available commands |
 | `/<skill-name>` | Invoke any installed skill |
 
@@ -145,7 +145,7 @@ Sessions reset based on configurable policies:
 | Idle | 1440 min | Reset after N minutes of inactivity |
 | Both | (combined) | Whichever triggers first |
 
-Configure per-platform overrides in `~/.satan/gateway.json`:
+Configure per-platform overrides in `~/.satanclaw/gateway.json`:
 
 ```json
 {
@@ -185,11 +185,11 @@ Instead of manually configuring user IDs, unknown users receive a one-time pairi
 ```bash
 # The user sees: "Pairing code: XKGH5N7P"
 # You approve them with:
-satan pairing approve telegram XKGH5N7P
+satanclaw pairing approve telegram XKGH5N7P
 
 # Other pairing commands:
-satan pairing list          # View pending + approved users
-satan pairing revoke telegram 123456789  # Remove access
+satanclaw pairing list          # View pending + approved users
+satanclaw pairing revoke telegram 123456789  # Remove access
 ```
 
 Pairing codes expire after 1 hour, are rate-limited, and use cryptographic randomness.
@@ -205,7 +205,7 @@ Send any message while the agent is working to interrupt it. Key behaviors:
 
 ## Tool Progress Notifications
 
-Control how much tool activity is displayed in `~/.satan/config.yaml`:
+Control how much tool activity is displayed in `~/.satanclaw/config.yaml`:
 
 ```yaml
 display:
@@ -230,7 +230,7 @@ Run a prompt in a separate background session so the agent works on it independe
 /background Check all servers in the cluster and report any that are down
 ```
 
-Satan confirms immediately:
+SatanClaw confirms immediately:
 
 ```
 🔄 Background task started: "Check all servers in the cluster..."
@@ -248,7 +248,7 @@ Each `/background` prompt spawns a **separate agent instance** that runs asynchr
 
 ### Background Process Notifications
 
-When the agent running a background session uses `terminal(background=true)` to start long-running processes (servers, builds, etc.), the gateway can push status updates to your chat. Control this with `display.background_process_notifications` in `~/.satan/config.yaml`:
+When the agent running a background session uses `terminal(background=true)` to start long-running processes (servers, builds, etc.), the gateway can push status updates to your chat. Control this with `display.background_process_notifications` in `~/.satanclaw/config.yaml`:
 
 ```yaml
 display:
@@ -284,52 +284,52 @@ Background tasks on messaging platforms are fire-and-forget — you don't need t
 ### Linux (systemd)
 
 ```bash
-satan gateway install               # Install as user service
-satan gateway start                 # Start the service
-satan gateway stop                  # Stop the service
-satan gateway status                # Check status
-journalctl --user -u satan-gateway -f  # View logs
+satanclaw gateway install               # Install as user service
+satanclaw gateway start                 # Start the service
+satanclaw gateway stop                  # Stop the service
+satanclaw gateway status                # Check status
+journalctl --user -u satanclaw-gateway -f  # View logs
 
 # Enable lingering (keeps running after logout)
 sudo loginctl enable-linger $USER
 
 # Or install a boot-time system service that still runs as your user
-sudo satan gateway install --system
-sudo satan gateway start --system
-sudo satan gateway status --system
-journalctl -u satan-gateway -f
+sudo satanclaw gateway install --system
+sudo satanclaw gateway start --system
+sudo satanclaw gateway status --system
+journalctl -u satanclaw-gateway -f
 ```
 
 Use the user service on laptops and dev boxes. Use the system service on VPS or headless hosts that should come back at boot without relying on systemd linger.
 
-Avoid keeping both the user and system gateway units installed at once unless you really mean to. Satan will warn if it detects both because start/stop/status behavior gets ambiguous.
+Avoid keeping both the user and system gateway units installed at once unless you really mean to. SatanClaw will warn if it detects both because start/stop/status behavior gets ambiguous.
 
 :::info Multiple installations
-If you run multiple Satan installations on the same machine (with different `HERMES_HOME` directories), each gets its own systemd service name. The default `~/.satan` uses `satan-gateway`; other installations use `satan-gateway-<hash>`. The `satan gateway` commands automatically target the correct service for your current `HERMES_HOME`.
+If you run multiple SatanClaw installations on the same machine (with different `HERMES_HOME` directories), each gets its own systemd service name. The default `~/.satanclaw` uses `satanclaw-gateway`; other installations use `satanclaw-gateway-<hash>`. The `satanclaw gateway` commands automatically target the correct service for your current `HERMES_HOME`.
 :::
 
 ### macOS (launchd)
 
 ```bash
-satan gateway install               # Install as launchd agent
-satan gateway start                 # Start the service
-satan gateway stop                  # Stop the service
-satan gateway status                # Check status
-tail -f ~/.satan/logs/gateway.log   # View logs
+satanclaw gateway install               # Install as launchd agent
+satanclaw gateway start                 # Start the service
+satanclaw gateway stop                  # Stop the service
+satanclaw gateway status                # Check status
+tail -f ~/.satanclaw/logs/gateway.log   # View logs
 ```
 
-The generated plist lives at `~/Library/LaunchAgents/ai.satan.gateway.plist`. It includes three environment variables:
+The generated plist lives at `~/Library/LaunchAgents/ai.satanclaw.gateway.plist`. It includes three environment variables:
 
 - **PATH** — your full shell PATH at install time, with the venv `bin/` and `node_modules/.bin` prepended. This ensures user-installed tools (Node.js, ffmpeg, etc.) are available to gateway subprocesses like the WhatsApp bridge.
 - **VIRTUAL_ENV** — points to the Python virtualenv so tools can resolve packages correctly.
-- **HERMES_HOME** — scopes the gateway to your Satan installation.
+- **HERMES_HOME** — scopes the gateway to your SatanClaw installation.
 
 :::tip PATH changes after install
-launchd plists are static — if you install new tools (e.g. a new Node.js version via nvm, or ffmpeg via Homebrew) after setting up the gateway, run `satan gateway install` again to capture the updated PATH. The gateway will detect the stale plist and reload automatically.
+launchd plists are static — if you install new tools (e.g. a new Node.js version via nvm, or ffmpeg via Homebrew) after setting up the gateway, run `satanclaw gateway install` again to capture the updated PATH. The gateway will detect the stale plist and reload automatically.
 :::
 
 :::info Multiple installations
-Like the Linux systemd service, each `HERMES_HOME` directory gets its own launchd label. The default `~/.satan` uses `ai.satan.gateway`; other installations use `ai.satan.gateway-<suffix>`.
+Like the Linux systemd service, each `HERMES_HOME` directory gets its own launchd label. The default `~/.satanclaw` uses `ai.satanclaw.gateway`; other installations use `ai.satanclaw.gateway-<suffix>`.
 :::
 
 ## Platform-Specific Toolsets
@@ -338,22 +338,22 @@ Each platform has its own toolset:
 
 | Platform | Toolset | Capabilities |
 |----------|---------|--------------|
-| CLI | `satan-cli` | Full access |
-| Telegram | `satan-telegram` | Full tools including terminal |
-| Discord | `satan-discord` | Full tools including terminal |
-| WhatsApp | `satan-whatsapp` | Full tools including terminal |
-| Slack | `satan-slack` | Full tools including terminal |
-| Signal | `satan-signal` | Full tools including terminal |
-| SMS | `satan-sms` | Full tools including terminal |
-| Email | `satan-email` | Full tools including terminal |
-| Home Assistant | `satan-homeassistant` | Full tools + HA device control (ha_list_entities, ha_get_state, ha_call_service, ha_list_services) |
-| Mattermost | `satan-mattermost` | Full tools including terminal |
-| Matrix | `satan-matrix` | Full tools including terminal |
-| DingTalk | `satan-dingtalk` | Full tools including terminal |
-| Feishu/Lark | `satan-feishu` | Full tools including terminal |
-| WeCom | `satan-wecom` | Full tools including terminal |
-| API Server | `satan` (default) | Full tools including terminal |
-| Webhooks | `satan-webhook` | Full tools including terminal |
+| CLI | `satanclaw-cli` | Full access |
+| Telegram | `satanclaw-telegram` | Full tools including terminal |
+| Discord | `satanclaw-discord` | Full tools including terminal |
+| WhatsApp | `satanclaw-whatsapp` | Full tools including terminal |
+| Slack | `satanclaw-slack` | Full tools including terminal |
+| Signal | `satanclaw-signal` | Full tools including terminal |
+| SMS | `satanclaw-sms` | Full tools including terminal |
+| Email | `satanclaw-email` | Full tools including terminal |
+| Home Assistant | `satanclaw-homeassistant` | Full tools + HA device control (ha_list_entities, ha_get_state, ha_call_service, ha_list_services) |
+| Mattermost | `satanclaw-mattermost` | Full tools including terminal |
+| Matrix | `satanclaw-matrix` | Full tools including terminal |
+| DingTalk | `satanclaw-dingtalk` | Full tools including terminal |
+| Feishu/Lark | `satanclaw-feishu` | Full tools including terminal |
+| WeCom | `satanclaw-wecom` | Full tools including terminal |
+| API Server | `satanclaw` (default) | Full tools including terminal |
+| Webhooks | `satanclaw-webhook` | Full tools including terminal |
 
 ## Next Steps
 

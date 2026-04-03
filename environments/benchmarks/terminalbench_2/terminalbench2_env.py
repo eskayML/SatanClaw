@@ -18,7 +18,7 @@ The evaluate flow:
         a. rollout_and_score_eval()  -- Per-task agent loop + test verification
             - Resolves Docker image (pre-built Hub image or Dockerfile fallback)
             - Registers per-task Modal sandbox via register_task_env_overrides()
-            - Runs the SatanAgentLoop (terminal + file tools)
+            - Runs the SatanClawAgentLoop (terminal + file tools)
             - Uploads test suite and runs test.sh in the same sandbox
             - Returns binary pass/fail result
         b. Aggregates per-task, per-category, and overall pass rates
@@ -57,8 +57,8 @@ from pydantic import Field
 from atroposlib.envs.base import EvalHandlingEnum
 from atroposlib.envs.server_handling.server_manager import APIServerConfig
 
-from environments.agent_loop import AgentResult, SatanAgentLoop
-from environments.satan_base_env import SatanAgentBaseEnv, SatanAgentEnvConfig
+from environments.agent_loop import AgentResult, SatanClawAgentLoop
+from environments.satanclaw_base_env import SatanClawAgentBaseEnv, SatanClawAgentEnvConfig
 from environments.tool_context import ToolContext
 from tools.terminal_tool import (
     register_task_env_overrides,
@@ -73,11 +73,11 @@ logger = logging.getLogger(__name__)
 # Configuration
 # =============================================================================
 
-class TerminalBench2EvalConfig(SatanAgentEnvConfig):
+class TerminalBench2EvalConfig(SatanClawAgentEnvConfig):
     """
     Configuration for the Terminal-Bench 2.0 evaluation environment.
 
-    Extends SatanAgentEnvConfig with TB2-specific settings for dataset loading,
+    Extends SatanClawAgentEnvConfig with TB2-specific settings for dataset loading,
     test execution, task filtering, and eval concurrency.
     """
 
@@ -162,11 +162,11 @@ def _extract_base64_tar(b64_data: str, target_dir: Path):
 # Main Environment
 # =============================================================================
 
-class TerminalBench2EvalEnv(SatanAgentBaseEnv):
+class TerminalBench2EvalEnv(SatanClawAgentBaseEnv):
     """
     Terminal-Bench 2.0 evaluation environment (eval-only, no training).
 
-    Inherits from SatanAgentBaseEnv for:
+    Inherits from SatanClawAgentBaseEnv for:
       - Terminal backend setup (os.environ["TERMINAL_ENV"])
       - Tool resolution via _resolve_tools_for_group()
       - Monkey patches for async-safe tool operation
@@ -179,7 +179,7 @@ class TerminalBench2EvalEnv(SatanAgentBaseEnv):
     Each task in rollout_and_score_eval():
       1. Resolve Docker image (pre-built Hub image or Dockerfile fallback)
       2. Register per-task Modal sandbox override
-      3. Run SatanAgentLoop with terminal + file tools
+      3. Run SatanClawAgentLoop with terminal + file tools
       4. Upload test suite and execute test.sh in the same sandbox
       5. Check /logs/verifier/reward.txt for pass/fail
       6. Clean up sandbox, overrides, and temp files
@@ -233,7 +233,7 @@ class TerminalBench2EvalEnv(SatanAgentBaseEnv):
             steps_per_eval=1,
             total_steps=1,
 
-            tokenizer_name="NousResearch/Satan-3-Llama-3.1-8B",
+            tokenizer_name="NousResearch/SatanClaw-3-Llama-3.1-8B",
             use_wandb=True,
             wandb_name="terminal-bench-2",
             ensure_scores_are_not_same=False,  # Binary rewards may all be 0 or 1
@@ -328,7 +328,7 @@ class TerminalBench2EvalEnv(SatanAgentBaseEnv):
     # =========================================================================
     # Training pipeline stubs -- NOT used in eval-only mode
     # =========================================================================
-    # These satisfy the abstract method requirements from SatanAgentBaseEnv.
+    # These satisfy the abstract method requirements from SatanClawAgentBaseEnv.
     # The evaluate subcommand calls setup() -> evaluate() directly, bypassing
     # the training pipeline entirely.
 
@@ -414,7 +414,7 @@ class TerminalBench2EvalEnv(SatanAgentBaseEnv):
 
         This is the core evaluation method. For each task it:
         1. Resolves the Docker image and registers the Modal sandbox override
-        2. Runs SatanAgentLoop with terminal + file tools
+        2. Runs SatanClawAgentLoop with terminal + file tools
         3. Uploads the test suite into the sandbox
         4. Executes test.sh and checks the result
         5. Cleans up the sandbox and temp files
@@ -476,7 +476,7 @@ class TerminalBench2EvalEnv(SatanAgentBaseEnv):
                     tokenizer=self.tokenizer,
                     preserve_think_blocks=bool(self.config.thinking_mode),
                 ) as managed:
-                    agent = SatanAgentLoop(
+                    agent = SatanClawAgentLoop(
                         server=managed,
                         tool_schemas=tools,
                         valid_tool_names=valid_names,
@@ -488,7 +488,7 @@ class TerminalBench2EvalEnv(SatanAgentBaseEnv):
                     )
                     result = await agent.run(messages)
             else:
-                agent = SatanAgentLoop(
+                agent = SatanClawAgentLoop(
                     server=self.server,
                     tool_schemas=tools,
                     valid_tool_names=valid_names,

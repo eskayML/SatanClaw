@@ -1,0 +1,21 @@
+import os
+import sys
+import subprocess
+
+def main():
+    # This script acts as the 'satanclaw' entry point
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    cli_path = os.path.join(script_dir, "satanclaw_cli", "main.py")
+    
+    if not os.path.exists(cli_path):
+        print(f"Error: SatanClaw CLI core not found at {cli_path}")
+        sys.exit(1)
+        
+    # Inject the directory into path to ensure relative imports work for the CLI
+    sys.path.insert(0, script_dir)
+    
+    cmd = [sys.executable, cli_path] + sys.argv[1:]
+    subprocess.run(cmd)
+
+if __name__ == "__main__":
+    main()

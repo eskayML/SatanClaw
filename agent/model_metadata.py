@@ -15,7 +15,7 @@ from urllib.parse import urlparse
 import requests
 import yaml
 
-from satan_constants import OPENROUTER_MODELS_URL
+from satanclaw_constants import OPENROUTER_MODELS_URL
 
 logger = logging.getLogger(__name__)
 
@@ -172,7 +172,7 @@ _URL_TO_PROVIDER: Dict[str, str] = {
     "dashscope-intl.aliyuncs.com": "alibaba",
     "openrouter.ai": "openrouter",
     "generativelanguage.googleapis.com": "google",
-    "inference-api.nousresearch.com": "nous",
+    "inference-api.eskayML.com": "nous",
     "api.deepseek.com": "deepseek",
     "api.githubcopilot.com": "copilot",
     "models.github.ai": "copilot",
@@ -500,8 +500,8 @@ def fetch_endpoint_model_metadata(
 
 def _get_context_cache_path() -> Path:
     """Return path to the persistent context length cache file."""
-    satan_home = Path(os.environ.get("HERMES_HOME", Path.home() / ".satan"))
-    return satan_home / "context_length_cache.yaml"
+    satanclaw_home = Path(os.environ.get("HERMES_HOME", Path.home() / ".satanclaw"))
+    return satanclaw_home / "context_length_cache.yaml"
 
 
 def _load_context_cache() -> Dict[str, int]:
@@ -916,7 +916,7 @@ def estimate_request_tokens_rough(
 ) -> int:
     """Rough token estimate for a full chat-completions request.
 
-    Includes the major payload buckets Satan sends to providers:
+    Includes the major payload buckets SatanClaw sends to providers:
     system prompt, conversation messages, and tool schemas.  With 50+
     tools enabled, schemas alone can add 20-30K tokens — a significant
     blind spot when only counting messages.

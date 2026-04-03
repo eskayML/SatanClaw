@@ -1,4 +1,4 @@
-"""Tests for satan_cli.plugins_cmd — the ``satan plugins`` CLI subcommand."""
+"""Tests for satanclaw_cli.plugins_cmd — the ``satanclaw plugins`` CLI subcommand."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 import yaml
 
-from satan_cli.plugins_cmd import (
+from satanclaw_cli.plugins_cmd import (
     _copy_example_files,
     _read_manifest,
     _repo_name_from_url,
@@ -132,43 +132,43 @@ class TestPluginsCommandDispatch:
             setattr(args, k, v)
         return args
 
-    @patch("satan_cli.plugins_cmd.cmd_remove")
+    @patch("satanclaw_cli.plugins_cmd.cmd_remove")
     def test_rm_alias(self, mock_remove):
         args = self._make_args("rm", name="some-plugin")
         plugins_command(args)
         mock_remove.assert_called_once_with("some-plugin")
 
-    @patch("satan_cli.plugins_cmd.cmd_remove")
+    @patch("satanclaw_cli.plugins_cmd.cmd_remove")
     def test_uninstall_alias(self, mock_remove):
         args = self._make_args("uninstall", name="some-plugin")
         plugins_command(args)
         mock_remove.assert_called_once_with("some-plugin")
 
-    @patch("satan_cli.plugins_cmd.cmd_list")
+    @patch("satanclaw_cli.plugins_cmd.cmd_list")
     def test_ls_alias(self, mock_list):
         args = self._make_args("ls")
         plugins_command(args)
         mock_list.assert_called_once()
 
-    @patch("satan_cli.plugins_cmd.cmd_toggle")
+    @patch("satanclaw_cli.plugins_cmd.cmd_toggle")
     def test_none_falls_through_to_toggle(self, mock_toggle):
         args = self._make_args(None)
         plugins_command(args)
         mock_toggle.assert_called_once()
 
-    @patch("satan_cli.plugins_cmd.cmd_install")
+    @patch("satanclaw_cli.plugins_cmd.cmd_install")
     def test_install_dispatches(self, mock_install):
         args = self._make_args("install", identifier="owner/repo", force=False)
         plugins_command(args)
         mock_install.assert_called_once_with("owner/repo", force=False)
 
-    @patch("satan_cli.plugins_cmd.cmd_update")
+    @patch("satanclaw_cli.plugins_cmd.cmd_update")
     def test_update_dispatches(self, mock_update):
         args = self._make_args("update", name="foo")
         plugins_command(args)
         mock_update.assert_called_once_with("foo")
 
-    @patch("satan_cli.plugins_cmd.cmd_remove")
+    @patch("satanclaw_cli.plugins_cmd.cmd_remove")
     def test_remove_dispatches(self, mock_remove):
         args = self._make_args("remove", name="bar")
         plugins_command(args)
@@ -194,7 +194,7 @@ class TestReadManifest:
 
     def test_invalid_yaml_returns_empty_and_logs(self, tmp_path, caplog):
         (tmp_path / "plugin.yaml").write_text(": : : bad yaml [[[")
-        with caplog.at_level(logging.WARNING, logger="satan_cli.plugins_cmd"):
+        with caplog.at_level(logging.WARNING, logger="satanclaw_cli.plugins_cmd"):
             result = _read_manifest(tmp_path)
         assert result == {}
         assert any("Failed to read plugin.yaml" in r.message for r in caplog.records)
@@ -212,15 +212,15 @@ class TestCmdInstall:
     """Test the install command."""
 
     def test_install_requires_identifier(self):
-        from satan_cli.plugins_cmd import cmd_install
+        from satanclaw_cli.plugins_cmd import cmd_install
         import argparse
 
         with pytest.raises(SystemExit):
             cmd_install("")
 
-    @patch("satan_cli.plugins_cmd._resolve_git_url")
+    @patch("satanclaw_cli.plugins_cmd._resolve_git_url")
     def test_install_validates_identifier(self, mock_resolve):
-        from satan_cli.plugins_cmd import cmd_install
+        from satanclaw_cli.plugins_cmd import cmd_install
 
         mock_resolve.side_effect = ValueError("Invalid identifier")
 
@@ -235,11 +235,11 @@ class TestCmdInstall:
 class TestCmdUpdate:
     """Test the update command."""
 
-    @patch("satan_cli.plugins_cmd._sanitize_plugin_name")
-    @patch("satan_cli.plugins_cmd._plugins_dir")
-    @patch("satan_cli.plugins_cmd.subprocess.run")
+    @patch("satanclaw_cli.plugins_cmd._sanitize_plugin_name")
+    @patch("satanclaw_cli.plugins_cmd._plugins_dir")
+    @patch("satanclaw_cli.plugins_cmd.subprocess.run")
     def test_update_git_pull_success(self, mock_run, mock_plugins_dir, mock_sanitize):
-        from satan_cli.plugins_cmd import cmd_update
+        from satanclaw_cli.plugins_cmd import cmd_update
 
         mock_plugins_dir_val = MagicMock()
         mock_plugins_dir.return_value = mock_plugins_dir_val
@@ -256,10 +256,10 @@ class TestCmdUpdate:
 
         mock_run.assert_called_once()
 
-    @patch("satan_cli.plugins_cmd._sanitize_plugin_name")
-    @patch("satan_cli.plugins_cmd._plugins_dir")
+    @patch("satanclaw_cli.plugins_cmd._sanitize_plugin_name")
+    @patch("satanclaw_cli.plugins_cmd._plugins_dir")
     def test_update_plugin_not_found(self, mock_plugins_dir, mock_sanitize):
-        from satan_cli.plugins_cmd import cmd_update
+        from satanclaw_cli.plugins_cmd import cmd_update
 
         mock_plugins_dir_val = MagicMock()
         mock_plugins_dir_val.iterdir.return_value = []
@@ -280,11 +280,11 @@ class TestCmdUpdate:
 class TestCmdRemove:
     """Test the remove command."""
 
-    @patch("satan_cli.plugins_cmd._sanitize_plugin_name")
-    @patch("satan_cli.plugins_cmd._plugins_dir")
-    @patch("satan_cli.plugins_cmd.shutil.rmtree")
+    @patch("satanclaw_cli.plugins_cmd._sanitize_plugin_name")
+    @patch("satanclaw_cli.plugins_cmd._plugins_dir")
+    @patch("satanclaw_cli.plugins_cmd.shutil.rmtree")
     def test_remove_deletes_plugin(self, mock_rmtree, mock_plugins_dir, mock_sanitize):
-        from satan_cli.plugins_cmd import cmd_remove
+        from satanclaw_cli.plugins_cmd import cmd_remove
 
         mock_plugins_dir.return_value = MagicMock()
         mock_target = MagicMock()
@@ -295,10 +295,10 @@ class TestCmdRemove:
 
         mock_rmtree.assert_called_once_with(mock_target)
 
-    @patch("satan_cli.plugins_cmd._sanitize_plugin_name")
-    @patch("satan_cli.plugins_cmd._plugins_dir")
+    @patch("satanclaw_cli.plugins_cmd._sanitize_plugin_name")
+    @patch("satanclaw_cli.plugins_cmd._plugins_dir")
     def test_remove_plugin_not_found(self, mock_plugins_dir, mock_sanitize):
-        from satan_cli.plugins_cmd import cmd_remove
+        from satanclaw_cli.plugins_cmd import cmd_remove
 
         mock_plugins_dir_val = MagicMock()
         mock_plugins_dir_val.iterdir.return_value = []
@@ -319,9 +319,9 @@ class TestCmdRemove:
 class TestCmdList:
     """Test the list command."""
 
-    @patch("satan_cli.plugins_cmd._plugins_dir")
+    @patch("satanclaw_cli.plugins_cmd._plugins_dir")
     def test_list_empty_plugins_dir(self, mock_plugins_dir):
-        from satan_cli.plugins_cmd import cmd_list
+        from satanclaw_cli.plugins_cmd import cmd_list
 
         mock_plugins_dir_val = MagicMock()
         mock_plugins_dir_val.iterdir.return_value = []
@@ -329,10 +329,10 @@ class TestCmdList:
 
         cmd_list()
 
-    @patch("satan_cli.plugins_cmd._plugins_dir")
-    @patch("satan_cli.plugins_cmd._read_manifest")
+    @patch("satanclaw_cli.plugins_cmd._plugins_dir")
+    @patch("satanclaw_cli.plugins_cmd._read_manifest")
     def test_list_with_plugins(self, mock_read_manifest, mock_plugins_dir):
-        from satan_cli.plugins_cmd import cmd_list
+        from satanclaw_cli.plugins_cmd import cmd_list
 
         mock_plugins_dir_val = MagicMock()
         mock_plugin_dir = MagicMock()
@@ -355,7 +355,7 @@ class TestCopyExampleFiles:
     """Test example file copying."""
 
     def test_copies_example_files(self, tmp_path):
-        from satan_cli.plugins_cmd import _copy_example_files
+        from satanclaw_cli.plugins_cmd import _copy_example_files
         from unittest.mock import MagicMock
 
         console = MagicMock()
@@ -371,7 +371,7 @@ class TestCopyExampleFiles:
         console.print.assert_called()
 
     def test_skips_existing_files(self, tmp_path):
-        from satan_cli.plugins_cmd import _copy_example_files
+        from satanclaw_cli.plugins_cmd import _copy_example_files
         from unittest.mock import MagicMock
 
         console = MagicMock()
@@ -388,7 +388,7 @@ class TestCopyExampleFiles:
         assert real_file.read_text() == "existing: true"
 
     def test_handles_copy_error_gracefully(self, tmp_path):
-        from satan_cli.plugins_cmd import _copy_example_files
+        from satanclaw_cli.plugins_cmd import _copy_example_files
         from unittest.mock import MagicMock, patch
 
         console = MagicMock()
@@ -399,7 +399,7 @@ class TestCopyExampleFiles:
 
         # Mock shutil.copy2 to raise an error
         with patch(
-            "satan_cli.plugins_cmd.shutil.copy2",
+            "satanclaw_cli.plugins_cmd.shutil.copy2",
             side_effect=OSError("Permission denied"),
         ):
             # Should not raise, just warn

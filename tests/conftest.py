@@ -1,4 +1,4 @@
-"""Shared fixtures for the satan-agent test suite."""
+"""Shared fixtures for the satanclaw-agent test suite."""
 
 import asyncio
 import os
@@ -17,18 +17,18 @@ if str(PROJECT_ROOT) not in sys.path:
 
 
 @pytest.fixture(autouse=True)
-def _isolate_satan_home(tmp_path, monkeypatch):
-    """Redirect HERMES_HOME to a temp dir so tests never write to ~/.satan/."""
-    fake_home = tmp_path / "satan_test"
+def _isolate_satanclaw_home(tmp_path, monkeypatch):
+    """Redirect HERMES_HOME to a temp dir so tests never write to ~/.satanclaw/."""
+    fake_home = tmp_path / "satanclaw_test"
     fake_home.mkdir()
     (fake_home / "sessions").mkdir()
     (fake_home / "cron").mkdir()
     (fake_home / "memories").mkdir()
     (fake_home / "skills").mkdir()
     monkeypatch.setenv("HERMES_HOME", str(fake_home))
-    # Reset plugin singleton so tests don't leak plugins from ~/.satan/plugins/
+    # Reset plugin singleton so tests don't leak plugins from ~/.satanclaw/plugins/
     try:
-        import satan_cli.plugins as _plugins_mod
+        import satanclaw_cli.plugins as _plugins_mod
         monkeypatch.setattr(_plugins_mod, "_plugin_manager", None)
     except Exception:
         pass
@@ -48,7 +48,7 @@ def tmp_dir(tmp_path):
 
 @pytest.fixture()
 def mock_config():
-    """Return a minimal satan config dict suitable for unit tests."""
+    """Return a minimal satanclaw config dict suitable for unit tests."""
     return {
         "model": "test/mock-model",
         "toolsets": ["terminal", "file"],

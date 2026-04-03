@@ -60,7 +60,7 @@ def adapter():
         tree=FakeTree(),
         get_channel=lambda _id: None,
         fetch_channel=AsyncMock(),
-        user=SimpleNamespace(id=99999, name="SatanBot"),
+        user=SimpleNamespace(id=99999, name="SatanClawBot"),
     )
     return adapter
 
@@ -134,10 +134,10 @@ async def test_handle_thread_create_slash_dispatches_session_when_message_provid
 
     adapter._dispatch_thread_session = AsyncMock()
 
-    await adapter._handle_thread_create_slash(interaction, "Planning", "Hello Satan", 1440)
+    await adapter._handle_thread_create_slash(interaction, "Planning", "Hello SatanClaw", 1440)
 
     adapter._dispatch_thread_session.assert_awaited_once_with(
-        interaction, "555", "Planning", "Hello Satan",
+        interaction, "555", "Planning", "Hello SatanClaw",
     )
 
 
@@ -481,15 +481,15 @@ def test_discord_auto_thread_config_bridge(monkeypatch, tmp_path):
     from pathlib import Path
 
     # Write a config.yaml the loader will find
-    satan_dir = tmp_path / ".satan"
-    satan_dir.mkdir()
-    config_path = satan_dir / "config.yaml"
+    satanclaw_dir = tmp_path / ".satanclaw"
+    satanclaw_dir.mkdir()
+    config_path = satanclaw_dir / "config.yaml"
     config_path.write_text(yaml.dump({
         "discord": {"auto_thread": True},
     }))
 
     monkeypatch.delenv("DISCORD_AUTO_THREAD", raising=False)
-    monkeypatch.setenv("HERMES_HOME", str(satan_dir))
+    monkeypatch.setenv("HERMES_HOME", str(satanclaw_dir))
     monkeypatch.setattr(Path, "home", lambda: tmp_path)
 
     from gateway.config import load_gateway_config

@@ -24,13 +24,13 @@ class TestRegisterServerTools:
     @pytest.fixture
     def mock_toolsets(self):
         return {
-            "satan-cli": {"tools": ["terminal"], "description": "CLI", "includes": []},
-            "satan-telegram": {"tools": ["terminal"], "description": "TG", "includes": []},
+            "satanclaw-cli": {"tools": ["terminal"], "description": "CLI", "includes": []},
+            "satanclaw-telegram": {"tools": ["terminal"], "description": "TG", "includes": []},
             "custom-toolset": {"tools": [], "description": "Other", "includes": []},
         }
 
-    def test_injects_satan_toolsets(self, mock_registry, mock_toolsets):
-        """Tools are injected into satan-* toolsets but not custom ones."""
+    def test_injects_satanclaw_toolsets(self, mock_registry, mock_toolsets):
+        """Tools are injected into satanclaw-* toolsets but not custom ones."""
         server = MCPServerTask("my_srv")
         server._tools = [_make_mcp_tool("my_tool", "desc")]
         server.session = MagicMock()
@@ -44,10 +44,10 @@ class TestRegisterServerTools:
         assert "mcp_my_srv_my_tool" in registered
         assert "mcp_my_srv_my_tool" in mock_registry.get_all_tool_names()
 
-        # Injected into satan-* toolsets
-        assert "mcp_my_srv_my_tool" in mock_toolsets["satan-cli"]["tools"]
-        assert "mcp_my_srv_my_tool" in mock_toolsets["satan-telegram"]["tools"]
-        # NOT into non-satan toolsets
+        # Injected into satanclaw-* toolsets
+        assert "mcp_my_srv_my_tool" in mock_toolsets["satanclaw-cli"]["tools"]
+        assert "mcp_my_srv_my_tool" in mock_toolsets["satanclaw-telegram"]["tools"]
+        # NOT into non-satanclaw toolsets
         assert "mcp_my_srv_my_tool" not in mock_toolsets["custom-toolset"]["tools"]
 
 
@@ -61,8 +61,8 @@ class TestRefreshTools:
     @pytest.fixture
     def mock_toolsets(self):
         return {
-            "satan-cli": {"tools": ["terminal"], "description": "CLI", "includes": []},
-            "satan-telegram": {"tools": ["terminal"], "description": "TG", "includes": []},
+            "satanclaw-cli": {"tools": ["terminal"], "description": "CLI", "includes": []},
+            "satanclaw-telegram": {"tools": ["terminal"], "description": "TG", "includes": []},
         }
 
     @pytest.mark.asyncio
@@ -79,7 +79,7 @@ class TestRefreshTools:
             description="", emoji="",
         )
         server._registered_tool_names = ["mcp_live_srv_old_tool"]
-        mock_toolsets["satan-cli"]["tools"].append("mcp_live_srv_old_tool")
+        mock_toolsets["satanclaw-cli"]["tools"].append("mcp_live_srv_old_tool")
 
         # New tool list from server
         new_tool = _make_mcp_tool("new_tool", "new behavior")
@@ -97,11 +97,11 @@ class TestRefreshTools:
 
         # Old tool completely gone
         assert "mcp_live_srv_old_tool" not in mock_registry.get_all_tool_names()
-        assert "mcp_live_srv_old_tool" not in mock_toolsets["satan-cli"]["tools"]
+        assert "mcp_live_srv_old_tool" not in mock_toolsets["satanclaw-cli"]["tools"]
 
         # New tool registered
         assert "mcp_live_srv_new_tool" in mock_registry.get_all_tool_names()
-        assert "mcp_live_srv_new_tool" in mock_toolsets["satan-cli"]["tools"]
+        assert "mcp_live_srv_new_tool" in mock_toolsets["satanclaw-cli"]["tools"]
         assert server._registered_tool_names == ["mcp_live_srv_new_tool"]
 
 

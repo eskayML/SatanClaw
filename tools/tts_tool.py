@@ -12,7 +12,7 @@ Output formats:
 - Opus (.ogg) for Telegram voice bubbles (requires ffmpeg for Edge TTS)
 - MP3 (.mp3) for everything else (CLI, Discord, WhatsApp)
 
-Configuration is loaded from ~/.satan/config.yaml under the 'tts:' key.
+Configuration is loaded from ~/.satanclaw/config.yaml under the 'tts:' key.
 The user chooses the provider and voice; the model just sends text.
 
 Usage:
@@ -80,29 +80,29 @@ DEFAULT_OPENAI_VOICE = "alloy"
 DEFAULT_OPENAI_BASE_URL = "https://api.openai.com/v1"
 
 def _get_default_output_dir() -> str:
-    from satan_constants import get_satan_dir
-    return str(get_satan_dir("cache/audio", "audio_cache"))
+    from satanclaw_constants import get_satanclaw_dir
+    return str(get_satanclaw_dir("cache/audio", "audio_cache"))
 
 DEFAULT_OUTPUT_DIR = _get_default_output_dir()
 MAX_TEXT_LENGTH = 4000
 
 
 # ===========================================================================
-# Config loader -- reads tts: section from ~/.satan/config.yaml
+# Config loader -- reads tts: section from ~/.satanclaw/config.yaml
 # ===========================================================================
 def _load_tts_config() -> Dict[str, Any]:
     """
-    Load TTS configuration from ~/.satan/config.yaml.
+    Load TTS configuration from ~/.satanclaw/config.yaml.
 
     Returns a dict with provider settings. Falls back to defaults
     for any missing fields.
     """
     try:
-        from satan_cli.config import load_config
+        from satanclaw_cli.config import load_config
         config = load_config()
         return config.get("tts", {})
     except ImportError:
-        logger.debug("satan_cli.config not available, using default TTS config")
+        logger.debug("satanclaw_cli.config not available, using default TTS config")
         return {}
     except Exception as e:
         logger.warning("Failed to load TTS config: %s", e, exc_info=True)
@@ -360,7 +360,7 @@ def text_to_speech_tool(
     """
     Convert text to speech audio.
 
-    Reads provider/voice config from ~/.satan/config.yaml (tts: section).
+    Reads provider/voice config from ~/.satanclaw/config.yaml (tts: section).
     The model sends text; the user configures voice and provider.
 
     On messaging platforms, the returned MEDIA:<path> tag is intercepted
@@ -439,7 +439,7 @@ def text_to_speech_tool(
                 return json.dumps({
                     "success": False,
                     "error": "NeuTTS provider selected but neutts is not installed. "
-                             "Run satan setup and choose NeuTTS, or install espeak-ng and run python -m pip install -U neutts[all]."
+                             "Run satanclaw setup and choose NeuTTS, or install espeak-ng and run python -m pip install -U neutts[all]."
                 }, ensure_ascii=False)
             logger.info("Generating speech with NeuTTS (local)...")
             _generate_neutts(text, file_str, tts_config)
@@ -867,7 +867,7 @@ TTS_SCHEMA = {
             },
             "output_path": {
                 "type": "string",
-                "description": "Optional custom file path to save the audio. Defaults to ~/.satan/audio_cache/<timestamp>.mp3"
+                "description": "Optional custom file path to save the audio. Defaults to ~/.satanclaw/audio_cache/<timestamp>.mp3"
             }
         },
         "required": ["text"]

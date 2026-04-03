@@ -76,28 +76,28 @@ _ensure_ssl_certs()
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-# Resolve Satan home directory (respects HERMES_HOME override)
-from satan_constants import get_satan_home
+# Resolve SatanClaw home directory (respects HERMES_HOME override)
+from satanclaw_constants import get_satanclaw_home
 from utils import atomic_yaml_write
-_satan_home = get_satan_home()
+_satanclaw_home = get_satanclaw_home()
 
-# Load environment variables from ~/.satan/.env first.
+# Load environment variables from ~/.satanclaw/.env first.
 # User-managed env files should override stale shell exports on restart.
 from dotenv import load_dotenv  # backward-compat for tests that monkeypatch this symbol
-from satan_cli.env_loader import load_satan_dotenv
-_env_path = _satan_home / '.env'
-load_satan_dotenv(satan_home=_satan_home, project_env=Path(__file__).resolve().parents[1] / '.env')
+from satanclaw_cli.env_loader import load_satanclaw_dotenv
+_env_path = _satanclaw_home / '.env'
+load_satanclaw_dotenv(satanclaw_home=_satanclaw_home, project_env=Path(__file__).resolve().parents[1] / '.env')
 
 # Bridge config.yaml values into the environment so os.getenv() picks them up.
 # config.yaml is authoritative for terminal settings — overrides .env.
-_config_path = _satan_home / 'config.yaml'
+_config_path = _satanclaw_home / 'config.yaml'
 if _config_path.exists():
     try:
         import yaml as _yaml
         with open(_config_path, encoding="utf-8") as _f:
             _cfg = _yaml.safe_load(_f) or {}
         # Expand ${ENV_VAR} references before bridging to env vars.
-        from satan_cli.config import _expand_env_vars
+        from satanclaw_cli.config import _expand_env_vars
         _cfg = _expand_env_vars(_cfg)
         # Top-level simple values (fallback only — don't override .env)
         for _key, _val in _cfg.items():
@@ -244,7 +244,7 @@ def _expand_whatsapp_auth_aliases(identifier: str) -> set:
     if not normalized:
         return set()
 
-    session_dir = _satan_home / "whatsapp" / "session"
+    session_dir = _satanclaw_home / "whatsapp" / "session"
     resolved = set()
     queue = [normalized]
 
@@ -280,7 +280,7 @@ _AGENT_PENDING_SENTINEL = object()
 
 def _resolve_runtime_agent_kwargs() -> dict:
     """Resolve provider credentials for gateway-created AIAgent instances."""
-    from satan_cli.runtime_provider import (
+    from satanclaw_cli.runtime_provider import (
         resolve_runtime_provider,
         format_runtime_provider_error,
     )
@@ -360,11 +360,11 @@ def _check_unavailable_skill(command_name: str) -> str | None:
             if name == normalized and name in disabled:
                 return (
                     f"The **{command_name}** skill is installed but disabled.\n"
-                    f"Enable it with: `satan skills config`"
+                    f"Enable it with: `satanclaw skills config`"
                 )
 
         # Check optional skills (shipped with repo but not installed)
-        from satan_constants import get_satan_home, get_optional_skills_dir
+        from satanclaw_constants import get_satanclaw_home, get_optional_skills_dir
         repo_root = Path(__file__).resolve().parent.parent
         optional_dir = get_optional_skills_dir(repo_root / "optional-skills")
         if optional_dir.exists():
@@ -377,7 +377,7 @@ def _check_unavailable_skill(command_name: str) -> str | None:
                     install_path = f"official/{'/'.join(parts)}"
                     return (
                         f"The **{command_name}** skill is available but not installed.\n"
-                        f"Install it with: `satan skills install {install_path}`"
+                        f"Install it with: `satanclaw skills install {install_path}`"
                     )
     except Exception:
         pass
@@ -390,15 +390,15 @@ def _platform_config_key(platform: "Platform") -> str:
 
 
 def _load_gateway_config() -> dict:
-    """Load and parse ~/.satan/config.yaml, returning {} on any error."""
+    """Load and parse ~/.satanclaw/config.yaml, returning {} on any error."""
     try:
-        config_path = _satan_home / 'config.yaml'
+        config_path = _satanclaw_home / 'config.yaml'
         if config_path.exists():
             import yaml
             with open(config_path, 'r', encoding='utf-8') as f:
                 return yaml.safe_load(f) or {}
     except Exception:
-        logger.debug("Could not load gateway config from %s", _satan_home / 'config.yaml')
+        logger.debug("Could not load gateway config from %s", _satanclaw_home / 'config.yaml')
     return {}
 
 
@@ -418,27 +418,27 @@ def _resolve_gateway_model(config: dict | None = None) -> str:
     return ""
 
 
-def _resolve_satan_bin() -> Optional[list[str]]:
-    """Resolve the Satan update command as argv parts.
+def _resolve_satanclaw_bin() -> Optional[list[str]]:
+    """Resolve the SatanClaw update command as argv parts.
 
     Tries in order:
-    1. ``shutil.which("satan")`` — standard PATH lookup
-    2. ``sys.executable -m satan_cli.main`` — fallback when Satan is running
-       from a venv/module invocation and the ``satan`` shim is not on PATH
+    1. ``shutil.which("satanclaw")`` — standard PATH lookup
+    2. ``sys.executable -m satanclaw_cli.main`` — fallback when SatanClaw is running
+       from a venv/module invocation and the ``satanclaw`` shim is not on PATH
 
     Returns argv parts ready for quoting/joining, or ``None`` if neither works.
     """
     import shutil
 
-    satan_bin = shutil.which("satan")
-    if satan_bin:
-        return [satan_bin]
+    satanclaw_bin = shutil.which("satanclaw")
+    if satanclaw_bin:
+        return [satanclaw_bin]
 
     try:
         import importlib.util
 
-        if importlib.util.find_spec("satan_cli") is not None:
-            return [sys.executable, "-m", "satan_cli.main"]
+        if importlib.util.find_spec("satanclaw_cli") is not None:
+            return [sys.executable, "-m", "satanclaw_cli.main"]
     except Exception:
         pass
 
@@ -529,7 +529,7 @@ class GatewayRunner:
         # Initialize session database for session_search tool support
         self._session_db = None
         try:
-            from satan_state import SessionDB
+            from satanclaw_state import SessionDB
             self._session_db = SessionDB()
         except Exception as e:
             logger.debug("SQLite session store not available: %s", e)
@@ -554,16 +554,16 @@ class GatewayRunner:
     # -- Setup skill availability ----------------------------------------
 
     def _has_setup_skill(self) -> bool:
-        """Check if the satan-agent-setup skill is installed."""
+        """Check if the satanclaw-agent-setup skill is installed."""
         try:
             from tools.skill_manager_tool import _find_skill
-            return _find_skill("satan-agent-setup") is not None
+            return _find_skill("satanclaw-agent-setup") is not None
         except Exception:
             return False
 
     # -- Voice mode persistence ------------------------------------------
 
-    _VOICE_MODE_PATH = _satan_home / "gateway_voice_mode.json"
+    _VOICE_MODE_PATH = _satanclaw_home / "gateway_voice_mode.json"
 
     def _load_voice_modes(self) -> Dict[str, str]:
         try:
@@ -842,15 +842,15 @@ class GatewayRunner:
         """Load ephemeral prefill messages from config or env var.
         
         Checks HERMES_PREFILL_MESSAGES_FILE env var first, then falls back to
-        the prefill_messages_file key in ~/.satan/config.yaml.
-        Relative paths are resolved from ~/.satan/.
+        the prefill_messages_file key in ~/.satanclaw/config.yaml.
+        Relative paths are resolved from ~/.satanclaw/.
         """
         import json as _json
         file_path = os.getenv("HERMES_PREFILL_MESSAGES_FILE", "")
         if not file_path:
             try:
                 import yaml as _y
-                cfg_path = _satan_home / "config.yaml"
+                cfg_path = _satanclaw_home / "config.yaml"
                 if cfg_path.exists():
                     with open(cfg_path, encoding="utf-8") as _f:
                         cfg = _y.safe_load(_f) or {}
@@ -861,7 +861,7 @@ class GatewayRunner:
             return []
         path = Path(file_path).expanduser()
         if not path.is_absolute():
-            path = _satan_home / path
+            path = _satanclaw_home / path
         if not path.exists():
             logger.warning("Prefill messages file not found: %s", path)
             return []
@@ -881,14 +881,14 @@ class GatewayRunner:
         """Load ephemeral system prompt from config or env var.
         
         Checks HERMES_EPHEMERAL_SYSTEM_PROMPT env var first, then falls back to
-        agent.system_prompt in ~/.satan/config.yaml.
+        agent.system_prompt in ~/.satanclaw/config.yaml.
         """
         prompt = os.getenv("HERMES_EPHEMERAL_SYSTEM_PROMPT", "")
         if prompt:
             return prompt
         try:
             import yaml as _y
-            cfg_path = _satan_home / "config.yaml"
+            cfg_path = _satanclaw_home / "config.yaml"
             if cfg_path.exists():
                 with open(cfg_path, encoding="utf-8") as _f:
                     cfg = _y.safe_load(_f) or {}
@@ -906,11 +906,11 @@ class GatewayRunner:
         "medium", "low", "minimal", "none". Returns None to use default
         (medium).
         """
-        from satan_constants import parse_reasoning_effort
+        from satanclaw_constants import parse_reasoning_effort
         effort = ""
         try:
             import yaml as _y
-            cfg_path = _satan_home / "config.yaml"
+            cfg_path = _satanclaw_home / "config.yaml"
             if cfg_path.exists():
                 with open(cfg_path, encoding="utf-8") as _f:
                     cfg = _y.safe_load(_f) or {}
@@ -929,7 +929,7 @@ class GatewayRunner:
         """Load show_reasoning toggle from config.yaml display section."""
         try:
             import yaml as _y
-            cfg_path = _satan_home / "config.yaml"
+            cfg_path = _satanclaw_home / "config.yaml"
             if cfg_path.exists():
                 with open(cfg_path, encoding="utf-8") as _f:
                     cfg = _y.safe_load(_f) or {}
@@ -952,7 +952,7 @@ class GatewayRunner:
         if not mode:
             try:
                 import yaml as _y
-                cfg_path = _satan_home / "config.yaml"
+                cfg_path = _satanclaw_home / "config.yaml"
                 if cfg_path.exists():
                     with open(cfg_path, encoding="utf-8") as _f:
                         cfg = _y.safe_load(_f) or {}
@@ -978,7 +978,7 @@ class GatewayRunner:
         """Load OpenRouter provider routing preferences from config.yaml."""
         try:
             import yaml as _y
-            cfg_path = _satan_home / "config.yaml"
+            cfg_path = _satanclaw_home / "config.yaml"
             if cfg_path.exists():
                 with open(cfg_path, encoding="utf-8") as _f:
                     cfg = _y.safe_load(_f) or {}
@@ -997,7 +997,7 @@ class GatewayRunner:
         """
         try:
             import yaml as _y
-            cfg_path = _satan_home / "config.yaml"
+            cfg_path = _satanclaw_home / "config.yaml"
             if cfg_path.exists():
                 with open(cfg_path, encoding="utf-8") as _f:
                     cfg = _y.safe_load(_f) or {}
@@ -1013,7 +1013,7 @@ class GatewayRunner:
         """Load optional smart cheap-vs-strong model routing config."""
         try:
             import yaml as _y
-            cfg_path = _satan_home / "config.yaml"
+            cfg_path = _satanclaw_home / "config.yaml"
             if cfg_path.exists():
                 with open(cfg_path, encoding="utf-8") as _f:
                     cfg = _y.safe_load(_f) or {}
@@ -1028,10 +1028,10 @@ class GatewayRunner:
         
         Returns True if at least one adapter connected successfully.
         """
-        logger.info("Starting Satan Gateway...")
+        logger.info("Starting SatanClaw Gateway...")
         logger.info("Session storage: %s", self.config.sessions_dir)
         try:
-            from satan_cli.profiles import get_active_profile_name
+            from satanclaw_cli.profiles import get_active_profile_name
             _profile = get_active_profile_name()
             if _profile and _profile != "default":
                 logger.info("Active profile: %s", _profile)
@@ -1069,7 +1069,7 @@ class GatewayRunner:
         if not _any_allowlist and not _allow_all:
             logger.warning(
                 "No user allowlists configured. All unauthorized users will be denied. "
-                "Set GATEWAY_ALLOW_ALL_USERS=true in ~/.satan/.env to allow open access, "
+                "Set GATEWAY_ALLOW_ALL_USERS=true in ~/.satanclaw/.env to allow open access, "
                 "or configure platform allowlists (e.g., TELEGRAM_ALLOWED_USERS=your_id)."
             )
         
@@ -1211,8 +1211,8 @@ class GatewayRunner:
         if not notified and any(
             path.exists()
             for path in (
-                _satan_home / ".update_pending.json",
-                _satan_home / ".update_pending.claimed.json",
+                _satanclaw_home / ".update_pending.json",
+                _satanclaw_home / ".update_pending.claimed.json",
             )
         ):
             self._schedule_update_notification_watch()
@@ -1488,7 +1488,7 @@ class GatewayRunner:
         elif platform == Platform.SLACK:
             from gateway.platforms.slack import SlackAdapter, check_slack_requirements
             if not check_slack_requirements():
-                logger.warning("Slack: slack-bolt not installed. Run: pip install 'satan-agent[slack]'")
+                logger.warning("Slack: slack-bolt not installed. Run: pip install 'satanclaw-agent[slack]'")
                 return None
             return SlackAdapter(config)
 
@@ -1718,7 +1718,7 @@ class GatewayRunner:
                             f"Hi~ I don't recognize you yet!\n\n"
                             f"Here's your pairing code: `{code}`\n\n"
                             f"Ask the bot owner to run:\n"
-                            f"`satan pairing approve {platform_name} {code}`"
+                            f"`satanclaw pairing approve {platform_name} {code}`"
                         )
                 else:
                     adapter = self.adapters.get(source.platform)
@@ -1759,7 +1759,7 @@ class GatewayRunner:
                 return await self._handle_status_command(event)
 
             # Resolve the command once for all early-intercept checks below.
-            from satan_cli.commands import resolve_command as _resolve_cmd_inner
+            from satanclaw_cli.commands import resolve_command as _resolve_cmd_inner
             _evt_cmd = event.get_command()
             _cmd_def_inner = _resolve_cmd_inner(_evt_cmd) if _evt_cmd else None
 
@@ -1870,8 +1870,8 @@ class GatewayRunner:
         
         # Emit command:* hook for any recognized slash command.
         # GATEWAY_KNOWN_COMMANDS is derived from the central COMMAND_REGISTRY
-        # in satan_cli/commands.py — no hardcoded set to maintain here.
-        from satan_cli.commands import GATEWAY_KNOWN_COMMANDS, resolve_command as _resolve_cmd
+        # in satanclaw_cli/commands.py — no hardcoded set to maintain here.
+        from satanclaw_cli.commands import GATEWAY_KNOWN_COMMANDS, resolve_command as _resolve_cmd
         if command and command in GATEWAY_KNOWN_COMMANDS:
             await self.hooks.emit(f"command:{command}", {
                 "platform": source.platform.value if source.platform else "",
@@ -2032,7 +2032,7 @@ class GatewayRunner:
         # Plugin-registered slash commands
         if command:
             try:
-                from satan_cli.plugins import get_plugin_command_handler
+                from satanclaw_cli.plugins import get_plugin_command_handler
                 plugin_handler = get_plugin_command_handler(command)
                 if plugin_handler:
                     user_args = event.get_command_args().strip()
@@ -2261,7 +2261,7 @@ class GatewayRunner:
             _hyg_base_url = None
             _hyg_api_key = None
             try:
-                _hyg_cfg_path = _satan_home / "config.yaml"
+                _hyg_cfg_path = _satanclaw_home / "config.yaml"
                 if _hyg_cfg_path.exists():
                     import yaml as _hyg_yaml
                     with open(_hyg_cfg_path, encoding="utf-8") as _hyg_f:
@@ -2476,7 +2476,7 @@ class GatewayRunner:
                     await adapter.send(
                         source.chat_id,
                         f"📬 No home channel is set for {platform_name.title()}. "
-                        f"A home channel is where Satan delivers cron job results "
+                        f"A home channel is where SatanClaw delivers cron job results "
                         f"and cross-platform messages.\n\n"
                         f"Type /sethome to make this chat your home channel, "
                         f"or ignore to skip."
@@ -2559,13 +2559,13 @@ class GatewayRunner:
                                 "🎤 I received your voice message but can't transcribe it — "
                                 "no speech-to-text provider is configured.\n\n"
                                 "To enable voice: install faster-whisper "
-                                "(`pip install faster-whisper` in the Satan venv) "
+                                "(`pip install faster-whisper` in the SatanClaw venv) "
                                 "and set `stt.enabled: true` in config.yaml, "
                                 "then /restart the gateway."
                             )
                             # Point to setup skill if it's installed
                             if self._has_setup_skill():
-                                _stt_msg += "\n\nFor full setup instructions, type: `/skill satan-agent-setup`"
+                                _stt_msg += "\n\nFor full setup instructions, type: `/skill satanclaw-agent-setup`"
                             await _stt_adapter.send(
                                 source.chat_id, _stt_msg,
                                 metadata=_stt_meta,
@@ -2927,7 +2927,7 @@ class GatewayRunner:
         api_key = None
 
         try:
-            cfg_path = _satan_home / "config.yaml"
+            cfg_path = _satanclaw_home / "config.yaml"
             if cfg_path.exists():
                 import yaml as _info_yaml
                 with open(cfg_path, encoding="utf-8") as f:
@@ -3047,15 +3047,15 @@ class GatewayRunner:
     
     async def _handle_profile_command(self, event: MessageEvent) -> str:
         """Handle /profile — show active profile name and home directory."""
-        from satan_constants import get_satan_home, display_satan_home
+        from satanclaw_constants import get_satanclaw_home, display_satanclaw_home
         from pathlib import Path
 
-        home = get_satan_home()
-        display = display_satan_home()
+        home = get_satanclaw_home()
+        display = display_satanclaw_home()
 
         # Detect profile name from HERMES_HOME path
-        # Profile paths look like: ~/.satan/profiles/<name>
-        profiles_parent = Path.home() / ".satan" / "profiles"
+        # Profile paths look like: ~/.satanclaw/profiles/<name>
+        profiles_parent = Path.home() / ".satanclaw" / "profiles"
         try:
             rel = home.relative_to(profiles_parent)
             profile_name = str(rel).split("/")[0]
@@ -3087,7 +3087,7 @@ class GatewayRunner:
         is_running = session_key in self._running_agents
         
         lines = [
-            "📊 **Satan Gateway Status**",
+            "📊 **SatanClaw Gateway Status**",
             "",
             f"**Session ID:** `{session_entry.session_id[:12]}...`",
             f"**Created:** {session_entry.created_at.strftime('%Y-%m-%d %H:%M')}",
@@ -3132,9 +3132,9 @@ class GatewayRunner:
     
     async def _handle_help_command(self, event: MessageEvent) -> str:
         """Handle /help command - list available commands."""
-        from satan_cli.commands import gateway_help_lines
+        from satanclaw_cli.commands import gateway_help_lines
         lines = [
-            "📖 **Satan Commands**\n",
+            "📖 **SatanClaw Commands**\n",
             *gateway_help_lines(),
         ]
         try:
@@ -3154,7 +3154,7 @@ class GatewayRunner:
 
     async def _handle_commands_command(self, event: MessageEvent) -> str:
         """Handle /commands [page] - paginated list of all commands and skills."""
-        from satan_cli.commands import gateway_help_lines
+        from satanclaw_cli.commands import gateway_help_lines
 
         raw_args = event.get_command_args().strip()
         if raw_args:
@@ -3208,7 +3208,7 @@ class GatewayRunner:
     async def _handle_provider_command(self, event: MessageEvent) -> str:
         """Handle /provider command - show available providers."""
         import yaml
-        from satan_cli.models import (
+        from satanclaw_cli.models import (
             list_available_providers,
             normalize_provider,
             _PROVIDER_LABELS,
@@ -3216,7 +3216,7 @@ class GatewayRunner:
 
         # Resolve current provider from config
         current_provider = "openrouter"
-        config_path = _satan_home / 'config.yaml'
+        config_path = _satanclaw_home / 'config.yaml'
         try:
             if config_path.exists():
                 with open(config_path, encoding="utf-8") as f:
@@ -3230,7 +3230,7 @@ class GatewayRunner:
         current_provider = normalize_provider(current_provider)
         if current_provider == "auto":
             try:
-                from satan_cli.auth import resolve_provider as _resolve_provider
+                from satanclaw_cli.auth import resolve_provider as _resolve_provider
                 current_provider = _resolve_provider(current_provider)
             except Exception:
                 current_provider = "openrouter"
@@ -3258,7 +3258,7 @@ class GatewayRunner:
 
         lines.append("")
         lines.append("Switch: `/model provider:model-name`")
-        lines.append("Setup: `satan setup`")
+        lines.append("Setup: `satanclaw setup`")
         return "\n".join(lines)
     
     async def _handle_personality_command(self, event: MessageEvent) -> str:
@@ -3266,7 +3266,7 @@ class GatewayRunner:
         import yaml
 
         args = event.get_command_args().strip().lower()
-        config_path = _satan_home / 'config.yaml'
+        config_path = _satanclaw_home / 'config.yaml'
 
         try:
             if config_path.exists():
@@ -3281,7 +3281,7 @@ class GatewayRunner:
             personalities = {}
 
         if not personalities:
-            return "No personalities configured in `~/.satan/config.yaml`"
+            return "No personalities configured in `~/.satanclaw/config.yaml`"
 
         if not args:
             lines = ["🎭 **Available Personalities**\n"]
@@ -3407,7 +3407,7 @@ class GatewayRunner:
         # Save to config.yaml
         try:
             import yaml
-            config_path = _satan_home / 'config.yaml'
+            config_path = _satanclaw_home / 'config.yaml'
             user_config = {}
             if config_path.exists():
                 with open(config_path, encoding="utf-8") as f:
@@ -3545,8 +3545,8 @@ class GatewayRunner:
             if "pynacl" in err_lower or "nacl" in err_lower or "davey" in err_lower:
                 return (
                     "Voice dependencies are missing (PyNaCl / davey). "
-                    "Install or reinstall Satan with the messaging extra, e.g. "
-                    "`pip install satan-agent[messaging]`."
+                    "Install or reinstall SatanClaw with the messaging extra, e.g. "
+                    "`pip install satanclaw-agent[messaging]`."
                 )
             return f"Failed to join voice channel: {e}"
 
@@ -3715,7 +3715,7 @@ class GatewayRunner:
             # Use .mp3 extension so edge-tts conversion to opus works correctly.
             # The TTS tool may convert to .ogg — use file_path from result.
             audio_path = os.path.join(
-                tempfile.gettempdir(), "satan_voice",
+                tempfile.gettempdir(), "satanclaw_voice",
                 f"tts_reply_{_uuid.uuid4().hex[:12]}.mp3",
             )
             os.makedirs(os.path.dirname(audio_path), exist_ok=True)
@@ -3842,7 +3842,7 @@ class GatewayRunner:
         cp_cfg = {}
         try:
             import yaml as _y
-            _cfg_path = _satan_home / "config.yaml"
+            _cfg_path = _satanclaw_home / "config.yaml"
             if _cfg_path.exists():
                 with open(_cfg_path, encoding="utf-8") as _f:
                     _data = _y.safe_load(_f) or {}
@@ -3949,7 +3949,7 @@ class GatewayRunner:
             model = _resolve_gateway_model(user_config)
             platform_key = _platform_config_key(source.platform)
 
-            from satan_cli.tools_config import _get_platform_tools
+            from satanclaw_cli.tools_config import _get_platform_tools
             enabled_toolsets = sorted(_get_platform_tools(user_config, platform_key))
 
             pr = self._provider_routing
@@ -4223,7 +4223,7 @@ class GatewayRunner:
         import yaml
 
         args = event.get_command_args().strip().lower()
-        config_path = _satan_home / "config.yaml"
+        config_path = _satanclaw_home / "config.yaml"
         self._reasoning_config = self._load_reasoning_config()
         self._show_reasoning = self._load_show_reasoning()
 
@@ -4313,7 +4313,7 @@ class GatewayRunner:
         """
         import yaml
 
-        config_path = _satan_home / "config.yaml"
+        config_path = _satanclaw_home / "config.yaml"
 
         # --- check config gate ------------------------------------------------
         try:
@@ -4625,7 +4625,7 @@ class GatewayRunner:
                     i += 1
 
         try:
-            from satan_state import SessionDB
+            from satanclaw_state import SessionDB
             from agent.insights import InsightsEngine
 
             loop = _asyncio.get_event_loop()
@@ -4809,10 +4809,10 @@ class GatewayRunner:
         return f"❌ Command{'s' if count > 1 else ''} denied{count_msg}."
 
     async def _handle_update_command(self, event: MessageEvent) -> str:
-        """Handle /update command — update Satan Agent to the latest version.
+        """Handle /update command — update SatanClaw Agent to the latest version.
 
-        Spawns ``satan update`` in a detached session (via ``setsid``) so it
-        survives the gateway restart that ``satan update`` may trigger. Marker
+        Spawns ``satanclaw update`` in a detached session (via ``setsid``) so it
+        survives the gateway restart that ``satanclaw update`` may trigger. Marker
         files are written so either the current gateway process or the next one
         can notify the user when the update finishes.
         """
@@ -4820,10 +4820,10 @@ class GatewayRunner:
         import shutil
         import subprocess
         from datetime import datetime
-        from satan_cli.config import is_managed, format_managed_message
+        from satanclaw_cli.config import is_managed, format_managed_message
 
         if is_managed():
-            return f"✗ {format_managed_message('update Satan Agent')}"
+            return f"✗ {format_managed_message('update SatanClaw Agent')}"
 
         project_root = Path(__file__).parent.parent.resolve()
         git_dir = project_root / '.git'
@@ -4831,18 +4831,18 @@ class GatewayRunner:
         if not git_dir.exists():
             return "✗ Not a git repository — cannot update."
 
-        satan_cmd = _resolve_satan_bin()
-        if not satan_cmd:
+        satanclaw_cmd = _resolve_satanclaw_bin()
+        if not satanclaw_cmd:
             return (
-                "✗ Could not locate the `satan` command. "
-                "Satan is running, but the update command could not find the "
+                "✗ Could not locate the `satanclaw` command. "
+                "SatanClaw is running, but the update command could not find the "
                 "executable on PATH or via the current Python interpreter. "
-                "Try running `satan update` manually in your terminal."
+                "Try running `satanclaw update` manually in your terminal."
             )
 
-        pending_path = _satan_home / ".update_pending.json"
-        output_path = _satan_home / ".update_output.txt"
-        exit_code_path = _satan_home / ".update_exit_code"
+        pending_path = _satanclaw_home / ".update_pending.json"
+        output_path = _satanclaw_home / ".update_output.txt"
+        exit_code_path = _satanclaw_home / ".update_exit_code"
         pending = {
             "platform": event.source.platform.value,
             "chat_id": event.source.chat_id,
@@ -4852,12 +4852,12 @@ class GatewayRunner:
         pending_path.write_text(json.dumps(pending))
         exit_code_path.unlink(missing_ok=True)
 
-        # Spawn `satan update` detached so it survives gateway restart.
+        # Spawn `satanclaw update` detached so it survives gateway restart.
         # Use setsid for portable session detach (works under system services
         # where systemd-run --user fails due to missing D-Bus session).
-        satan_cmd_str = " ".join(shlex.quote(part) for part in satan_cmd)
+        satanclaw_cmd_str = " ".join(shlex.quote(part) for part in satanclaw_cmd)
         update_cmd = (
-            f"{satan_cmd_str} update > {shlex.quote(str(output_path))} 2>&1; "
+            f"{satanclaw_cmd_str} update > {shlex.quote(str(output_path))} 2>&1; "
             f"status=$?; printf '%s' \"$status\" > {shlex.quote(str(exit_code_path))}"
         )
         try:
@@ -4884,7 +4884,7 @@ class GatewayRunner:
             return f"✗ Failed to start update: {e}"
 
         self._schedule_update_notification_watch()
-        return "⚕ Starting Satan update… I'll notify you when it's done."
+        return "⚕ Starting SatanClaw update… I'll notify you when it's done."
 
     def _schedule_update_notification_watch(self) -> None:
         """Ensure a background task is watching for update completion."""
@@ -4904,10 +4904,10 @@ class GatewayRunner:
         poll_interval: float = 2.0,
         timeout: float = 1800.0,
     ) -> None:
-        """Wait for ``satan update`` to finish, then send its notification."""
-        pending_path = _satan_home / ".update_pending.json"
-        claimed_path = _satan_home / ".update_pending.claimed.json"
-        exit_code_path = _satan_home / ".update_exit_code"
+        """Wait for ``satanclaw update`` to finish, then send its notification."""
+        pending_path = _satanclaw_home / ".update_pending.json"
+        claimed_path = _satanclaw_home / ".update_pending.claimed.json"
+        exit_code_path = _satanclaw_home / ".update_exit_code"
         loop = asyncio.get_running_loop()
         deadline = loop.time() + timeout
 
@@ -4931,10 +4931,10 @@ class GatewayRunner:
         import json
         import re as _re
 
-        pending_path = _satan_home / ".update_pending.json"
-        claimed_path = _satan_home / ".update_pending.claimed.json"
-        output_path = _satan_home / ".update_output.txt"
-        exit_code_path = _satan_home / ".update_exit_code"
+        pending_path = _satanclaw_home / ".update_pending.json"
+        claimed_path = _satanclaw_home / ".update_pending.claimed.json"
+        output_path = _satanclaw_home / ".update_output.txt"
+        exit_code_path = _satanclaw_home / ".update_exit_code"
 
         if not pending_path.exists() and not claimed_path.exists():
             return False
@@ -4981,14 +4981,14 @@ class GatewayRunner:
                     if len(output) > 3500:
                         output = "…" + output[-3500:]
                     if exit_code == 0:
-                        msg = f"✅ Satan update finished.\n\n```\n{output}\n```"
+                        msg = f"✅ SatanClaw update finished.\n\n```\n{output}\n```"
                     else:
-                        msg = f"❌ Satan update failed.\n\n```\n{output}\n```"
+                        msg = f"❌ SatanClaw update failed.\n\n```\n{output}\n```"
                 else:
                     if exit_code == 0:
-                        msg = "✅ Satan update finished successfully."
+                        msg = "✅ SatanClaw update finished successfully."
                     else:
-                        msg = "❌ Satan update failed. Check the gateway logs or run `satan update` manually for details."
+                        msg = "❌ SatanClaw update failed. Check the gateway logs or run `satanclaw update` manually for details."
                 await adapter.send(chat_id, msg)
                 logger.info(
                     "Sent post-update notification to %s:%s (exit=%s)",
@@ -5110,8 +5110,8 @@ class GatewayRunner:
             disabled_note = "[The user sent voice message(s), but transcription is disabled in config."
             if self._has_setup_skill():
                 disabled_note += (
-                    " You have a skill called satan-agent-setup that can help "
-                    "users configure Satan features including voice, tools, and more."
+                    " You have a skill called satanclaw-agent-setup that can help "
+                    "users configure SatanClaw features including voice, tools, and more."
                 )
             disabled_note += "]"
             if user_text:
@@ -5148,8 +5148,8 @@ class GatewayRunner:
                         )
                         if self._has_setup_skill():
                             _no_stt_note += (
-                                " You have a skill called satan-agent-setup "
-                                "that can help users configure Satan features "
+                                " You have a skill called satanclaw-agent-setup "
+                                "that can help users configure SatanClaw features "
                                 "including voice, tools, and more."
                             )
                         _no_stt_note += "]"
@@ -5346,7 +5346,7 @@ class GatewayRunner:
         user_config = _load_gateway_config()
         platform_key = _platform_config_key(source.platform)
 
-        from satan_cli.tools_config import _get_platform_tools
+        from satanclaw_cli.tools_config import _get_platform_tools
         enabled_toolsets = sorted(_get_platform_tools(user_config, platform_key))
 
         # Apply tool preview length config (0 = no limit)
@@ -6201,7 +6201,7 @@ def _start_cron_ticker(stop_event: threading.Event, adapters=None, interval: int
     Background thread that ticks the cron scheduler at a regular interval.
     
     Runs inside the gateway process so cronjobs fire automatically without
-    needing a separate `satan cron daemon` or system cron entry.
+    needing a separate `satanclaw cron daemon` or system cron entry.
 
     Also refreshes the channel directory every 5 minutes and prunes the
     image/audio/document cache once per hour.
@@ -6315,17 +6315,17 @@ async def start_gateway(config: Optional[GatewayConfig] = None, replace: bool = 
             except Exception:
                 pass
         else:
-            satan_home = str(get_satan_home())
+            satanclaw_home = str(get_satanclaw_home())
             logger.error(
                 "Another gateway instance is already running (PID %d, HERMES_HOME=%s). "
-                "Use 'satan gateway restart' to replace it, or 'satan gateway stop' first.",
-                existing_pid, satan_home,
+                "Use 'satanclaw gateway restart' to replace it, or 'satanclaw gateway stop' first.",
+                existing_pid, satanclaw_home,
             )
             print(
                 f"\n❌ Gateway already running (PID {existing_pid}).\n"
-                f"   Use 'satan gateway restart' to replace it,\n"
-                f"   or 'satan gateway stop' to kill it first.\n"
-                f"   Or use 'satan gateway run --replace' to auto-replace.\n"
+                f"   Use 'satanclaw gateway restart' to replace it,\n"
+                f"   or 'satanclaw gateway stop' to kill it first.\n"
+                f"   Or use 'satanclaw gateway run --replace' to auto-replace.\n"
             )
             return False
 
@@ -6337,7 +6337,7 @@ async def start_gateway(config: Optional[GatewayConfig] = None, replace: bool = 
         pass
 
     # Configure rotating file log so gateway output is persisted for debugging
-    log_dir = _satan_home / 'logs'
+    log_dir = _satanclaw_home / 'logs'
     log_dir.mkdir(parents=True, exist_ok=True)
     file_handler = RotatingFileHandler(
         log_dir / 'gateway.log',
@@ -6439,7 +6439,7 @@ def main():
     """CLI entry point for the gateway."""
     import argparse
     
-    parser = argparse.ArgumentParser(description="Satan Gateway - Multi-platform messaging")
+    parser = argparse.ArgumentParser(description="SatanClaw Gateway - Multi-platform messaging")
     parser.add_argument("--config", "-c", help="Path to gateway config file")
     parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
     

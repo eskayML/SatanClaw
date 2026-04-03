@@ -1,4 +1,4 @@
-"""Tests for the top-level `./satan` launcher script."""
+"""Tests for the top-level `./satanclaw` launcher script."""
 
 import runpy
 import sys
@@ -7,17 +7,17 @@ from pathlib import Path
 
 
 def test_launcher_delegates_to_argparse_entrypoint(monkeypatch):
-    """`./satan` should use `satan_cli.main`, not the legacy Fire wrapper."""
-    launcher_path = Path(__file__).resolve().parents[2] / "satan"
+    """`./satanclaw` should use `satanclaw_cli.main`, not the legacy Fire wrapper."""
+    launcher_path = Path(__file__).resolve().parents[2] / "satanclaw"
     called = []
 
-    fake_main_module = types.ModuleType("satan_cli.main")
+    fake_main_module = types.ModuleType("satanclaw_cli.main")
 
     def fake_main():
-        called.append("satan_cli.main")
+        called.append("satanclaw_cli.main")
 
     fake_main_module.main = fake_main
-    monkeypatch.setitem(sys.modules, "satan_cli.main", fake_main_module)
+    monkeypatch.setitem(sys.modules, "satanclaw_cli.main", fake_main_module)
 
     fake_cli_module = types.ModuleType("cli")
 
@@ -39,4 +39,4 @@ def test_launcher_delegates_to_argparse_entrypoint(monkeypatch):
 
     runpy.run_path(str(launcher_path), run_name="__main__")
 
-    assert called == ["satan_cli.main"]
+    assert called == ["satanclaw_cli.main"]

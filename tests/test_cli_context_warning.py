@@ -10,23 +10,23 @@ import pytest
 @pytest.fixture
 def _isolate(tmp_path, monkeypatch):
     """Isolate HERMES_HOME so tests don't touch real config."""
-    home = tmp_path / ".satan"
+    home = tmp_path / ".satanclaw"
     home.mkdir()
     monkeypatch.setenv("HERMES_HOME", str(home))
 
 
 @pytest.fixture
 def cli_obj(_isolate):
-    """Create a minimal SatanCLI instance for banner testing."""
+    """Create a minimal SatanClawCLI instance for banner testing."""
     with patch("cli.load_cli_config", return_value={
         "display": {"tool_progress": "new"},
         "terminal": {},
     }), patch("cli.get_tool_definitions", return_value=[]), \
          patch("cli.build_welcome_banner"):
-        from cli import SatanCLI
-        obj = SatanCLI.__new__(SatanCLI)
+        from cli import SatanClawCLI
+        obj = SatanClawCLI.__new__(SatanClawCLI)
         obj.model = "test-model"
-        obj.enabled_toolsets = ["satan-core"]
+        obj.enabled_toolsets = ["satanclaw-core"]
         obj.compact = False
         obj.console = MagicMock()
         obj.session_id = None

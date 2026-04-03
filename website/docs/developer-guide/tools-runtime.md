@@ -6,7 +6,7 @@ description: "Runtime behavior of the tool registry, toolsets, dispatch, and ter
 
 # Tools Runtime
 
-Satan tools are self-registering functions grouped into toolsets and executed through a central registry/dispatch system.
+SatanClaw tools are self-registering functions grouped into toolsets and executed through a central registry/dispatch system.
 
 Primary files:
 
@@ -77,7 +77,7 @@ Each import triggers the module's `registry.register()` calls. Errors in optiona
 After core tool discovery, MCP tools and plugin tools are also discovered:
 
 1. **MCP tools** — `tools.mcp_tool.discover_mcp_tools()` reads MCP server config and registers tools from external servers.
-2. **Plugin tools** — `satan_cli.plugins.discover_plugins()` loads user/project/pip plugins that may register additional tools.
+2. **Plugin tools** — `satanclaw_cli.plugins.discover_plugins()` loads user/project/pip plugins that may register additional tools.
 
 ## Tool availability checking (`check_fn`)
 
@@ -107,12 +107,12 @@ Key behaviors:
 
 ## Toolset resolution
 
-Toolsets are named bundles of tools. Satan resolves them through:
+Toolsets are named bundles of tools. SatanClaw resolves them through:
 
 - explicit enabled/disabled toolset lists
-- platform presets (`satan-cli`, `satan-telegram`, etc.)
+- platform presets (`satanclaw-cli`, `satanclaw-telegram`, etc.)
 - dynamic MCP toolsets
-- curated special-purpose sets like `satan-acp`
+- curated special-purpose sets like `satanclaw-acp`
 
 ### How `get_tool_definitions()` filters tools
 

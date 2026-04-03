@@ -18,7 +18,7 @@ Features:
 
 Cloud sandbox note:
 - Persistent filesystems preserve working state across sandbox recreation
-- Persistent filesystems do NOT guarantee the same live sandbox or long-running processes survive cleanup, idle reaping, or Satan exit
+- Persistent filesystems do NOT guarantee the same live sandbox or long-running processes survive cleanup, idle reaping, or SatanClaw exit
 
 Usage:
     from terminal_tool import terminal_tool
@@ -52,7 +52,7 @@ logger = logging.getLogger(__name__)
 # long-running subprocesses immediately instead of blocking until timeout.
 # ---------------------------------------------------------------------------
 from tools.interrupt import is_interrupted, _interrupt_event  # noqa: F401 — re-exported
-# display_satan_home imported lazily at call site (stale-module safety during satan update)
+# display_satanclaw_home imported lazily at call site (stale-module safety during satanclaw update)
 
 
 def ensure_minisweagent_on_path(_repo_root: Path | None = None) -> None:
@@ -83,10 +83,10 @@ def _check_disk_usage_warning():
     try:
         scratch_dir = _get_scratch_dir()
 
-        # Get total size of satan directories
+        # Get total size of satanclaw directories
         total_bytes = 0
         import glob
-        for path in glob.glob(str(scratch_dir / "satan-*")):
+        for path in glob.glob(str(scratch_dir / "satanclaw-*")):
             for f in Path(path).rglob('*'):
                 if f.is_file():
                     try:
@@ -173,7 +173,7 @@ def _handle_sudo_failure(output: str, env_type: str) -> str:
     
     for failure in sudo_failures:
         if failure in output:
-            from satan_constants import display_satan_home as _dhh
+            from satanclaw_constants import display_satanclaw_home as _dhh
             return output + f"\n\n💡 Tip: To enable sudo over messaging, add SUDO_PASSWORD to {_dhh()}/.env on the agent machine."
     
     return output
@@ -463,7 +463,7 @@ def _parse_env_var(name: str, default: str, converter=int, type_label: str = "in
     except (ValueError, json.JSONDecodeError):
         raise ValueError(
             f"Invalid value for {name}: {raw!r} (expected {type_label}). "
-            f"Check ~/.satan/.env or environment variables."
+            f"Check ~/.satanclaw/.env or environment variables."
         )
 
 
@@ -800,7 +800,7 @@ def get_active_environments_info() -> Dict[str, Any]:
     total_size = 0
     for task_id in _active_environments.keys():
         scratch_dir = _get_scratch_dir()
-        pattern = f"satan-*{task_id[:8]}*"
+        pattern = f"satanclaw-*{task_id[:8]}*"
         import glob
         for path in glob.glob(str(scratch_dir / pattern)):
             try:
@@ -830,7 +830,7 @@ def cleanup_all_environments():
     # Also clean any orphaned directories
     scratch_dir = _get_scratch_dir()
     import glob
-    for path in glob.glob(str(scratch_dir / "satan-*")):
+    for path in glob.glob(str(scratch_dir / "satanclaw-*")):
         try:
             shutil.rmtree(path, ignore_errors=True)
             logger.info("Removed orphaned: %s", path)
@@ -1390,7 +1390,7 @@ if __name__ == "__main__":
     print(f"  TERMINAL_MODAL_IMAGE: {os.getenv('TERMINAL_MODAL_IMAGE', default_img)}")
     print(f"  TERMINAL_DAYTONA_IMAGE: {os.getenv('TERMINAL_DAYTONA_IMAGE', default_img)}")
     print(f"  TERMINAL_CWD: {os.getenv('TERMINAL_CWD', os.getcwd())}")
-    from satan_constants import display_satan_home as _dhh
+    from satanclaw_constants import display_satanclaw_home as _dhh
     print(f"  TERMINAL_SANDBOX_DIR: {os.getenv('TERMINAL_SANDBOX_DIR', f'{_dhh()}/sandboxes')}")
     print(f"  TERMINAL_TIMEOUT: {os.getenv('TERMINAL_TIMEOUT', '60')}")
     print(f"  TERMINAL_LIFETIME_SECONDS: {os.getenv('TERMINAL_LIFETIME_SECONDS', '300')}")

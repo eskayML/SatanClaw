@@ -6,7 +6,7 @@ description: "How the ACP adapter works: lifecycle, sessions, event bridge, appr
 
 # ACP Internals
 
-The ACP adapter wraps Satan' synchronous `AIAgent` in an async JSON-RPC stdio server.
+The ACP adapter wraps SatanClaw' synchronous `AIAgent` in an async JSON-RPC stdio server.
 
 Key implementation files:
 
@@ -22,11 +22,11 @@ Key implementation files:
 ## Boot flow
 
 ```text
-satan acp / satan-acp / python -m acp_adapter
+satanclaw acp / satanclaw-acp / python -m acp_adapter
   -> acp_adapter.entry.main()
-  -> load ~/.satan/.env
+  -> load ~/.satanclaw/.env
   -> configure stderr logging
-  -> construct SatanACPAgent
+  -> construct SatanClawACPAgent
   -> acp.run_agent(agent)
 ```
 
@@ -34,7 +34,7 @@ Stdout is reserved for ACP JSON-RPC transport. Human-readable logs go to stderr.
 
 ## Major components
 
-### `SatanACPAgent`
+### `SatanClawACPAgent`
 
 `acp_adapter/server.py` implements the ACP agent protocol.
 
@@ -92,15 +92,15 @@ asyncio.run_coroutine_threadsafe(...)
 
 Mapping:
 
-- `allow_once` -> Satan `once`
-- `allow_always` -> Satan `always`
-- reject options -> Satan `deny`
+- `allow_once` -> SatanClaw `once`
+- `allow_always` -> SatanClaw `always`
+- reject options -> SatanClaw `deny`
 
 Timeouts and bridge failures deny by default.
 
 ### Tool rendering helpers
 
-`acp_adapter/tools.py` maps Satan tools to ACP tool kinds and builds editor-facing content.
+`acp_adapter/tools.py` maps SatanClaw tools to ACP tool kinds and builds editor-facing content.
 
 Examples:
 
@@ -114,7 +114,7 @@ Examples:
 ```text
 new_session(cwd)
   -> create SessionState
-  -> create AIAgent(platform="acp", enabled_toolsets=["satan-acp"])
+  -> create AIAgent(platform="acp", enabled_toolsets=["satanclaw-acp"])
   -> bind task_id/session_id to cwd override
 
 prompt(..., session_id)
@@ -142,12 +142,12 @@ prompt(..., session_id)
 
 ACP does not implement its own auth store.
 
-Instead it reuses Satan' runtime resolver:
+Instead it reuses SatanClaw' runtime resolver:
 
 - `acp_adapter/auth.py`
-- `satan_cli/runtime_provider.py`
+- `satanclaw_cli/runtime_provider.py`
 
-So ACP advertises and uses the currently configured Satan provider/credentials.
+So ACP advertises and uses the currently configured SatanClaw provider/credentials.
 
 ## Working directory binding
 
@@ -177,6 +177,6 @@ ACP temporarily installs an approval callback on the terminal tool during prompt
 ## Related files
 
 - `tests/acp/` — ACP test suite
-- `toolsets.py` — `satan-acp` toolset definition
-- `satan_cli/main.py` — `satan acp` CLI subcommand
-- `pyproject.toml` — `[acp]` optional dependency + `satan-acp` script
+- `toolsets.py` — `satanclaw-acp` toolset definition
+- `satanclaw_cli/main.py` — `satanclaw acp` CLI subcommand
+- `pyproject.toml` — `[acp]` optional dependency + `satanclaw-acp` script

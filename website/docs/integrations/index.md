@@ -6,23 +6,23 @@ sidebar_position: 0
 
 # Integrations
 
-Satan Agent connects to external systems for AI inference, tool servers, IDE workflows, programmatic access, and more. These integrations extend what Satan can do and where it can run.
+SatanClaw Agent connects to external systems for AI inference, tool servers, IDE workflows, programmatic access, and more. These integrations extend what SatanClaw can do and where it can run.
 
 ## AI Providers & Routing
 
-Satan supports multiple AI inference providers out of the box. Use `satan model` to configure interactively, or set them in `config.yaml`.
+SatanClaw supports multiple AI inference providers out of the box. Use `satanclaw model` to configure interactively, or set them in `config.yaml`.
 
-- **[AI Providers](/docs/user-guide/features/provider-routing)** — OpenRouter, Anthropic, OpenAI, Google, and any OpenAI-compatible endpoint. Satan auto-detects capabilities like vision, streaming, and tool use per provider.
+- **[AI Providers](/docs/user-guide/features/provider-routing)** — OpenRouter, Anthropic, OpenAI, Google, and any OpenAI-compatible endpoint. SatanClaw auto-detects capabilities like vision, streaming, and tool use per provider.
 - **[Provider Routing](/docs/user-guide/features/provider-routing)** — Fine-grained control over which underlying providers handle your OpenRouter requests. Optimize for cost, speed, or quality with sorting, whitelists, blacklists, and explicit priority ordering.
 - **[Fallback Providers](/docs/user-guide/features/fallback-providers)** — Automatic failover to backup LLM providers when your primary model encounters errors. Includes primary model fallback and independent auxiliary task fallback for vision, compression, and web extraction.
 
 ## Tool Servers (MCP)
 
-- **[MCP Servers](/docs/user-guide/features/mcp)** — Connect Satan to external tool servers via Model Context Protocol. Access tools from GitHub, databases, file systems, browser stacks, internal APIs, and more without writing native Satan tools. Supports both stdio and SSE transports, per-server tool filtering, and capability-aware resource/prompt registration.
+- **[MCP Servers](/docs/user-guide/features/mcp)** — Connect SatanClaw to external tool servers via Model Context Protocol. Access tools from GitHub, databases, file systems, browser stacks, internal APIs, and more without writing native SatanClaw tools. Supports both stdio and SSE transports, per-server tool filtering, and capability-aware resource/prompt registration.
 
 ## Web Search Backends
 
-The `web_search`, `web_extract`, and `web_crawl` tools support four backend providers, configured via `config.yaml` or `satan tools`:
+The `web_search`, `web_extract`, and `web_crawl` tools support four backend providers, configured via `config.yaml` or `satanclaw tools`:
 
 | Backend | Env Var | Search | Extract | Crawl |
 |---------|---------|--------|---------|-------|
@@ -42,7 +42,7 @@ If `web.backend` is not set, the backend is auto-detected from whichever API key
 
 ## Browser Automation
 
-Satan includes full browser automation with multiple backend options for navigating websites, filling forms, and extracting information:
+SatanClaw includes full browser automation with multiple backend options for navigating websites, filling forms, and extracting information:
 
 - **Browserbase** — Managed cloud browsers with anti-bot tooling, CAPTCHA solving, and residential proxies
 - **Browser Use** — Alternative cloud browser provider
@@ -66,15 +66,15 @@ Speech-to-text uses Whisper for voice message transcription on Telegram, Discord
 
 ## IDE & Editor Integration
 
-- **[IDE Integration (ACP)](/docs/user-guide/features/acp)** — Use Satan Agent inside ACP-compatible editors such as VS Code, Zed, and JetBrains. Satan runs as an ACP server, rendering chat messages, tool activity, file diffs, and terminal commands inside your editor.
+- **[IDE Integration (ACP)](/docs/user-guide/features/acp)** — Use SatanClaw Agent inside ACP-compatible editors such as VS Code, Zed, and JetBrains. SatanClaw runs as an ACP server, rendering chat messages, tool activity, file diffs, and terminal commands inside your editor.
 
 ## Programmatic Access
 
-- **[API Server](/docs/user-guide/features/api-server)** — Expose Satan as an OpenAI-compatible HTTP endpoint. Any frontend that speaks the OpenAI format — Open WebUI, LobeChat, LibreChat, NextChat, ChatBox — can connect and use Satan as a backend with its full toolset.
+- **[API Server](/docs/user-guide/features/api-server)** — Expose SatanClaw as an OpenAI-compatible HTTP endpoint. Any frontend that speaks the OpenAI format — Open WebUI, LobeChat, LibreChat, NextChat, ChatBox — can connect and use SatanClaw as a backend with its full toolset.
 
 ## Memory & Personalization
 
-- **[Honcho Memory](/docs/user-guide/features/honcho)** — AI-native persistent memory for cross-session user modeling and personalization. Honcho adds deep user modeling via dialectic reasoning on top of Satan's built-in memory system.
+- **[Honcho Memory](/docs/user-guide/features/honcho)** — AI-native persistent memory for cross-session user modeling and personalization. Honcho adds deep user modeling via dialectic reasoning on top of SatanClaw's built-in memory system.
 
 ## Training & Evaluation
 

@@ -77,7 +77,7 @@ class TestSkillViewRegistersPassthrough:
         )
         monkeypatch.setattr("tools.skills_tool.SKILLS_DIR", tmp_path)
 
-        from satan_cli.config import save_env_value
+        from satanclaw_cli.config import save_env_value
 
         save_env_value("TENOR_API_KEY", "persisted-value-123")
         monkeypatch.delenv("TENOR_API_KEY", raising=False)

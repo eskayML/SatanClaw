@@ -170,11 +170,11 @@ class HonchoMemoryProvider(MemoryProvider):
         except Exception:
             return False
 
-    def save_config(self, values, satan_home):
+    def save_config(self, values, satanclaw_home):
         """Write config to $HERMES_HOME/honcho.json (Honcho SDK native format)."""
         import json
         from pathlib import Path
-        config_path = Path(satan_home) / "honcho.json"
+        config_path = Path(satanclaw_home) / "honcho.json"
         existing = {}
         if config_path.exists():
             try:
@@ -235,9 +235,9 @@ class HonchoMemoryProvider(MemoryProvider):
 
             # ----- Port #1969: aiPeer sync from SOUL.md -----
             try:
-                satan_home = kwargs.get("satan_home", "")
-                if satan_home and not cfg.raw.get("aiPeer"):
-                    soul_path = Path(satan_home) / "SOUL.md"
+                satanclaw_home = kwargs.get("satanclaw_home", "")
+                if satanclaw_home and not cfg.raw.get("aiPeer"):
+                    soul_path = Path(satanclaw_home) / "SOUL.md"
                     if soul_path.exists():
                         soul_text = soul_path.read_text(encoding="utf-8").strip()
                         if soul_text:
@@ -312,7 +312,7 @@ class HonchoMemoryProvider(MemoryProvider):
         self._session_key = (
             cfg.resolve_session_name(session_title=session_title, session_id=session_id)
             or session_id
-            or "satan-default"
+            or "satanclaw-default"
         )
         logger.debug("Honcho session key resolved: %s", self._session_key)
 
@@ -323,8 +323,8 @@ class HonchoMemoryProvider(MemoryProvider):
         # ----- B6: Memory file migration (one-time, for new sessions) -----
         try:
             if not session.messages:
-                from satan_constants import get_satan_home
-                mem_dir = str(get_satan_home() / "memories")
+                from satanclaw_constants import get_satanclaw_home
+                mem_dir = str(get_satanclaw_home() / "memories")
                 self._manager.migrate_memory_files(self._session_key, mem_dir)
                 logger.debug("Honcho memory file migration attempted for new session: %s", self._session_key)
         except Exception as e:
@@ -354,7 +354,7 @@ class HonchoMemoryProvider(MemoryProvider):
         try:
             self._do_session_init(
                 self._config,
-                self._lazy_init_session_id or "satan-default",
+                self._lazy_init_session_id or "satanclaw-default",
                 **self._lazy_init_kwargs,
             )
             # Clear lazy refs

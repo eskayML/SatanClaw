@@ -1,7 +1,7 @@
 """Tests for Discord thread participation persistence.
 
 Verifies that _bot_participated_threads survives adapter restarts by
-being persisted to ~/.satan/discord_threads.json.
+being persisted to ~/.satanclaw/discord_threads.json.
 """
 
 import json
@@ -73,7 +73,7 @@ class TestDiscordThreadPersistence:
         adapter = self._make_adapter(tmp_path)
         assert adapter._bot_participated_threads == set()
 
-    def test_missing_satan_home_does_not_crash(self, tmp_path):
+    def test_missing_satanclaw_home_does_not_crash(self, tmp_path):
         """Load/save tolerate missing directories."""
         fake_home = tmp_path / "nonexistent" / "deep"
         with patch.dict(os.environ, {"HERMES_HOME": str(fake_home)}):

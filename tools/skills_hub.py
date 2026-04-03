@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Skills Hub — Source adapters and hub state management for the Satan Skills Hub.
+Skills Hub — Source adapters and hub state management for the SatanClaw Skills Hub.
 
 This is a library module (not an agent tool). It provides:
   - GitHubAuth: Shared GitHub API authentication (PAT, gh CLI, GitHub App)
@@ -10,7 +10,7 @@ This is a library module (not an agent tool). It provides:
   - HubLockFile: Track provenance of installed hub skills
   - Hub state directory management (quarantine, audit log, taps, index cache)
 
-Used by satan_cli/skills_hub.py for CLI commands and the /skills slash command.
+Used by satanclaw_cli/skills_hub.py for CLI commands and the /skills slash command.
 """
 
 import hashlib
@@ -25,7 +25,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
-from satan_constants import get_satan_home
+from satanclaw_constants import get_satanclaw_home
 from typing import Any, Dict, List, Optional, Tuple, Union
 from urllib.parse import urlparse, urlunparse
 
@@ -43,7 +43,7 @@ logger = logging.getLogger(__name__)
 # Paths
 # ---------------------------------------------------------------------------
 
-HERMES_HOME = get_satan_home()
+HERMES_HOME = get_satanclaw_home()
 SKILLS_DIR = HERMES_HOME / "skills"
 HUB_DIR = SKILLS_DIR / ".hub"
 LOCK_FILE = HUB_DIR / "lock.json"
@@ -385,9 +385,9 @@ class GitHubSource(SkillSource):
         tags = []
         metadata = fm.get("metadata", {})
         if isinstance(metadata, dict):
-            satan_meta = metadata.get("satan", {})
-            if isinstance(satan_meta, dict):
-                tags = satan_meta.get("tags", [])
+            satanclaw_meta = metadata.get("satanclaw", {})
+            if isinstance(satanclaw_meta, dict):
+                tags = satanclaw_meta.get("tags", [])
         if not tags:
             raw_tags = fm.get("tags", [])
             tags = raw_tags if isinstance(raw_tags, list) else []
@@ -2080,7 +2080,7 @@ class LobeHubSource(SkillSource):
             f"name: {identifier}",
             f"description: {description[:500]}",
             "metadata:",
-            "  satan:",
+            "  satanclaw:",
             f"    tags: [{', '.join(str(t) for t in tag_list)}]",
             "  lobehub:",
             "    source: lobehub",
@@ -2108,14 +2108,14 @@ class OptionalSkillSource(SkillSource):
     """
     Fetch skills from the optional-skills/ directory shipped with the repo.
 
-    These skills are official (maintained by Nous Research) but not activated
+    These skills are official (maintained by Samuel Kalu) but not activated
     by default — they don't appear in the system prompt and aren't copied to
-    ~/.satan/skills/ during setup.  They are discoverable via the Skills Hub
+    ~/.satanclaw/skills/ during setup.  They are discoverable via the Skills Hub
     (search / install / inspect) and labelled "official" with "builtin" trust.
     """
 
     def __init__(self):
-        from satan_constants import get_optional_skills_dir
+        from satanclaw_constants import get_optional_skills_dir
 
         self._optional_dir = get_optional_skills_dir(
             Path(__file__).parent.parent / "optional-skills"
@@ -2239,9 +2239,9 @@ class OptionalSkillSource(SkillSource):
             tags = []
             meta_block = fm.get("metadata", {})
             if isinstance(meta_block, dict):
-                satan_meta = meta_block.get("satan", {})
-                if isinstance(satan_meta, dict):
-                    tags = satan_meta.get("tags", [])
+                satanclaw_meta = meta_block.get("satanclaw", {})
+                if isinstance(satanclaw_meta, dict):
+                    tags = satanclaw_meta.get("tags", [])
 
             rel_path = str(parent.relative_to(self._optional_dir))
 

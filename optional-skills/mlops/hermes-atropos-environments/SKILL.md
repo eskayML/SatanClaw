@@ -1,24 +1,24 @@
 ---
-name: satan-atropos-environments
-description: Build, test, and debug Satan Agent RL environments for Atropos training. Covers the SatanAgentBaseEnv interface, reward functions, agent loop integration, evaluation with tools, wandb logging, and the three CLI modes (serve/process/evaluate). Use when creating, reviewing, or fixing RL environments in the satan-agent repo.
+name: satanclaw-atropos-environments
+description: Build, test, and debug SatanClaw Agent RL environments for Atropos training. Covers the SatanClawAgentBaseEnv interface, reward functions, agent loop integration, evaluation with tools, wandb logging, and the three CLI modes (serve/process/evaluate). Use when creating, reviewing, or fixing RL environments in the satanclaw-agent repo.
 version: 1.1.0
-author: Satan Agent
+author: SatanClaw Agent
 license: MIT
 metadata:
-  satan:
+  satanclaw:
     tags: [atropos, rl, environments, training, reinforcement-learning, reward-functions]
     related_skills: [axolotl, grpo-rl-training, trl-fine-tuning, lm-evaluation-harness]
 ---
 
-# Satan Agent Atropos Environments
+# SatanClaw Agent Atropos Environments
 
-Guide for building RL environments in the satan-agent repo that integrate with the Atropos training framework.
+Guide for building RL environments in the satanclaw-agent repo that integrate with the Atropos training framework.
 
 ## Architecture Overview
 
 ```
 Atropos BaseEnv (atroposlib/envs/base.py)
-    └── SatanAgentBaseEnv (environments/satan_base_env.py)
+    └── SatanClawAgentBaseEnv (environments/satanclaw_base_env.py)
             ├── Handles agent loop orchestration
             ├── Handles tool resolution per group
             ├── Handles ToolContext for reward verification
@@ -27,16 +27,16 @@ Atropos BaseEnv (atroposlib/envs/base.py)
                                     compute_reward, evaluate, wandb_log
 ```
 
-Satan environments are special because they run a **multi-turn agent loop with tool calling** — not just single-turn completions. The base env handles the loop; you implement the task and scoring.
+SatanClaw environments are special because they run a **multi-turn agent loop with tool calling** — not just single-turn completions. The base env handles the loop; you implement the task and scoring.
 
 ## File Locations
 
 | File | Purpose |
 |------|---------|
-| `environments/satan_base_env.py` | Base class with agent loop + tool resolution |
-| `environments/agent_loop.py` | `SatanAgentLoop` + `AgentResult` dataclass |
+| `environments/satanclaw_base_env.py` | Base class with agent loop + tool resolution |
+| `environments/agent_loop.py` | `SatanClawAgentLoop` + `AgentResult` dataclass |
 | `environments/tool_context.py` | `ToolContext` for reward verification |
-| `environments/tool_call_parsers.py` | Phase 2 tool call parsers (satan, mistral, etc.) |
+| `environments/tool_call_parsers.py` | Phase 2 tool call parsers (satanclaw, mistral, etc.) |
 | `environments/your_env.py` | Your environment implementation |
 
 ## Inference Setup — Ask the User First
@@ -146,12 +146,12 @@ return 1.0 if result["exit_code"] == 0 else 0.0
 ### 5. `evaluate()` — Periodic evaluation with full agent loop
 
 **MUST use the full agent loop with tools**, not single-turn chat_completion.
-The whole point of satan-agent environments is agentic evaluation:
+The whole point of satanclaw-agent environments is agentic evaluation:
 
 ```python
 async def evaluate(self, *args, **kwargs) -> None:
     import time, uuid
-    from environments.agent_loop import SatanAgentLoop
+    from environments.agent_loop import SatanClawAgentLoop
     from environments.tool_context import ToolContext
 
     start_time = time.time()
@@ -165,7 +165,7 @@ async def evaluate(self, *args, **kwargs) -> None:
             messages.append({"role": "system", "content": self.config.system_prompt})
         messages.append({"role": "user", "content": self.format_prompt(item)})
 
-        agent = SatanAgentLoop(
+        agent = SatanClawAgentLoop(
             server=self.server,
             tool_schemas=tools,
             valid_tool_names=valid_names,
@@ -242,7 +242,7 @@ Config priority: CLI args > YAML file > config_init() defaults.
 
 1. **AgentResult has .messages, not .final_response** — Extract the final response by iterating reversed(result.messages) looking for the last assistant message with content.
 
-2. **evaluate() must use SatanAgentLoop, not chat_completion** — Single-turn chat_completion has no tools. The whole point of satan-agent benchmarks is agentic evaluation with tool use.
+2. **evaluate() must use SatanClawAgentLoop, not chat_completion** — Single-turn chat_completion has no tools. The whole point of satanclaw-agent benchmarks is agentic evaluation with tool use.
 
 3. **Don't call _llm_judge twice** — If compute_reward already calls it, extract the score from the buffer instead of calling judge separately in evaluate().
 
@@ -284,7 +284,7 @@ Weight correctness (0.6) + tool usage (0.2) + efficiency (0.2) + optional bonuse
 ## Minimum Implementation Checklist
 
 ```python
-class MyEnv(SatanAgentBaseEnv):
+class MyEnv(SatanClawAgentBaseEnv):
     name = "my-env"
     env_config_cls = MyEnvConfig
 

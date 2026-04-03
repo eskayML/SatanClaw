@@ -1,7 +1,7 @@
 {
-  "name": "satan-whatsapp-bridge",
+  "name": "satanclaw-whatsapp-bridge",
   "version": "1.0.0",
-  "description": "WhatsApp bridge for Satan Agent using Baileys",
+  "description": "WhatsApp bridge for SatanClaw Agent using Baileys",
   "private": true,
   "type": "module",
   "scripts": {

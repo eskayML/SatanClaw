@@ -7,7 +7,7 @@ sidebar_position: 6
 
 # Image Generation
 
-Satan Agent can generate images from text prompts using FAL.ai's **FLUX 2 Pro** model with automatic 2x upscaling via the **Clarity Upscaler** for enhanced quality.
+SatanClaw Agent can generate images from text prompts using FAL.ai's **FLUX 2 Pro** model with automatic 2x upscaling via the **Clarity Upscaler** for enhanced quality.
 
 ## Setup
 
@@ -19,7 +19,7 @@ Satan Agent can generate images from text prompts using FAL.ai's **FLUX 2 Pro** 
 ### Configure the Key
 
 ```bash
-# Add to ~/.satan/.env
+# Add to ~/.satanclaw/.env
 FAL_KEY=your-fal-api-key-here
 ```
 
@@ -35,7 +35,7 @@ The image generation tool is automatically available when `FAL_KEY` is set. No a
 
 ## How It Works
 
-When you ask Satan to generate an image:
+When you ask SatanClaw to generate an image:
 
 1. **Generation** — Your prompt is sent to the FLUX 2 Pro model (`fal-ai/flux-2-pro`)
 2. **Upscaling** — The generated image is automatically upscaled 2x using the Clarity Upscaler (`fal-ai/clarity-upscaler`)
@@ -45,7 +45,7 @@ If upscaling fails for any reason, the original image is returned as a fallback.
 
 ## Usage
 
-Simply ask Satan to create an image:
+Simply ask SatanClaw to create an image:
 
 ```
 Generate an image of a serene mountain landscape with cherry blossoms

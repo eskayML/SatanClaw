@@ -72,10 +72,10 @@ class TestParseFrontmatter:
 
     def test_nested_yaml(self):
         content = (
-            "---\nname: test\nmetadata:\n  satan:\n    tags: [a, b]\n---\n\nBody.\n"
+            "---\nname: test\nmetadata:\n  satanclaw:\n    tags: [a, b]\n---\n\nBody.\n"
         )
         fm, body = _parse_frontmatter(content)
-        assert fm["metadata"]["satan"]["tags"] == ["a", "b"]
+        assert fm["metadata"]["satanclaw"]["tags"] == ["a", "b"]
 
     def test_malformed_yaml_fallback(self):
         """Malformed YAML falls back to simple key:value parsing."""
@@ -361,7 +361,7 @@ class TestSkillView:
             _make_skill(
                 tmp_path,
                 "tagged",
-                frontmatter_extra="metadata:\n  satan:\n    tags: [fine-tuning, llm]\n",
+                frontmatter_extra="metadata:\n  satanclaw:\n    tags: [fine-tuning, llm]\n",
             )
             raw = skill_view("tagged")
         result = json.loads(raw)
@@ -824,7 +824,7 @@ class TestSkillViewPrerequisites:
                 "remote-ready",
                 frontmatter_extra="prerequisites:\n  env_vars: [PERSISTED_REMOTE_KEY]\n",
             )
-            from satan_cli.config import save_env_value
+            from satanclaw_cli.config import save_env_value
 
             save_env_value("PERSISTED_REMOTE_KEY", "persisted-value")
             monkeypatch.delenv("PERSISTED_REMOTE_KEY", raising=False)
@@ -976,7 +976,7 @@ class TestSkillViewPrerequisites:
 name: legacy-flat
 description: Legacy flat skill.
 metadata:
-  satan:
+  satanclaw:
     tags: [legacy, flat]
 required_environment_variables:
   - name: LEGACY_KEY
@@ -1009,7 +1009,7 @@ Do the legacy thing.
         monkeypatch.delenv("TENOR_API_KEY", raising=False)
 
         def fake_secret_callback(var_name, prompt, metadata=None):
-            from satan_cli.config import save_env_value
+            from satanclaw_cli.config import save_env_value
 
             save_env_value(var_name, "captured-value")
             return {
@@ -1036,7 +1036,7 @@ Do the legacy thing.
                     "    prompt: Tenor API key\n"
                 ),
             )
-            from satan_cli.config import save_env_value
+            from satanclaw_cli.config import save_env_value
 
             save_env_value("TENOR_API_KEY", "")
             raw = skill_view("gif-search")

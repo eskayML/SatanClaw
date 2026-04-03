@@ -2,11 +2,11 @@
 name: apple-notes
 description: Manage Apple Notes via the memo CLI on macOS (create, view, search, edit).
 version: 1.0.0
-author: Satan Agent
+author: SatanClaw Agent
 license: MIT
 platforms: [macos]
 metadata:
-  satan:
+  satanclaw:
     tags: [Notes, Apple, macOS, note-taking]
     related_skills: [obsidian]
 prerequisites:

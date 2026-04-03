@@ -1,22 +1,22 @@
 ---
 sidebar_position: 11
 title: "Cron Internals"
-description: "How Satan stores, schedules, edits, pauses, skill-loads, and delivers cron jobs"
+description: "How SatanClaw stores, schedules, edits, pauses, skill-loads, and delivers cron jobs"
 ---
 
 # Cron Internals
 
-Satan cron support is implemented primarily in:
+SatanClaw cron support is implemented primarily in:
 
 - `cron/jobs.py`
 - `cron/scheduler.py`
 - `tools/cronjob_tools.py`
 - `gateway/run.py`
-- `satan_cli/cron.py`
+- `satanclaw_cli/cron.py`
 
 ## Scheduling model
 
-Satan supports:
+SatanClaw supports:
 
 - one-shot delays
 - intervals
@@ -35,7 +35,7 @@ The model-facing surface is a single `cronjob` tool with action-style operations
 
 ## Job storage
 
-Cron jobs are stored in Satan-managed local state (`~/.satan/cron/jobs.json`) with atomic write semantics.
+Cron jobs are stored in SatanClaw-managed local state (`~/.satanclaw/cron/jobs.json`) with atomic write semantics.
 
 Each job can carry:
 
@@ -63,7 +63,7 @@ In gateway mode, cron ticking is integrated into the long-running gateway loop.
 
 ## Skill-backed jobs
 
-A cron job may attach multiple skills. At runtime, Satan loads those skills in order and then appends the job prompt as the task instruction.
+A cron job may attach multiple skills. At runtime, SatanClaw loads those skills in order and then appends the job prompt as the task instruction.
 
 This gives scheduled jobs reusable guidance without requiring the user to paste full skill bodies into the cron prompt.
 
@@ -82,7 +82,7 @@ Cron jobs can deliver to:
 
 ## Locking
 
-Satan uses lock-based protections so overlapping scheduler ticks do not execute the same due-job batch twice.
+SatanClaw uses lock-based protections so overlapping scheduler ticks do not execute the same due-job batch twice.
 
 ## Related docs
 

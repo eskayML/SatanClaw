@@ -6,7 +6,7 @@ description: "Step-by-step guide to setting up a Telegram bot that your whole te
 
 # Set Up a Team Telegram Assistant
 
-This tutorial walks you through setting up a Telegram bot powered by Satan Agent that multiple team members can use. By the end, your team will have a shared AI assistant they can message for help with code, research, system administration, and anything else — secured with per-user authorization.
+This tutorial walks you through setting up a Telegram bot powered by SatanClaw Agent that multiple team members can use. By the end, your team will have a shared AI assistant they can message for help with code, research, system administration, and anything else — secured with per-user authorization.
 
 ## What We're Building
 
@@ -24,12 +24,12 @@ A Telegram bot that:
 
 Before starting, make sure you have:
 
-- **Satan Agent installed** on a server or VPS (not your laptop — the bot needs to stay running). Follow the [installation guide](/getting-started/learning-path) if you haven't yet.
+- **SatanClaw Agent installed** on a server or VPS (not your laptop — the bot needs to stay running). Follow the [installation guide](/getting-started/learning-path) if you haven't yet.
 - **A Telegram account** for yourself (the bot owner)
-- **An LLM provider configured** — at minimum, an API key for OpenAI, Anthropic, or another supported provider in `~/.satan/.env`
+- **An LLM provider configured** — at minimum, an API key for OpenAI, Anthropic, or another supported provider in `~/.satanclaw/.env`
 
 :::tip
-A $5/month VPS is plenty for running the gateway. Satan itself is lightweight — the LLM API calls are what cost money, and those happen remotely.
+A $5/month VPS is plenty for running the gateway. SatanClaw itself is lightweight — the LLM API calls are what cost money, and those happen remotely.
 :::
 
 ---
@@ -41,8 +41,8 @@ Every Telegram bot starts with **@BotFather** — Telegram's official bot for cr
 1. **Open Telegram** and search for `@BotFather`, or go to [t.me/BotFather](https://t.me/BotFather)
 
 2. **Send `/newbot`** — BotFather will ask you two things:
-   - **Display name** — what users see (e.g., `Team Satan Assistant`)
-   - **Username** — must end in `bot` (e.g., `myteam_satan_bot`)
+   - **Display name** — what users see (e.g., `Team SatanClaw Assistant`)
+   - **Username** — must end in `bot` (e.g., `myteam_satanclaw_bot`)
 
 3. **Copy the bot token** — BotFather replies with something like:
    ```
@@ -57,7 +57,7 @@ Every Telegram bot starts with **@BotFather** — Telegram's official bot for cr
    ```
    Choose your bot, then enter something like:
    ```
-   Team AI assistant powered by Satan Agent. DM me for help with code, research, debugging, and more.
+   Team AI assistant powered by SatanClaw Agent. DM me for help with code, research, debugging, and more.
    ```
 
 5. **Set bot commands** (optional — gives users a command menu):
@@ -86,14 +86,14 @@ You have two options: the interactive setup wizard (recommended) or manual confi
 ### Option A: Interactive Setup (Recommended)
 
 ```bash
-satan gateway setup
+satanclaw gateway setup
 ```
 
 This walks you through everything with arrow-key selection. Pick **Telegram**, paste your bot token, and enter your user ID when prompted.
 
 ### Option B: Manual Configuration
 
-Add these lines to `~/.satan/.env`:
+Add these lines to `~/.satanclaw/.env`:
 
 ```bash
 # Telegram bot token from BotFather
@@ -124,13 +124,13 @@ Telegram user IDs are permanent numbers like `123456789`. They're different from
 Run the gateway in the foreground first to make sure everything works:
 
 ```bash
-satan gateway
+satanclaw gateway
 ```
 
 You should see output like:
 
 ```
-[Gateway] Starting Satan Gateway...
+[Gateway] Starting SatanClaw Gateway...
 [Gateway] Telegram adapter connected
 [Gateway] Cron scheduler started (tick every 60s)
 ```
@@ -142,45 +142,45 @@ Open Telegram, find your bot, and send it a message. If it replies, you're in bu
 For a persistent deployment that survives reboots:
 
 ```bash
-satan gateway install
-sudo satan gateway install --system   # Linux only: boot-time system service
+satanclaw gateway install
+sudo satanclaw gateway install --system   # Linux only: boot-time system service
 ```
 
 This creates a background service: a user-level **systemd** service on Linux by default, a **launchd** service on macOS, or a boot-time Linux system service if you pass `--system`.
 
 ```bash
 # Linux — manage the default user service
-satan gateway start
-satan gateway stop
-satan gateway status
+satanclaw gateway start
+satanclaw gateway stop
+satanclaw gateway status
 
 # View live logs
-journalctl --user -u satan-gateway -f
+journalctl --user -u satanclaw-gateway -f
 
 # Keep running after SSH logout
 sudo loginctl enable-linger $USER
 
 # Linux servers — explicit system-service commands
-sudo satan gateway start --system
-sudo satan gateway status --system
-journalctl -u satan-gateway -f
+sudo satanclaw gateway start --system
+sudo satanclaw gateway status --system
+journalctl -u satanclaw-gateway -f
 ```
 
 ```bash
 # macOS — manage the service
-satan gateway start
-satan gateway stop
-tail -f ~/.satan/logs/gateway.log
+satanclaw gateway start
+satanclaw gateway stop
+tail -f ~/.satanclaw/logs/gateway.log
 ```
 
 :::tip macOS PATH
-The launchd plist captures your shell PATH at install time so gateway subprocesses can find tools like Node.js and ffmpeg. If you install new tools later, re-run `satan gateway install` to update the plist.
+The launchd plist captures your shell PATH at install time so gateway subprocesses can find tools like Node.js and ffmpeg. If you install new tools later, re-run `satanclaw gateway install` to update the plist.
 :::
 
 ### Verify It's Running
 
 ```bash
-satan gateway status
+satanclaw gateway status
 ```
 
 Then send a test message to your bot on Telegram. You should get a response within a few seconds.
@@ -196,14 +196,14 @@ Now let's give your teammates access. There are two approaches.
 Collect each team member's Telegram user ID (have them message [@userinfobot](https://t.me/userinfobot)) and add them as a comma-separated list:
 
 ```bash
-# In ~/.satan/.env
+# In ~/.satanclaw/.env
 TELEGRAM_ALLOWED_USERS=123456789,987654321,555555555
 ```
 
 Restart the gateway after changes:
 
 ```bash
-satan gateway stop && satan gateway start
+satanclaw gateway stop && satanclaw gateway start
 ```
 
 ### Approach B: DM Pairing (Recommended for Teams)
@@ -220,7 +220,7 @@ DM pairing is more flexible — you don't need to collect user IDs upfront. Here
 
 3. **You approve it** on the server:
    ```bash
-   satan pairing approve telegram XKGH5N7P
+   satanclaw pairing approve telegram XKGH5N7P
    ```
 
 4. **They're in** — the bot immediately starts responding to their messages
@@ -229,13 +229,13 @@ DM pairing is more flexible — you don't need to collect user IDs upfront. Here
 
 ```bash
 # See all pending and approved users
-satan pairing list
+satanclaw pairing list
 
 # Revoke someone's access
-satan pairing revoke telegram 987654321
+satanclaw pairing revoke telegram 987654321
 
 # Clear expired pending codes
-satan pairing clear-pending
+satanclaw pairing clear-pending
 ```
 
 :::tip
@@ -260,7 +260,7 @@ A **home channel** is where the bot delivers cron job results and proactive mess
 
 **Option 1:** Use the `/sethome` command in any Telegram group or chat where the bot is a member.
 
-**Option 2:** Set it manually in `~/.satan/.env`:
+**Option 2:** Set it manually in `~/.satanclaw/.env`:
 
 ```bash
 TELEGRAM_HOME_CHANNEL=-1001234567890
@@ -271,7 +271,7 @@ To find a channel ID, add [@userinfobot](https://t.me/userinfobot) to the group 
 
 ### Configure Tool Progress Display
 
-Control how much detail the bot shows when using tools. In `~/.satan/config.yaml`:
+Control how much detail the bot shows when using tools. In `~/.satanclaw/config.yaml`:
 
 ```yaml
 display:
@@ -289,9 +289,9 @@ Users can also change this per-session with the `/verbose` command in chat.
 
 ### Set Up a Personality with SOUL.md
 
-Customize how the bot communicates by editing `~/.satan/SOUL.md`:
+Customize how the bot communicates by editing `~/.satanclaw/SOUL.md`:
 
-For a full guide, see [Use SOUL.md with Satan](/docs/guides/use-soul-with-satan).
+For a full guide, see [Use SOUL.md with SatanClaw](/docs/guides/use-soul-with-satanclaw).
 
 ```markdown
 # Soul
@@ -306,7 +306,7 @@ before guessing at solutions.
 If your team works on specific projects, create context files so the bot knows your stack:
 
 ```markdown
-<!-- ~/.satan/AGENTS.md -->
+<!-- ~/.satanclaw/AGENTS.md -->
 # Team Context
 - We use Python 3.12 with FastAPI and SQLAlchemy
 - Frontend is React with TypeScript
@@ -352,8 +352,8 @@ partitions above 80%, containers that have restarted, or high memory usage.
 
 ```bash
 # From the CLI
-satan cron list          # View all scheduled jobs
-satan cron status        # Check if scheduler is running
+satanclaw cron list          # View all scheduled jobs
+satanclaw cron status        # Check if scheduler is running
 
 # From Telegram chat
 /cron list                # View jobs
@@ -373,12 +373,12 @@ Cron job prompts run in completely fresh sessions with no memory of prior conver
 On a shared team bot, use Docker as the terminal backend so agent commands run in a container instead of on your host:
 
 ```bash
-# In ~/.satan/.env
+# In ~/.satanclaw/.env
 TERMINAL_BACKEND=docker
 TERMINAL_DOCKER_IMAGE=nikolaik/python-nodejs:python3.11-nodejs20
 ```
 
-Or in `~/.satan/config.yaml`:
+Or in `~/.satanclaw/config.yaml`:
 
 ```yaml
 terminal:
@@ -394,33 +394,33 @@ This way, even if someone asks the bot to run something destructive, your host s
 
 ```bash
 # Check if the gateway is running
-satan gateway status
+satanclaw gateway status
 
 # Watch live logs (Linux)
-journalctl --user -u satan-gateway -f
+journalctl --user -u satanclaw-gateway -f
 
 # Watch live logs (macOS)
-tail -f ~/.satan/logs/gateway.log
+tail -f ~/.satanclaw/logs/gateway.log
 ```
 
-### Keep Satan Updated
+### Keep SatanClaw Updated
 
 From Telegram, send `/update` to the bot — it will pull the latest version and restart. Or from the server:
 
 ```bash
-satan update
-satan gateway stop && satan gateway start
+satanclaw update
+satanclaw gateway stop && satanclaw gateway start
 ```
 
 ### Log Locations
 
 | What | Location |
 |------|----------|
-| Gateway logs | `journalctl --user -u satan-gateway` (Linux) or `~/.satan/logs/gateway.log` (macOS) |
-| Cron job output | `~/.satan/cron/output/{job_id}/{timestamp}.md` |
-| Cron job definitions | `~/.satan/cron/jobs.json` |
-| Pairing data | `~/.satan/pairing/` |
-| Session history | `~/.satan/sessions/` |
+| Gateway logs | `journalctl --user -u satanclaw-gateway` (Linux) or `~/.satanclaw/logs/gateway.log` (macOS) |
+| Cron job output | `~/.satanclaw/cron/output/{job_id}/{timestamp}.md` |
+| Cron job definitions | `~/.satanclaw/cron/jobs.json` |
+| Pairing data | `~/.satanclaw/pairing/` |
+| Session history | `~/.satanclaw/sessions/` |
 
 ---
 

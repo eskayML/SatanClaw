@@ -30,10 +30,10 @@ load_dotenv()
 # Default datasets to sample from
 DEFAULT_DATASETS = [
     "NousResearch/swe-terminus-agent-glm-kimi-minimax",
-    "NousResearch/satan-agent-megascience-sft1",
-    "NousResearch/Satan-Agent-Thinking-GLM-4.7-SFT2",
-    "NousResearch/Satan-Agent-Thinking-GLM-4.7-SFT1",
-    "NousResearch/terminal-tasks-glm-satan-agent"
+    "NousResearch/satanclaw-agent-megascience-sft1",
+    "NousResearch/SatanClaw-Agent-Thinking-GLM-4.7-SFT2",
+    "NousResearch/SatanClaw-Agent-Thinking-GLM-4.7-SFT1",
+    "NousResearch/terminal-tasks-glm-satanclaw-agent"
 ]
 
 

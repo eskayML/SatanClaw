@@ -10,13 +10,13 @@ Long-term memory with knowledge graph, entity resolution, and multi-strategy ret
 ## Setup
 
 ```bash
-satan memory setup    # select "hindsight"
+satanclaw memory setup    # select "hindsight"
 ```
 
 Or manually:
 ```bash
-satan config set memory.provider hindsight
-echo "HINDSIGHT_API_KEY=your-key" >> ~/.satan/.env
+satanclaw config set memory.provider hindsight
+echo "HINDSIGHT_API_KEY=your-key" >> ~/.satanclaw/.env
 ```
 
 ## Config
@@ -26,7 +26,7 @@ Config file: `$HERMES_HOME/hindsight/config.json` (or `~/.hindsight/config.json`
 | Key | Default | Description |
 |-----|---------|-------------|
 | `mode` | `cloud` | `cloud` or `local` |
-| `bank_id` | `satan` | Memory bank identifier |
+| `bank_id` | `satanclaw` | Memory bank identifier |
 | `budget` | `mid` | Recall thoroughness: `low`/`mid`/`high` |
 
 ## Tools

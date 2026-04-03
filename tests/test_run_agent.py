@@ -86,7 +86,7 @@ def test_aiagent_reuses_existing_errors_log_handler():
     """Repeated AIAgent init should not accumulate duplicate errors.log handlers."""
     root_logger = logging.getLogger()
     original_handlers = list(root_logger.handlers)
-    error_log_path = (run_agent._satan_home / "logs" / "errors.log").resolve()
+    error_log_path = (run_agent._satanclaw_home / "logs" / "errors.log").resolve()
 
     try:
         for handler in list(root_logger.handlers):
@@ -664,7 +664,7 @@ class TestToolUseEnforcementConfig:
             patch("run_agent.check_toolset_requirements", return_value={}),
             patch("run_agent.OpenAI"),
             patch(
-                "satan_cli.config.load_config",
+                "satanclaw_cli.config.load_config",
                 return_value={"agent": {"tool_use_enforcement": tool_use_enforcement}},
             ),
         ):
@@ -761,7 +761,7 @@ class TestToolUseEnforcementConfig:
             patch("run_agent.check_toolset_requirements", return_value={}),
             patch("run_agent.OpenAI"),
             patch(
-                "satan_cli.config.load_config",
+                "satanclaw_cli.config.load_config",
                 return_value={"agent": {"tool_use_enforcement": True}},
             ),
         ):
@@ -838,7 +838,7 @@ class TestBuildApiKwargs:
         assert kwargs["extra_body"]["reasoning"]["effort"] == "medium"
 
     def test_reasoning_sent_for_nous_route(self, agent):
-        agent.base_url = "https://inference-api.nousresearch.com/v1"
+        agent.base_url = "https://inference-api.eskayML.com/v1"
         agent.model = "minimax/minimax-m2.5"
         messages = [{"role": "user", "content": "hi"}]
         kwargs = agent._build_api_kwargs(messages)
@@ -1921,7 +1921,7 @@ class TestNousCredentialRefresh:
             captured.update(kwargs)
             return {
                 "api_key": "new-nous-key",
-                "base_url": "https://inference-api.nousresearch.com/v1",
+                "base_url": "https://inference-api.eskayML.com/v1",
             }
 
         def _fake_openai(**kwargs):
@@ -1929,7 +1929,7 @@ class TestNousCredentialRefresh:
             return _RebuiltClient()
 
         monkeypatch.setattr(
-            "satan_cli.auth.resolve_nous_runtime_credentials", _fake_resolve
+            "satanclaw_cli.auth.resolve_nous_runtime_credentials", _fake_resolve
         )
 
         agent.client = _ExistingClient()
@@ -1941,7 +1941,7 @@ class TestNousCredentialRefresh:
         assert captured["force_mint"] is True
         assert rebuilt["kwargs"]["api_key"] == "new-nous-key"
         assert (
-            rebuilt["kwargs"]["base_url"] == "https://inference-api.nousresearch.com/v1"
+            rebuilt["kwargs"]["base_url"] == "https://inference-api.eskayML.com/v1"
         )
         assert "default_headers" not in rebuilt["kwargs"]
         assert isinstance(agent.client, _RebuiltClient)
@@ -2162,7 +2162,7 @@ class TestSystemPromptStability:
         # Should have built fresh, not queried the DB
         mock_db.get_session.assert_not_called()
         assert agent._cached_system_prompt is not None
-        assert "Satan Agent" in agent._cached_system_prompt
+        assert "SatanClaw Agent" in agent._cached_system_prompt
 
     def test_fresh_build_when_db_has_no_prompt(self, agent):
         """If the session DB has no stored prompt, build fresh even with history."""
@@ -2189,7 +2189,7 @@ class TestSystemPromptStability:
                 agent._cached_system_prompt = agent._build_system_prompt()
 
         # Empty string is falsy, so should fall through to fresh build
-        assert "Satan Agent" in agent._cached_system_prompt
+        assert "SatanClaw Agent" in agent._cached_system_prompt
 
 class TestBudgetPressure:
     """Budget pressure warning system (issue #414)."""

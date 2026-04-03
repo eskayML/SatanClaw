@@ -1,6 +1,6 @@
 from types import SimpleNamespace
 
-from satan_cli.status import show_status
+from satanclaw_cli.status import show_status
 
 
 def test_show_status_includes_tavily_key(monkeypatch, capsys, tmp_path):

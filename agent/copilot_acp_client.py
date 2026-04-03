@@ -1,9 +1,9 @@
-"""OpenAI-compatible shim that forwards Satan requests to `copilot --acp`.
+"""OpenAI-compatible shim that forwards SatanClaw requests to `copilot --acp`.
 
-This adapter lets Satan treat the GitHub Copilot ACP server as a chat-style
+This adapter lets SatanClaw treat the GitHub Copilot ACP server as a chat-style
 backend. Each request starts a short-lived ACP session, sends the formatted
 conversation as a single prompt, collects text chunks, and converts the result
-back into the minimal shape Satan expects from an OpenAI client.
+back into the minimal shape SatanClaw expects from an OpenAI client.
 """
 
 from __future__ import annotations
@@ -52,12 +52,12 @@ def _jsonrpc_error(message_id: Any, code: int, message: str) -> dict[str, Any]:
 
 def _format_messages_as_prompt(messages: list[dict[str, Any]], model: str | None = None) -> str:
     sections: list[str] = [
-        "You are being used as the active ACP agent backend for Satan.",
+        "You are being used as the active ACP agent backend for SatanClaw.",
         "Use your own ACP capabilities and respond directly in natural language.",
         "Do not emit OpenAI tool-call JSON.",
     ]
     if model:
-        sections.append(f"Satan requested model hint: {model}")
+        sections.append(f"SatanClaw requested model hint: {model}")
 
     transcript: list[str] = []
     for message in messages:
@@ -323,8 +323,8 @@ class CopilotACPClient:
                         }
                     },
                     "clientInfo": {
-                        "name": "satan-agent",
-                        "title": "Satan Agent",
+                        "name": "satanclaw-agent",
+                        "title": "SatanClaw Agent",
                         "version": "0.0.0",
                     },
                 },
@@ -439,7 +439,7 @@ class CopilotACPClient:
             response = _jsonrpc_error(
                 message_id,
                 -32601,
-                f"ACP client method '{method}' is not supported by Satan yet.",
+                f"ACP client method '{method}' is not supported by SatanClaw yet.",
             )
 
         process.stdin.write(json.dumps(response) + "\n")

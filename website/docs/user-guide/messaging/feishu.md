@@ -1,24 +1,24 @@
 ---
 sidebar_position: 11
 title: "Feishu / Lark"
-description: "Set up Satan Agent as a Feishu or Lark bot"
+description: "Set up SatanClaw Agent as a Feishu or Lark bot"
 ---
 
 # Feishu / Lark Setup
 
-Satan Agent integrates with Feishu and Lark as a full-featured bot. Once connected, you can chat with the agent in direct messages or group chats, receive cron job results in a home chat, and send text, images, audio, and file attachments through the normal gateway flow.
+SatanClaw Agent integrates with Feishu and Lark as a full-featured bot. Once connected, you can chat with the agent in direct messages or group chats, receive cron job results in a home chat, and send text, images, audio, and file attachments through the normal gateway flow.
 
 The integration supports both connection modes:
 
-- `websocket` — recommended; Satan opens the outbound connection and you do not need a public webhook endpoint
+- `websocket` — recommended; SatanClaw opens the outbound connection and you do not need a public webhook endpoint
 - `webhook` — useful when you want Feishu/Lark to push events into your gateway over HTTP
 
-## How Satan Behaves
+## How SatanClaw Behaves
 
 | Context | Behavior |
 |---------|----------|
-| Direct messages | Satan responds to every message. |
-| Group chats | Satan responds only when the bot is @mentioned in the chat. |
+| Direct messages | SatanClaw responds to every message. |
+| Group chats | SatanClaw responds only when the bot is @mentioned in the chat. |
 | Shared group chats | By default, session history is isolated per user inside a shared chat. |
 
 This shared-chat behavior is controlled by `config.yaml`:
@@ -46,7 +46,7 @@ Keep the App Secret private. Anyone with it can impersonate your app.
 
 ### Recommended: WebSocket mode
 
-Use WebSocket mode when Satan runs on your laptop, workstation, or a private server. No public URL is required. The official Lark SDK opens and maintains a persistent outbound WebSocket connection with automatic reconnection.
+Use WebSocket mode when SatanClaw runs on your laptop, workstation, or a private server. No public URL is required. The official Lark SDK opens and maintains a persistent outbound WebSocket connection with automatic reconnection.
 
 ```bash
 FEISHU_CONNECTION_MODE=websocket
@@ -58,13 +58,13 @@ FEISHU_CONNECTION_MODE=websocket
 
 ### Optional: Webhook mode
 
-Use webhook mode only when you already run Satan behind a reachable HTTP endpoint.
+Use webhook mode only when you already run SatanClaw behind a reachable HTTP endpoint.
 
 ```bash
 FEISHU_CONNECTION_MODE=webhook
 ```
 
-In webhook mode, Satan starts an HTTP server (via `aiohttp`) and serves a Feishu endpoint at:
+In webhook mode, SatanClaw starts an HTTP server (via `aiohttp`) and serves a Feishu endpoint at:
 
 ```text
 /feishu/webhook
@@ -82,19 +82,19 @@ FEISHU_WEBHOOK_PATH=/feishu/webhook  # default: /feishu/webhook
 
 When Feishu sends a URL verification challenge (`type: url_verification`), the webhook responds automatically so you can complete the subscription setup in the Feishu developer console.
 
-## Step 3: Configure Satan
+## Step 3: Configure SatanClaw
 
 ### Option A: Interactive Setup
 
 ```bash
-satan gateway setup
+satanclaw gateway setup
 ```
 
 Select **Feishu / Lark** and fill in the prompts.
 
 ### Option B: Manual Configuration
 
-Add the following to `~/.satan/.env`:
+Add the following to `~/.satanclaw/.env`:
 
 ```bash
 FEISHU_APP_ID=cli_xxx
@@ -115,7 +115,7 @@ FEISHU_HOME_CHANNEL=oc_xxx
 ## Step 4: Start the Gateway
 
 ```bash
-satan gateway
+satanclaw gateway
 ```
 
 Then message the bot from Feishu/Lark to confirm that the connection is live.
@@ -176,7 +176,7 @@ Both `FEISHU_ENCRYPT_KEY` and `FEISHU_VERIFICATION_TOKEN` can be used together f
 
 ## Group Message Policy
 
-The `FEISHU_GROUP_POLICY` environment variable controls whether and how Satan responds in group chats:
+The `FEISHU_GROUP_POLICY` environment variable controls whether and how SatanClaw responds in group chats:
 
 ```bash
 FEISHU_GROUP_POLICY=allowlist   # default
@@ -184,9 +184,9 @@ FEISHU_GROUP_POLICY=allowlist   # default
 
 | Value | Behavior |
 |-------|----------|
-| `open` | Satan responds to @mentions from any user in any group. |
-| `allowlist` | Satan only responds to @mentions from users listed in `FEISHU_ALLOWED_USERS`. |
-| `disabled` | Satan ignores all group messages entirely. |
+| `open` | SatanClaw responds to @mentions from any user in any group. |
+| `allowlist` | SatanClaw only responds to @mentions from users listed in `FEISHU_ALLOWED_USERS`. |
+| `disabled` | SatanClaw ignores all group messages entirely. |
 
 In all modes, the bot must be explicitly @mentioned (or @all) in the group before the message is processed. Direct messages bypass this gate.
 
@@ -312,7 +312,7 @@ Additional webhook protections:
 
 ## Deduplication
 
-Inbound messages are deduplicated using message IDs with a 24-hour TTL. The dedup state is persisted across restarts to `~/.satan/feishu_seen_message_ids.json`.
+Inbound messages are deduplicated using message IDs with a 24-hour TTL. The dedup state is persisted across restarts to `~/.satanclaw/feishu_seen_message_ids.json`.
 
 | Setting | Env Var | Default |
 |---------|---------|---------|
@@ -350,8 +350,8 @@ Inbound messages are deduplicated using message IDs with a 24-hour TTL. The dedu
 | `lark-oapi not installed` | Install the SDK: `pip install lark-oapi` |
 | `websockets not installed; websocket mode unavailable` | Install websockets: `pip install websockets` |
 | `aiohttp not installed; webhook mode unavailable` | Install aiohttp: `pip install aiohttp` |
-| `FEISHU_APP_ID or FEISHU_APP_SECRET not set` | Set both env vars or configure via `satan gateway setup` |
-| `Another local Satan gateway is already using this Feishu app_id` | Only one Satan instance can use the same app_id at a time. Stop the other gateway first. |
+| `FEISHU_APP_ID or FEISHU_APP_SECRET not set` | Set both env vars or configure via `satanclaw gateway setup` |
+| `Another local SatanClaw gateway is already using this Feishu app_id` | Only one SatanClaw instance can use the same app_id at a time. Stop the other gateway first. |
 | Bot doesn't respond in groups | Ensure the bot is @mentioned, check `FEISHU_GROUP_POLICY`, and verify the sender is in `FEISHU_ALLOWED_USERS` if policy is `allowlist` |
 | `Webhook rejected: invalid verification token` | Ensure `FEISHU_VERIFICATION_TOKEN` matches the token in your Feishu app's Event Subscriptions config |
 | `Webhook rejected: invalid signature` | Ensure `FEISHU_ENCRYPT_KEY` matches the encrypt key in your Feishu app config |
@@ -362,4 +362,4 @@ Inbound messages are deduplicated using message IDs with a 24-hour TTL. The dedu
 
 ## Toolset
 
-Feishu / Lark uses the `satan-feishu` platform preset, which includes the same core tools as Telegram and other gateway-based messaging platforms.
+Feishu / Lark uses the `satanclaw-feishu` platform preset, which includes the same core tools as Telegram and other gateway-based messaging platforms.

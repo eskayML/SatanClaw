@@ -71,7 +71,7 @@ class TestLocalOneShotRegression:
         env.cleanup()
         assert r["returncode"] == 0
         assert "heredoc body line" in r["output"]
-        assert "__satan_rc" not in r["output"]
+        assert "__satanclaw_rc" not in r["output"]
         assert "printf '" not in r["output"]
         assert "exit $" not in r["output"]
 

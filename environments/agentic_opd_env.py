@@ -75,7 +75,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 from pydantic import Field
 
-# Ensure satan-agent root is on path
+# Ensure satanclaw-agent root is on path
 _repo_root = Path(__file__).resolve().parent.parent
 if str(_repo_root) not in sys.path:
     sys.path.insert(0, str(_repo_root))
@@ -84,8 +84,8 @@ from atroposlib.envs.base import ScoredDataGroup, ScoredDataItem
 from atroposlib.envs.server_handling.server_manager import APIServerConfig
 from atroposlib.type_definitions import Item
 
-from environments.satan_base_env import SatanAgentBaseEnv, SatanAgentEnvConfig
-from environments.agent_loop import AgentResult, SatanAgentLoop
+from environments.satanclaw_base_env import SatanClawAgentBaseEnv, SatanClawAgentEnvConfig
+from environments.agent_loop import AgentResult, SatanClawAgentLoop
 from environments.tool_context import ToolContext
 
 logger = logging.getLogger(__name__)
@@ -315,7 +315,7 @@ def _append_hint_to_messages(messages: list[dict], hint: str) -> list[dict]:
 # ═══════════════════════════════════════════════════════════════════════
 
 
-class AgenticOPDConfig(SatanAgentEnvConfig):
+class AgenticOPDConfig(SatanClawAgentEnvConfig):
     """Configuration for the agentic OPD environment."""
 
     # --- OPD settings ---
@@ -376,7 +376,7 @@ class AgenticOPDConfig(SatanAgentEnvConfig):
 # ═══════════════════════════════════════════════════════════════════════
 
 
-class AgenticOPDEnv(SatanAgentBaseEnv):
+class AgenticOPDEnv(SatanClawAgentBaseEnv):
     """
     RL environment with on-policy distillation from next-state signals.
 
@@ -1039,7 +1039,7 @@ class AgenticOPDEnv(SatanAgentBaseEnv):
                     {"role": "user", "content": self.format_prompt(item)}
                 )
 
-                agent = SatanAgentLoop(
+                agent = SatanClawAgentLoop(
                     server=self.server,
                     tool_schemas=tools,
                     valid_tool_names=valid_names,

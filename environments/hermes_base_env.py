@@ -1,10 +1,10 @@
 """
-SatanAgentBaseEnv -- Abstract Base Environment for Satan-Agent + Atropos
+SatanClawAgentBaseEnv -- Abstract Base Environment for SatanClaw-Agent + Atropos
 
-Provides the Atropos integration plumbing that all satan-agent environments share:
+Provides the Atropos integration plumbing that all satanclaw-agent environments share:
 - Two-mode operation (OpenAI server for Phase 1, VLLM ManagedServer for Phase 2)
 - Per-group toolset/distribution resolution
-- Agent loop orchestration via SatanAgentLoop
+- Agent loop orchestration via SatanClawAgentLoop
 - ToolContext creation for reward functions
 - ScoredDataGroup construction from ManagedServer state
 
@@ -26,7 +26,7 @@ from abc import abstractmethod
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
-# Ensure the satan-agent repo root is on sys.path so that imports like
+# Ensure the satanclaw-agent repo root is on sys.path so that imports like
 # `from model_tools import ...` and `from environments.X import ...` work
 # regardless of where the script is invoked from.
 _repo_root = Path(__file__).resolve().parent.parent
@@ -36,7 +36,7 @@ if str(_repo_root) not in sys.path:
 from dotenv import load_dotenv
 from pydantic import Field
 
-# Load API keys from satan-agent/.env so all environments can access them
+# Load API keys from satanclaw-agent/.env so all environments can access them
 _env_path = _repo_root / ".env"
 if _env_path.exists():
     load_dotenv(dotenv_path=_env_path)
@@ -60,19 +60,19 @@ from atroposlib.envs.server_handling.server_manager import (
 )
 from atroposlib.type_definitions import Item
 
-from environments.agent_loop import AgentResult, SatanAgentLoop
+from environments.agent_loop import AgentResult, SatanClawAgentLoop
 from environments.tool_context import ToolContext
 
-# Import satan-agent toolset infrastructure
+# Import satanclaw-agent toolset infrastructure
 from model_tools import get_tool_definitions
 from toolset_distributions import sample_toolsets_from_distribution
 
 logger = logging.getLogger(__name__)
 
 
-class SatanAgentEnvConfig(BaseEnvConfig):
+class SatanClawAgentEnvConfig(BaseEnvConfig):
     """
-    Configuration for satan-agent Atropos environments.
+    Configuration for satanclaw-agent Atropos environments.
 
     Extends BaseEnvConfig with agent-specific settings for toolsets,
     terminal backend, dataset loading, and tool call parsing.
@@ -82,7 +82,7 @@ class SatanAgentEnvConfig(BaseEnvConfig):
     # Mutually exclusive: use either enabled_toolsets OR distribution
     enabled_toolsets: Optional[List[str]] = Field(
         default=None,
-        description="Explicit list of satan toolsets to enable (e.g., ['terminal', 'file', 'web']). "
+        description="Explicit list of satanclaw toolsets to enable (e.g., ['terminal', 'file', 'web']). "
         "If None and distribution is also None, all available toolsets are enabled.",
     )
     disabled_toolsets: Optional[List[str]] = Field(
@@ -154,10 +154,10 @@ class SatanAgentEnvConfig(BaseEnvConfig):
 
     # --- Phase 2: Tool call parsing ---
     tool_call_parser: str = Field(
-        default="satan",
+        default="satanclaw",
         description="Tool call parser name for Phase 2 (VLLM server type). "
         "Ignored in Phase 1 (OpenAI server type where VLLM parses natively). "
-        "Options: satan, mistral, llama3_json, qwen, deepseek_v3, etc.",
+        "Options: satanclaw, mistral, llama3_json, qwen, deepseek_v3, etc.",
     )
 
     # --- Provider-specific parameters ---
@@ -177,9 +177,9 @@ class SatanAgentEnvConfig(BaseEnvConfig):
     )
 
 
-class SatanAgentBaseEnv(BaseEnv):
+class SatanClawAgentBaseEnv(BaseEnv):
     """
-    Abstract base environment for satan-agent Atropos integration.
+    Abstract base environment for satanclaw-agent Atropos integration.
 
     Handles two modes of operation:
     - Phase 1 (OpenAI server type): Uses server.chat_completion() directly.
@@ -199,19 +199,19 @@ class SatanAgentBaseEnv(BaseEnv):
         evaluate()        -- Periodic evaluation
     """
 
-    name: Optional[str] = "satan-agent"
-    env_config_cls = SatanAgentEnvConfig
+    name: Optional[str] = "satanclaw-agent"
+    env_config_cls = SatanClawAgentEnvConfig
 
     def __init__(
         self,
-        config: SatanAgentEnvConfig,
+        config: SatanClawAgentEnvConfig,
         server_configs: Union[ServerBaseline, List[APIServerConfig]],
         slurm=False,
         testing=False,
     ):
         super().__init__(config, server_configs, slurm, testing)
 
-        # Set terminal environment variables so satan tools pick them up.
+        # Set terminal environment variables so satanclaw tools pick them up.
         # These can all be overridden per-environment via config fields instead
         # of requiring users to set shell env vars.
         if config.terminal_backend:
@@ -481,7 +481,7 @@ class SatanAgentBaseEnv(BaseEnv):
                     tokenizer=self.tokenizer,
                     preserve_think_blocks=bool(self.config.thinking_mode),
                 ) as managed:
-                    agent = SatanAgentLoop(
+                    agent = SatanClawAgentLoop(
                         server=managed,
                         tool_schemas=tools,
                         valid_tool_names=valid_names,
@@ -498,7 +498,7 @@ class SatanAgentBaseEnv(BaseEnv):
                     "ManagedServer not available (OpenAI server?). "
                     "Falling back to direct server mode."
                 )
-                agent = SatanAgentLoop(
+                agent = SatanClawAgentLoop(
                     server=self.server,
                     tool_schemas=tools,
                     valid_tool_names=valid_names,
@@ -511,7 +511,7 @@ class SatanAgentBaseEnv(BaseEnv):
                 result = await agent.run(messages)
         else:
             # Phase 1: OpenAI server -- native tool_calls, placeholder tokens
-            agent = SatanAgentLoop(
+            agent = SatanClawAgentLoop(
                 server=self.server,
                 tool_schemas=tools,
                 valid_tool_names=valid_names,
@@ -645,7 +645,7 @@ class SatanAgentBaseEnv(BaseEnv):
         Score the rollout. Has full access to:
         - item: the original dataset item (ground truth, test commands, etc.)
         - result: AgentResult with full messages, turn count, reasoning, etc.
-        - ctx: ToolContext -- call ANY satan-agent tool (terminal, file, web,
+        - ctx: ToolContext -- call ANY satanclaw-agent tool (terminal, file, web,
                browser, vision...) scoped to this rollout's sandbox. Nothing
                is off-limits.
 

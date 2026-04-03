@@ -6,39 +6,39 @@ sidebar_position: 1
 
 # AI Providers
 
-This page covers setting up inference providers for Satan Agent — from cloud APIs like OpenRouter and Anthropic, to self-hosted endpoints like Ollama and vLLM, to advanced routing and fallback configurations. You need at least one provider configured to use Satan.
+This page covers setting up inference providers for SatanClaw Agent — from cloud APIs like OpenRouter and Anthropic, to self-hosted endpoints like Ollama and vLLM, to advanced routing and fallback configurations. You need at least one provider configured to use SatanClaw.
 
 ## Inference Providers
 
-You need at least one way to connect to an LLM. Use `satan model` to switch providers and models interactively, or configure directly:
+You need at least one way to connect to an LLM. Use `satanclaw model` to switch providers and models interactively, or configure directly:
 
 | Provider | Setup |
 |----------|-------|
-| **Nous Portal** | `satan model` (OAuth, subscription-based) |
-| **OpenAI Codex** | `satan model` (ChatGPT OAuth, uses Codex models) |
-| **GitHub Copilot** | `satan model` (OAuth device code flow, `COPILOT_GITHUB_TOKEN`, `GH_TOKEN`, or `gh auth token`) |
-| **GitHub Copilot ACP** | `satan model` (spawns local `copilot --acp --stdio`) |
-| **Anthropic** | `satan model` (Claude Pro/Max via Claude Code auth, Anthropic API key, or manual setup-token) |
-| **OpenRouter** | `OPENROUTER_API_KEY` in `~/.satan/.env` |
-| **AI Gateway** | `AI_GATEWAY_API_KEY` in `~/.satan/.env` (provider: `ai-gateway`) |
-| **z.ai / GLM** | `GLM_API_KEY` in `~/.satan/.env` (provider: `zai`) |
-| **Kimi / Moonshot** | `KIMI_API_KEY` in `~/.satan/.env` (provider: `kimi-coding`) |
-| **MiniMax** | `MINIMAX_API_KEY` in `~/.satan/.env` (provider: `minimax`) |
-| **MiniMax China** | `MINIMAX_CN_API_KEY` in `~/.satan/.env` (provider: `minimax-cn`) |
-| **Alibaba Cloud** | `DASHSCOPE_API_KEY` in `~/.satan/.env` (provider: `alibaba`, aliases: `dashscope`, `qwen`) |
-| **Kilo Code** | `KILOCODE_API_KEY` in `~/.satan/.env` (provider: `kilocode`) |
-| **OpenCode Zen** | `OPENCODE_ZEN_API_KEY` in `~/.satan/.env` (provider: `opencode-zen`) |
-| **OpenCode Go** | `OPENCODE_GO_API_KEY` in `~/.satan/.env` (provider: `opencode-go`) |
-| **DeepSeek** | `DEEPSEEK_API_KEY` in `~/.satan/.env` (provider: `deepseek`) |
-| **Hugging Face** | `HF_TOKEN` in `~/.satan/.env` (provider: `huggingface`, aliases: `hf`) |
-| **Custom Endpoint** | `satan model` (saved in `config.yaml`) or `OPENAI_BASE_URL` + `OPENAI_API_KEY` in `~/.satan/.env` |
+| **Nous Portal** | `satanclaw model` (OAuth, subscription-based) |
+| **OpenAI Codex** | `satanclaw model` (ChatGPT OAuth, uses Codex models) |
+| **GitHub Copilot** | `satanclaw model` (OAuth device code flow, `COPILOT_GITHUB_TOKEN`, `GH_TOKEN`, or `gh auth token`) |
+| **GitHub Copilot ACP** | `satanclaw model` (spawns local `copilot --acp --stdio`) |
+| **Anthropic** | `satanclaw model` (Claude Pro/Max via Claude Code auth, Anthropic API key, or manual setup-token) |
+| **OpenRouter** | `OPENROUTER_API_KEY` in `~/.satanclaw/.env` |
+| **AI Gateway** | `AI_GATEWAY_API_KEY` in `~/.satanclaw/.env` (provider: `ai-gateway`) |
+| **z.ai / GLM** | `GLM_API_KEY` in `~/.satanclaw/.env` (provider: `zai`) |
+| **Kimi / Moonshot** | `KIMI_API_KEY` in `~/.satanclaw/.env` (provider: `kimi-coding`) |
+| **MiniMax** | `MINIMAX_API_KEY` in `~/.satanclaw/.env` (provider: `minimax`) |
+| **MiniMax China** | `MINIMAX_CN_API_KEY` in `~/.satanclaw/.env` (provider: `minimax-cn`) |
+| **Alibaba Cloud** | `DASHSCOPE_API_KEY` in `~/.satanclaw/.env` (provider: `alibaba`, aliases: `dashscope`, `qwen`) |
+| **Kilo Code** | `KILOCODE_API_KEY` in `~/.satanclaw/.env` (provider: `kilocode`) |
+| **OpenCode Zen** | `OPENCODE_ZEN_API_KEY` in `~/.satanclaw/.env` (provider: `opencode-zen`) |
+| **OpenCode Go** | `OPENCODE_GO_API_KEY` in `~/.satanclaw/.env` (provider: `opencode-go`) |
+| **DeepSeek** | `DEEPSEEK_API_KEY` in `~/.satanclaw/.env` (provider: `deepseek`) |
+| **Hugging Face** | `HF_TOKEN` in `~/.satanclaw/.env` (provider: `huggingface`, aliases: `hf`) |
+| **Custom Endpoint** | `satanclaw model` (saved in `config.yaml`) or `OPENAI_BASE_URL` + `OPENAI_API_KEY` in `~/.satanclaw/.env` |
 
 :::tip Model key alias
 In the `model:` config section, you can use either `default:` or `model:` as the key name for your model ID. Both `model: { default: my-model }` and `model: { model: my-model }` work identically.
 :::
 
 :::info Codex Note
-The OpenAI Codex provider authenticates via device code (open a URL, enter a code). Satan stores the resulting credentials in its own auth store under `~/.satan/auth.json` and can import existing Codex CLI credentials from `~/.codex/auth.json` when present. No Codex CLI installation is required.
+The OpenAI Codex provider authenticates via device code (open a URL, enter a code). SatanClaw stores the resulting credentials in its own auth store under `~/.satanclaw/auth.json` and can import existing Codex CLI credentials from `~/.codex/auth.json` when present. No Codex CLI installation is required.
 :::
 
 :::warning
@@ -52,21 +52,21 @@ Use Claude models directly through the Anthropic API — no OpenRouter proxy nee
 ```bash
 # With an API key (pay-per-token)
 export ANTHROPIC_API_KEY=***
-satan chat --provider anthropic --model claude-sonnet-4-6
+satanclaw chat --provider anthropic --model claude-sonnet-4-6
 
-# Preferred: authenticate through `satan model`
-# Satan will use Claude Code's credential store directly when available
-satan model
+# Preferred: authenticate through `satanclaw model`
+# SatanClaw will use Claude Code's credential store directly when available
+satanclaw model
 
 # Manual override with a setup-token (fallback / legacy)
 export ANTHROPIC_TOKEN=***  # setup-token or manual OAuth token
-satan chat --provider anthropic
+satanclaw chat --provider anthropic
 
 # Auto-detect Claude Code credentials (if you already use Claude Code)
-satan chat --provider anthropic  # reads Claude Code credential files automatically
+satanclaw chat --provider anthropic  # reads Claude Code credential files automatically
 ```
 
-When you choose Anthropic OAuth through `satan model`, Satan prefers Claude Code's own credential store over copying the token into `~/.satan/.env`. That keeps refreshable Claude credentials refreshable.
+When you choose Anthropic OAuth through `satanclaw model`, SatanClaw prefers Claude Code's own credential store over copying the token into `~/.satanclaw/.env`. That keeps refreshable Claude credentials refreshable.
 
 Or set it permanently:
 ```yaml
@@ -81,12 +81,12 @@ model:
 
 ### GitHub Copilot
 
-Satan supports GitHub Copilot as a first-class provider with two modes:
+SatanClaw supports GitHub Copilot as a first-class provider with two modes:
 
 **`copilot` — Direct Copilot API** (recommended). Uses your GitHub Copilot subscription to access GPT-5.x, Claude, Gemini, and other models through the Copilot API.
 
 ```bash
-satan chat --provider copilot --model gpt-5.4
+satanclaw chat --provider copilot --model gpt-5.4
 ```
 
 **Authentication options** (checked in this order):
@@ -96,18 +96,18 @@ satan chat --provider copilot --model gpt-5.4
 3. `GITHUB_TOKEN` environment variable
 4. `gh auth token` CLI fallback
 
-If no token is found, `satan model` offers an **OAuth device code login** — the same flow used by the Copilot CLI and opencode.
+If no token is found, `satanclaw model` offers an **OAuth device code login** — the same flow used by the Copilot CLI and opencode.
 
 :::warning Token types
 The Copilot API does **not** support classic Personal Access Tokens (`ghp_*`). Supported token types:
 
 | Type | Prefix | How to get |
 |------|--------|------------|
-| OAuth token | `gho_` | `satan model` → GitHub Copilot → Login with GitHub |
+| OAuth token | `gho_` | `satanclaw model` → GitHub Copilot → Login with GitHub |
 | Fine-grained PAT | `github_pat_` | GitHub Settings → Developer settings → Fine-grained tokens (needs **Copilot Requests** permission) |
 | GitHub App token | `ghu_` | Via GitHub App installation |
 
-If your `gh auth token` returns a `ghp_*` token, use `satan model` to authenticate via OAuth instead.
+If your `gh auth token` returns a `ghp_*` token, use `satanclaw model` to authenticate via OAuth instead.
 :::
 
 **API routing**: GPT-5+ models (except `gpt-5-mini`) automatically use the Responses API. All other models (GPT-4o, Claude, Gemini, etc.) use Chat Completions. Models are auto-detected from the live Copilot catalog.
@@ -115,7 +115,7 @@ If your `gh auth token` returns a `ghp_*` token, use `satan model` to authentica
 **`copilot-acp` — Copilot ACP agent backend**. Spawns the local Copilot CLI as a subprocess:
 
 ```bash
-satan chat --provider copilot-acp --model copilot-acp
+satanclaw chat --provider copilot-acp --model copilot-acp
 # Requires the GitHub Copilot CLI in PATH and an existing `copilot login` session
 ```
 
@@ -138,24 +138,24 @@ These providers have built-in support with dedicated provider IDs. Set the API k
 
 ```bash
 # z.ai / ZhipuAI GLM
-satan chat --provider zai --model glm-4-plus
-# Requires: GLM_API_KEY in ~/.satan/.env
+satanclaw chat --provider zai --model glm-4-plus
+# Requires: GLM_API_KEY in ~/.satanclaw/.env
 
 # Kimi / Moonshot AI
-satan chat --provider kimi-coding --model moonshot-v1-auto
-# Requires: KIMI_API_KEY in ~/.satan/.env
+satanclaw chat --provider kimi-coding --model moonshot-v1-auto
+# Requires: KIMI_API_KEY in ~/.satanclaw/.env
 
 # MiniMax (global endpoint)
-satan chat --provider minimax --model MiniMax-M2.7
-# Requires: MINIMAX_API_KEY in ~/.satan/.env
+satanclaw chat --provider minimax --model MiniMax-M2.7
+# Requires: MINIMAX_API_KEY in ~/.satanclaw/.env
 
 # MiniMax (China endpoint)
-satan chat --provider minimax-cn --model MiniMax-M2.7
-# Requires: MINIMAX_CN_API_KEY in ~/.satan/.env
+satanclaw chat --provider minimax-cn --model MiniMax-M2.7
+# Requires: MINIMAX_CN_API_KEY in ~/.satanclaw/.env
 
 # Alibaba Cloud / DashScope (Qwen models)
-satan chat --provider alibaba --model qwen3.5-plus
-# Requires: DASHSCOPE_API_KEY in ~/.satan/.env
+satanclaw chat --provider alibaba --model qwen3.5-plus
+# Requires: DASHSCOPE_API_KEY in ~/.satanclaw/.env
 ```
 
 Or set the provider permanently in `config.yaml`:
@@ -173,11 +173,11 @@ Base URLs can be overridden with `GLM_BASE_URL`, `KIMI_BASE_URL`, `MINIMAX_BASE_
 
 ```bash
 # Use any available model
-satan chat --provider huggingface --model Qwen/Qwen3-235B-A22B-Thinking-2507
-# Requires: HF_TOKEN in ~/.satan/.env
+satanclaw chat --provider huggingface --model Qwen/Qwen3-235B-A22B-Thinking-2507
+# Requires: HF_TOKEN in ~/.satanclaw/.env
 
 # Short alias
-satan chat --provider hf --model deepseek-ai/DeepSeek-V3.2
+satanclaw chat --provider hf --model deepseek-ai/DeepSeek-V3.2
 ```
 
 Or set it permanently in `config.yaml`:
@@ -195,7 +195,7 @@ The base URL can be overridden with `HF_BASE_URL`.
 
 ## Custom & Self-Hosted LLM Providers
 
-Satan Agent works with **any OpenAI-compatible API endpoint**. If a server implements `/v1/chat/completions`, you can point Satan at it. This means you can use local models, GPU inference servers, multi-provider routers, or any third-party API.
+SatanClaw Agent works with **any OpenAI-compatible API endpoint**. If a server implements `/v1/chat/completions`, you can point SatanClaw at it. This means you can use local models, GPU inference servers, multi-provider routers, or any third-party API.
 
 ### General Setup
 
@@ -203,14 +203,14 @@ Three ways to configure a custom endpoint:
 
 **Interactive setup (recommended):**
 ```bash
-satan model
+satanclaw model
 # Select "Custom endpoint (self-hosted / VLLM / etc.)"
 # Enter: API base URL, API key, Model name
 ```
 
 **Manual config (`config.yaml`):**
 ```yaml
-# In ~/.satan/config.yaml
+# In ~/.satanclaw/config.yaml
 model:
   default: your-model-name
   provider: custom
@@ -219,7 +219,7 @@ model:
 ```
 
 :::warning Legacy env vars
-`OPENAI_BASE_URL` and `LLM_MODEL` in `.env` are **deprecated**. The CLI ignores `LLM_MODEL` entirely (only the gateway reads it). Use `satan model` or edit `config.yaml` directly — both persist correctly across restarts and Docker containers.
+`OPENAI_BASE_URL` and `LLM_MODEL` in `.env` are **deprecated**. The CLI ignores `LLM_MODEL` entirely (only the gateway reads it). Use `satanclaw model` or edit `config.yaml` directly — both persist correctly across restarts and Docker containers.
 :::
 
 Both approaches persist to `config.yaml`, which is the source of truth for model, provider, and base URL.
@@ -241,7 +241,7 @@ If you have **named custom providers** configured (see below), use the triple sy
 /model custom:work:llama3       # Use the "work" custom provider with llama3
 ```
 
-When switching providers, Satan persists the base URL and provider to config so the change survives restarts. When switching away from a custom endpoint to a built-in provider, the stale base URL is automatically cleared.
+When switching providers, SatanClaw persists the base URL and provider to config so the change survives restarts. When switching away from a custom endpoint to a built-in provider, the stale base URL is automatically cleared.
 
 :::tip
 `/model custom` (bare, no model name) queries your endpoint's `/models` API and auto-selects the model if exactly one is loaded. Useful for local servers running a single model.
@@ -261,10 +261,10 @@ ollama pull qwen2.5-coder:32b
 ollama serve   # Starts on port 11434
 ```
 
-Then configure Satan:
+Then configure SatanClaw:
 
 ```bash
-satan model
+satanclaw model
 # Select "Custom endpoint (self-hosted / VLLM / etc.)"
 # Enter URL: http://localhost:11434/v1
 # Skip API key (Ollama doesn't need one)
@@ -308,7 +308,7 @@ echo -e "FROM qwen2.5-coder:32b\nPARAMETER num_ctx 32768" > Modelfile
 ollama create qwen2.5-coder-32k -f Modelfile
 ```
 
-**You cannot set context length through the OpenAI-compatible API** (`/v1/chat/completions`). It must be configured server-side or via a Modelfile. This is the #1 source of confusion when integrating Ollama with tools like Satan.
+**You cannot set context length through the OpenAI-compatible API** (`/v1/chat/completions`). It must be configured server-side or via a Modelfile. This is the #1 source of confusion when integrating Ollama with tools like SatanClaw.
 :::
 
 **Verify your context is set correctly:**
@@ -335,13 +335,13 @@ vllm serve meta-llama/Llama-3.1-70B-Instruct \
   --max-model-len 65536 \
   --tensor-parallel-size 2 \
   --enable-auto-tool-choice \
-  --tool-call-parser satan
+  --tool-call-parser satanclaw
 ```
 
-Then configure Satan:
+Then configure SatanClaw:
 
 ```bash
-satan model
+satanclaw model
 # Select "Custom endpoint (self-hosted / VLLM / etc.)"
 # Enter URL: http://localhost:8000/v1
 # Skip API key (or enter one if you configured vLLM with --api-key)
@@ -354,10 +354,10 @@ satan model
 
 | Flag | Purpose |
 |------|---------|
-| `--enable-auto-tool-choice` | Required for `tool_choice: "auto"` (the default in Satan) |
+| `--enable-auto-tool-choice` | Required for `tool_choice: "auto"` (the default in SatanClaw) |
 | `--tool-call-parser <name>` | Parser for the model's tool call format |
 
-Supported parsers: `satan` (Qwen 2.5, Satan 2/3), `llama3_json` (Llama 3.x), `mistral`, `deepseek_v3`, `deepseek_v31`, `xlam`, `pythonic`. Without these flags, tool calls won't work — the model will output tool calls as text.
+Supported parsers: `satanclaw` (Qwen 2.5, SatanClaw 2/3), `llama3_json` (Llama 3.x), `mistral`, `deepseek_v3`, `deepseek_v31`, `xlam`, `pythonic`. Without these flags, tool calls won't work — the model will output tool calls as text.
 
 :::tip
 vLLM supports human-readable sizes: `--max-model-len 64k` (lowercase k = 1000, uppercase K = 1024).
@@ -379,10 +379,10 @@ python -m sglang.launch_server \
   --tool-call-parser qwen
 ```
 
-Then configure Satan:
+Then configure SatanClaw:
 
 ```bash
-satan model
+satanclaw model
 # Select "Custom endpoint (self-hosted / VLLM / etc.)"
 # Enter URL: http://localhost:30000/v1
 # Enter model name: meta-llama/Llama-3.1-70B-Instruct
@@ -415,10 +415,10 @@ cmake -B build && cmake --build build --config Release
 
 **Context length (`-c`):** Recent builds default to `0` which reads the model's training context from the GGUF metadata. For models with 128k+ training context, this can OOM trying to allocate the full KV cache. Set `-c` explicitly to what you need (32k–64k is a good range for agent use). If using parallel slots (`-np`), the total context is divided among slots — with `-c 32768 -np 4`, each slot only gets 8k.
 
-Then configure Satan to point at it:
+Then configure SatanClaw to point at it:
 
 ```bash
-satan model
+satanclaw model
 # Select "Custom endpoint (self-hosted / VLLM / etc.)"
 # Enter URL: http://localhost:8080/v1
 # Skip API key (local servers don't need one)
@@ -428,9 +428,9 @@ satan model
 This saves the endpoint to `config.yaml` so it persists across sessions.
 
 :::caution `--jinja` is required for tool calling
-Without `--jinja`, llama-server ignores the `tools` parameter entirely. The model will try to call tools by writing JSON in its response text, but Satan won't recognize it as a tool call — you'll see raw JSON like `{"name": "web_search", ...}` printed as a message instead of an actual search.
+Without `--jinja`, llama-server ignores the `tools` parameter entirely. The model will try to call tools by writing JSON in its response text, but SatanClaw won't recognize it as a tool call — you'll see raw JSON like `{"name": "web_search", ...}` printed as a message instead of an actual search.
 
-Native tool calling support (best performance): Llama 3.x, Qwen 2.5 (including Coder), Satan 2/3, Mistral, DeepSeek, Functionary. All other models use a generic handler that works but may be less efficient. See the [llama.cpp function calling docs](https://github.com/ggml-org/llama.cpp/blob/master/docs/function-calling.md) for the full list.
+Native tool calling support (best performance): Llama 3.x, Qwen 2.5 (including Coder), SatanClaw 2/3, Mistral, DeepSeek, Functionary. All other models use a generic handler that works but may be less efficient. See the [llama.cpp function calling docs](https://github.com/ggml-org/llama.cpp/blob/master/docs/function-calling.md) for the full list.
 
 You can verify tool support is active by checking `http://localhost:8080/props` — the `chat_template` field should be present.
 :::
@@ -452,10 +452,10 @@ lms server start                        # Starts on port 1234
 lms load qwen2.5-coder --context-length 32768
 ```
 
-Then configure Satan:
+Then configure SatanClaw:
 
 ```bash
-satan model
+satanclaw model
 # Select "Custom endpoint (self-hosted / VLLM / etc.)"
 # Enter URL: http://localhost:1234/v1
 # Skip API key (LM Studio doesn't require one)
@@ -474,13 +474,13 @@ Alternatively, use the CLI: `lms load model-name --context-length 32768`
 To set persistent per-model defaults: My Models tab → gear icon on the model → set context size.
 :::
 
-**Tool calling:** Supported since LM Studio 0.3.6. Models with native tool-calling training (Qwen 2.5, Llama 3.x, Mistral, Satan) are auto-detected and shown with a tool badge. Other models use a generic fallback that may be less reliable.
+**Tool calling:** Supported since LM Studio 0.3.6. Models with native tool-calling training (Qwen 2.5, Llama 3.x, Mistral, SatanClaw) are auto-detected and shown with a tool badge. Other models use a generic fallback that may be less reliable.
 
 ---
 
 ### Troubleshooting Local Models
 
-These issues affect **all** local inference servers when used with Satan.
+These issues affect **all** local inference servers when used with SatanClaw.
 
 #### Tool calls appear as text instead of executing
 
@@ -491,19 +491,19 @@ The model outputs something like `{"name": "web_search", "arguments": {...}}` as
 | Server | Fix |
 |--------|-----|
 | **llama.cpp** | Add `--jinja` to the startup command |
-| **vLLM** | Add `--enable-auto-tool-choice --tool-call-parser satan` |
+| **vLLM** | Add `--enable-auto-tool-choice --tool-call-parser satanclaw` |
 | **SGLang** | Add `--tool-call-parser qwen` (or appropriate parser) |
 | **Ollama** | Tool calling is enabled by default — make sure your model supports it (check with `ollama show model-name`) |
 | **LM Studio** | Update to 0.3.6+ and use a model with native tool support |
 
 #### Model seems to forget context or give incoherent responses
 
-**Cause:** Context window is too small. When the conversation exceeds the context limit, most servers silently drop older messages. Satan's system prompt + tool schemas alone can use 4k–8k tokens.
+**Cause:** Context window is too small. When the conversation exceeds the context limit, most servers silently drop older messages. SatanClaw's system prompt + tool schemas alone can use 4k–8k tokens.
 
 **Diagnosis:**
 
 ```bash
-# Check what Satan thinks the context is
+# Check what SatanClaw thinks the context is
 # Look at startup line: "Context limit: X tokens"
 
 # Check your server's actual context
@@ -516,7 +516,7 @@ The model outputs something like `{"name": "web_search", "arguments": {...}}` as
 
 #### "Context limit: 2048 tokens" at startup
 
-Satan auto-detects context length from your server's `/v1/models` endpoint. If the server reports a low value (or doesn't report one at all), Satan uses the model's declared limit which may be wrong.
+SatanClaw auto-detects context length from your server's `/v1/models` endpoint. If the server reports a low value (or doesn't report one at all), SatanClaw uses the model's declared limit which may be wrong.
 
 **Fix:** Set it explicitly in `config.yaml`:
 
@@ -531,8 +531,8 @@ model:
 #### Responses get cut off mid-sentence
 
 **Possible causes:**
-1. **Low `max_tokens` on the server** — SGLang defaults to 128 tokens per response. Set `--default-max-tokens` on the server or configure Satan with `model.max_tokens` in config.yaml.
-2. **Context exhaustion** — The model filled its context window. Increase context length or enable [context compression](/docs/user-guide/configuration#context-compression) in Satan.
+1. **Low `max_tokens` on the server** — SGLang defaults to 128 tokens per response. Set `--default-max-tokens` on the server or configure SatanClaw with `model.max_tokens` in config.yaml.
+2. **Context exhaustion** — The model filled its context window. Increase context length or enable [context compression](/docs/user-guide/configuration#context-compression) in SatanClaw.
 
 ---
 
@@ -549,7 +549,7 @@ litellm --model anthropic/claude-sonnet-4 --port 4000
 litellm --config litellm_config.yaml --port 4000
 ```
 
-Then configure Satan with `satan model` → Custom endpoint → `http://localhost:4000/v1`.
+Then configure SatanClaw with `satanclaw model` → Custom endpoint → `http://localhost:4000/v1`.
 
 Example `litellm_config.yaml` with fallback:
 ```yaml
@@ -577,7 +577,7 @@ router_settings:
 npx @blockrun/clawrouter    # Starts on port 8402
 ```
 
-Then configure Satan with `satan model` → Custom endpoint → `http://localhost:8402/v1` → model name `blockrun/auto`.
+Then configure SatanClaw with `satanclaw model` → Custom endpoint → `http://localhost:8402/v1` → model name `blockrun/auto`.
 
 Routing profiles:
 | Profile | Strategy | Savings |
@@ -611,7 +611,7 @@ Any service with an OpenAI-compatible API works. Some popular options:
 | [LocalAI](https://localai.io) | `http://localhost:8080/v1` | Self-hosted, multi-model |
 | [Jan](https://jan.ai) | `http://localhost:1337/v1` | Desktop app with local models |
 
-Configure any of these with `satan model` → Custom endpoint, or in `config.yaml`:
+Configure any of these with `satanclaw model` → Custom endpoint, or in `config.yaml`:
 
 ```yaml
 model:
@@ -625,7 +625,7 @@ model:
 
 ### Context Length Detection
 
-Satan uses a multi-source resolution chain to detect the correct context window for your model and provider:
+SatanClaw uses a multi-source resolution chain to detect the correct context window for your model and provider:
 
 1. **Config override** — `model.context_length` in config.yaml (highest priority)
 2. **Custom provider per-model** — `custom_providers[].models.<id>.context_length`
@@ -661,7 +661,7 @@ custom_providers:
         context_length: 65536
 ```
 
-`satan model` will prompt for context length when configuring a custom endpoint. Leave it blank for auto-detection.
+`satanclaw model` will prompt for context length when configuring a custom endpoint. Leave it blank for auto-detection.
 
 :::tip When to set this manually
 - You're using Ollama with a custom `num_ctx` that's lower than the model's maximum
@@ -679,7 +679,7 @@ If you work with multiple custom endpoints (e.g., a local dev server and a remot
 custom_providers:
   - name: local
     base_url: http://localhost:8080/v1
-    # api_key omitted — Satan uses "no-key-required" for keyless local servers
+    # api_key omitted — SatanClaw uses "no-key-required" for keyless local servers
   - name: work
     base_url: https://gpu-server.internal.corp/v1
     api_key: corp-api-key
@@ -698,7 +698,7 @@ Switch between them mid-session with the triple syntax:
 /model custom:anthropic-proxy:claude-sonnet-4  # Use the proxy
 ```
 
-You can also select named custom providers from the interactive `satan model` menu.
+You can also select named custom providers from the interactive `satanclaw model` menu.
 
 ---
 
@@ -717,7 +717,7 @@ You can also select named custom providers from the interactive `satan model` me
 | **Chinese AI models** | z.ai (GLM), Kimi/Moonshot, or MiniMax (first-class providers) |
 
 :::tip
-You can switch between providers at any time with `satan model` — no restart required. Your conversation history, memory, and skills carry over regardless of which provider you use.
+You can switch between providers at any time with `satanclaw model` — no restart required. Your conversation history, memory, and skills carry over regardless of which provider you use.
 :::
 
 ## Optional API Keys
@@ -734,7 +734,7 @@ You can switch between providers at any time with `satan model` — no restart r
 
 ### Self-Hosting Firecrawl
 
-By default, Satan uses the [Firecrawl cloud API](https://firecrawl.dev/) for web search and scraping. If you prefer to run Firecrawl locally, you can point Satan at a self-hosted instance instead. See Firecrawl's [SELF_HOST.md](https://github.com/firecrawl/firecrawl/blob/main/SELF_HOST.md) for complete setup instructions.
+By default, SatanClaw uses the [Firecrawl cloud API](https://firecrawl.dev/) for web search and scraping. If you prefer to run Firecrawl locally, you can point SatanClaw at a self-hosted instance instead. See Firecrawl's [SELF_HOST.md](https://github.com/firecrawl/firecrawl/blob/main/SELF_HOST.md) for complete setup instructions.
 
 **What you get:** No API key required, no rate limits, no per-page costs, full data sovereignty.
 
@@ -750,16 +750,16 @@ By default, Satan uses the [Firecrawl cloud API](https://firecrawl.dev/) for web
    docker compose up -d
    ```
 
-2. Point Satan at your instance (no API key needed):
+2. Point SatanClaw at your instance (no API key needed):
    ```bash
-   satan config set FIRECRAWL_API_URL http://localhost:3002
+   satanclaw config set FIRECRAWL_API_URL http://localhost:3002
    ```
 
 You can also set both `FIRECRAWL_API_KEY` and `FIRECRAWL_API_URL` if your self-hosted instance has authentication enabled.
 
 ## OpenRouter Provider Routing
 
-When using OpenRouter, you can control how requests are routed across providers. Add a `provider_routing` section to `~/.satan/config.yaml`:
+When using OpenRouter, you can control how requests are routed across providers. Add a `provider_routing` section to `~/.satanclaw/config.yaml`:
 
 ```yaml
 provider_routing:
@@ -775,7 +775,7 @@ provider_routing:
 
 ## Fallback Model
 
-Configure a backup provider:model that Satan switches to automatically when your primary model fails (rate limits, server errors, auth failures):
+Configure a backup provider:model that SatanClaw switches to automatically when your primary model fails (rate limits, server errors, auth failures):
 
 ```yaml
 fallback_model:
@@ -795,7 +795,7 @@ Fallback is configured exclusively through `config.yaml` — there are no enviro
 
 ## Smart Model Routing
 
-Optional cheap-vs-strong routing lets Satan keep your main model for complex work while sending very short/simple turns to a cheaper model.
+Optional cheap-vs-strong routing lets SatanClaw keep your main model for complex work while sending very short/simple turns to a cheaper model.
 
 ```yaml
 smart_model_routing:
@@ -810,9 +810,9 @@ smart_model_routing:
 ```
 
 How it works:
-- If a turn is short, single-line, and does not look code/tool/debug heavy, Satan may route it to `cheap_model`
-- If the turn looks complex, Satan stays on your primary model/provider
-- If the cheap route cannot be resolved cleanly, Satan falls back to the primary model automatically
+- If a turn is short, single-line, and does not look code/tool/debug heavy, SatanClaw may route it to `cheap_model`
+- If the turn looks complex, SatanClaw stays on your primary model/provider
+- If the cheap route cannot be resolved cleanly, SatanClaw falls back to the primary model automatically
 
 This is intentionally conservative. It is meant for quick, low-stakes turns like:
 - short factual questions

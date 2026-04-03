@@ -1,5 +1,5 @@
 """
-Tests for mcp_serve — Satan MCP server.
+Tests for mcp_serve — SatanClaw MCP server.
 
 Three layers of tests:
 1. Unit tests — helpers, content extraction, attachment parsing
@@ -25,12 +25,12 @@ import pytest
 # ---------------------------------------------------------------------------
 
 @pytest.fixture(autouse=True)
-def _isolate_satan_home(tmp_path, monkeypatch):
+def _isolate_satanclaw_home(tmp_path, monkeypatch):
     """Redirect HERMES_HOME to a temp directory."""
     monkeypatch.setenv("HERMES_HOME", str(tmp_path))
     try:
-        import satan_constants
-        monkeypatch.setattr(satan_constants, "get_satan_home", lambda: tmp_path)
+        import satanclaw_constants
+        monkeypatch.setattr(satanclaw_constants, "get_satanclaw_home", lambda: tmp_path)
     except (ImportError, AttributeError):
         pass
     return tmp_path
@@ -122,7 +122,7 @@ def populated_sessions_dir(sessions_dir, sample_sessions):
 
 
 def _create_test_db(db_path, session_id, messages):
-    """Create a minimal SQLite DB mimicking satan_state schema."""
+    """Create a minimal SQLite DB mimicking satanclaw_state schema."""
     conn = sqlite3.connect(str(db_path))
     conn.execute("""
         CREATE TABLE IF NOT EXISTS sessions (
@@ -883,7 +883,7 @@ class TestCliIntegration:
 
         import argparse
         args = argparse.Namespace(mcp_action="serve", verbose=True)
-        from satan_cli.mcp_config import mcp_command
+        from satanclaw_cli.mcp_config import mcp_command
         mcp_command(args)
         mock_run.assert_called_once_with(verbose=True)
 

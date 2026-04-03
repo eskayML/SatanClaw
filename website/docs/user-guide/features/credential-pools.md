@@ -7,7 +7,7 @@ sidebar_position: 9
 
 # Credential Pools
 
-Credential pools let you register multiple API keys or OAuth tokens for the same provider. When one key hits a rate limit or billing quota, Satan automatically rotates to the next healthy key — keeping your session alive without switching providers.
+Credential pools let you register multiple API keys or OAuth tokens for the same provider. When one key hits a rate limit or billing quota, SatanClaw automatically rotates to the next healthy key — keeping your session alive without switching providers.
 
 This is different from [fallback providers](./fallback-providers.md), which switch to a *different* provider entirely. Credential pools are same-provider rotation; fallback providers are cross-provider failover. Pools are tried first — if all pool keys are exhausted, *then* the fallback provider activates.
 
@@ -31,24 +31,24 @@ Your request
 
 ## Quick Start
 
-If you already have an API key set in `.env`, Satan auto-discovers it as a 1-key pool. To benefit from pooling, add more keys:
+If you already have an API key set in `.env`, SatanClaw auto-discovers it as a 1-key pool. To benefit from pooling, add more keys:
 
 ```bash
 # Add a second OpenRouter key
-satan auth add openrouter --api-key sk-or-v1-your-second-key
+satanclaw auth add openrouter --api-key sk-or-v1-your-second-key
 
 # Add a second Anthropic key
-satan auth add anthropic --type api-key --api-key sk-ant-api03-your-second-key
+satanclaw auth add anthropic --type api-key --api-key sk-ant-api03-your-second-key
 
 # Add an Anthropic OAuth credential (Claude Code subscription)
-satan auth add anthropic --type oauth
+satanclaw auth add anthropic --type oauth
 # Opens browser for OAuth login
 ```
 
 Check your pools:
 
 ```bash
-satan auth list
+satanclaw auth list
 ```
 
 Output:
@@ -58,7 +58,7 @@ openrouter (2 credentials):
   #2  backup-key           api_key manual
 
 anthropic (3 credentials):
-  #1  satan_pkce          oauth   satan_pkce ←
+  #1  satanclaw_pkce          oauth   satanclaw_pkce ←
   #2  claude_code          oauth   claude_code
   #3  ANTHROPIC_API_KEY    api_key env:ANTHROPIC_API_KEY
 ```
@@ -67,10 +67,10 @@ The `←` marks the currently selected credential.
 
 ## Interactive Management
 
-Run `satan auth` with no subcommand for an interactive wizard:
+Run `satanclaw auth` with no subcommand for an interactive wizard:
 
 ```bash
-satan auth
+satanclaw auth
 ```
 
 This shows your full pool status and offers a menu:
@@ -97,18 +97,18 @@ Type [1/2]:
 
 | Command | Description |
 |---------|-------------|
-| `satan auth` | Interactive pool management wizard |
-| `satan auth list` | Show all pools and credentials |
-| `satan auth list <provider>` | Show a specific provider's pool |
-| `satan auth add <provider>` | Add a credential (prompts for type and key) |
-| `satan auth add <provider> --type api-key --api-key <key>` | Add an API key non-interactively |
-| `satan auth add <provider> --type oauth` | Add an OAuth credential via browser login |
-| `satan auth remove <provider> <index>` | Remove credential by 1-based index |
-| `satan auth reset <provider>` | Clear all cooldowns/exhaustion status |
+| `satanclaw auth` | Interactive pool management wizard |
+| `satanclaw auth list` | Show all pools and credentials |
+| `satanclaw auth list <provider>` | Show a specific provider's pool |
+| `satanclaw auth add <provider>` | Add a credential (prompts for type and key) |
+| `satanclaw auth add <provider> --type api-key --api-key <key>` | Add an API key non-interactively |
+| `satanclaw auth add <provider> --type oauth` | Add an OAuth credential via browser login |
+| `satanclaw auth remove <provider> <index>` | Remove credential by 1-based index |
+| `satanclaw auth reset <provider>` | Clear all cooldowns/exhaustion status |
 
 ## Rotation Strategies
 
-Configure via `satan auth` → "Set rotation strategy" or in `config.yaml`:
+Configure via `satanclaw auth` → "Set rotation strategy" or in `config.yaml`:
 
 ```yaml
 credential_pool_strategies:
@@ -140,17 +140,17 @@ The `has_retried_429` flag resets on every successful API call, so a single tran
 
 Custom OpenAI-compatible endpoints (Together.ai, RunPod, local servers) get their own pools, keyed by the endpoint name from `custom_providers` in config.yaml.
 
-When you set up a custom endpoint via `satan model`, it auto-generates a name like "Together.ai" or "Local (localhost:8080)". This name becomes the pool key.
+When you set up a custom endpoint via `satanclaw model`, it auto-generates a name like "Together.ai" or "Local (localhost:8080)". This name becomes the pool key.
 
 ```bash
-# After setting up a custom endpoint via satan model:
-satan auth list
+# After setting up a custom endpoint via satanclaw model:
+satanclaw auth list
 # Shows:
 #   Together.ai (1 credential):
 #     #1  config key    api_key config:Together.ai ←
 
 # Add a second key for the same endpoint:
-satan auth add Together.ai --api-key sk-together-second-key
+satanclaw auth add Together.ai --api-key sk-together-second-key
 ```
 
 Custom endpoint pools are stored in `auth.json` under `credential_pool` with a `custom:` prefix:
@@ -166,18 +166,18 @@ Custom endpoint pools are stored in `auth.json` under `credential_pool` with a `
 
 ## Auto-Discovery
 
-Satan automatically discovers credentials from multiple sources and seeds the pool on startup:
+SatanClaw automatically discovers credentials from multiple sources and seeds the pool on startup:
 
 | Source | Example | Auto-seeded? |
 |--------|---------|-------------|
 | Environment variables | `OPENROUTER_API_KEY`, `ANTHROPIC_API_KEY` | Yes |
 | OAuth tokens (auth.json) | Codex device code, Nous device code | Yes |
 | Claude Code credentials | `~/.claude/.credentials.json` | Yes (Anthropic) |
-| Satan PKCE OAuth | `~/.satan/auth.json` | Yes (Anthropic) |
+| SatanClaw PKCE OAuth | `~/.satanclaw/auth.json` | Yes (Anthropic) |
 | Custom endpoint config | `model.api_key` in config.yaml | Yes (custom endpoints) |
-| Manual entries | Added via `satan auth add` | Persisted in auth.json |
+| Manual entries | Added via `satanclaw auth add` | Persisted in auth.json |
 
-Auto-seeded entries are updated on each pool load — if you remove an env var, its pool entry is automatically pruned. Manual entries (added via `satan auth add`) are never auto-pruned.
+Auto-seeded entries are updated on each pool load — if you remove an env var, its pool entry is automatically pruned. Manual entries (added via `satanclaw auth add`) are never auto-pruned.
 
 ## Thread Safety
 
@@ -190,13 +190,13 @@ For the full data flow diagram, see [`docs/credential-pool-flow.excalidraw`](htt
 The credential pool integrates at the provider resolution layer:
 
 1. **`agent/credential_pool.py`** — Pool manager: storage, selection, rotation, cooldowns
-2. **`satan_cli/auth_commands.py`** — CLI commands and interactive wizard
-3. **`satan_cli/runtime_provider.py`** — Pool-aware credential resolution
+2. **`satanclaw_cli/auth_commands.py`** — CLI commands and interactive wizard
+3. **`satanclaw_cli/runtime_provider.py`** — Pool-aware credential resolution
 4. **`run_agent.py`** — Error recovery: 429/402/401 → pool rotation → fallback
 
 ## Storage
 
-Pool state is stored in `~/.satan/auth.json` under the `credential_pool` key:
+Pool state is stored in `~/.satanclaw/auth.json` under the `credential_pool` key:
 
 ```json
 {

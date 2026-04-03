@@ -6,14 +6,14 @@ description: "Session persistence, resume, search, management, and per-platform 
 
 # Sessions
 
-Satan Agent automatically saves every conversation as a session. Sessions enable conversation resume, cross-session search, and full conversation history management.
+SatanClaw Agent automatically saves every conversation as a session. Sessions enable conversation resume, cross-session search, and full conversation history management.
 
 ## How Sessions Work
 
 Every conversation — whether from the CLI, Telegram, Discord, WhatsApp, or Slack — is stored as a session with full message history. Sessions are tracked in two complementary systems:
 
-1. **SQLite database** (`~/.satan/state.db`) — structured session metadata with FTS5 full-text search
-2. **JSONL transcripts** (`~/.satan/sessions/`) — raw conversation transcripts including tool calls (gateway)
+1. **SQLite database** (`~/.satanclaw/state.db`) — structured session metadata with FTS5 full-text search
+2. **JSONL transcripts** (`~/.satanclaw/sessions/`) — raw conversation transcripts including tool calls (gateway)
 
 The SQLite database stores:
 - Session ID, source platform, user ID
@@ -31,7 +31,7 @@ Each session is tagged with its source platform:
 
 | Source | Description |
 |--------|-------------|
-| `cli` | Interactive CLI (`satan` or `satan chat`) |
+| `cli` | Interactive CLI (`satanclaw` or `satanclaw chat`) |
 | `telegram` | Telegram messenger |
 | `discord` | Discord server/DM |
 | `whatsapp` | WhatsApp messenger |
@@ -45,12 +45,12 @@ Resume previous conversations from the CLI using `--continue` or `--resume`:
 
 ```bash
 # Resume the most recent CLI session
-satan --continue
-satan -c
+satanclaw --continue
+satanclaw -c
 
 # Or with the chat subcommand
-satan chat --continue
-satan chat -c
+satanclaw chat --continue
+satanclaw chat -c
 ```
 
 This looks up the most recent `cli` session from the SQLite database and loads its full conversation history.
@@ -61,34 +61,34 @@ If you've given a session a title (see [Session Naming](#session-naming) below),
 
 ```bash
 # Resume a named session
-satan -c "my project"
+satanclaw -c "my project"
 
 # If there are lineage variants (my project, my project #2, my project #3),
 # this automatically resumes the most recent one
-satan -c "my project"   # → resumes "my project #3"
+satanclaw -c "my project"   # → resumes "my project #3"
 ```
 
 ### Resume Specific Session
 
 ```bash
 # Resume a specific session by ID
-satan --resume 20250305_091523_a1b2c3d4
-satan -r 20250305_091523_a1b2c3d4
+satanclaw --resume 20250305_091523_a1b2c3d4
+satanclaw -r 20250305_091523_a1b2c3d4
 
 # Resume by title
-satan --resume "refactoring auth"
+satanclaw --resume "refactoring auth"
 
 # Or with the chat subcommand
-satan chat --resume 20250305_091523_a1b2c3d4
+satanclaw chat --resume 20250305_091523_a1b2c3d4
 ```
 
-Session IDs are shown when you exit a CLI session, and can be found with `satan sessions list`.
+Session IDs are shown when you exit a CLI session, and can be found with `satanclaw sessions list`.
 
 ### Conversation Recap on Resume
 
-When you resume a session, Satan displays a compact recap of the previous conversation in a styled panel before the input prompt:
+When you resume a session, SatanClaw displays a compact recap of the previous conversation in a styled panel before the input prompt:
 
-<img className="docs-terminal-figure" src="/img/docs/session-recap.svg" alt="Stylized preview of the Previous Conversation recap panel shown when resuming a Satan session." />
+<img className="docs-terminal-figure" src="/img/docs/session-recap.svg" alt="Stylized preview of the Previous Conversation recap panel shown when resuming a SatanClaw session." />
 <p className="docs-figure-caption">Resume mode shows a compact recap panel with recent user and assistant turns before returning you to the live prompt.</p>
 
 The recap:
@@ -99,7 +99,7 @@ The recap:
 - **Caps** at the last 10 exchanges with a "... N earlier messages ..." indicator
 - Uses **dim styling** to distinguish from the active conversation
 
-To disable the recap and keep the minimal one-liner behavior, set in `~/.satan/config.yaml`:
+To disable the recap and keep the minimal one-liner behavior, set in `~/.satanclaw/config.yaml`:
 
 ```yaml
 display:
@@ -116,7 +116,7 @@ Give sessions human-readable titles so you can find and resume them easily.
 
 ### Auto-Generated Titles
 
-Satan automatically generates a short descriptive title (3–7 words) for each session after the first exchange. This runs in a background thread using a fast auxiliary model, so it adds no latency. You'll see auto-generated titles when browsing sessions with `satan sessions list` or `satan sessions browse`.
+SatanClaw automatically generates a short descriptive title (3–7 words) for each session after the first exchange. This runs in a background thread using a fast auxiliary model, so it adds no latency. You'll see auto-generated titles when browsing sessions with `satanclaw sessions list` or `satanclaw sessions browse`.
 
 Auto-titling only fires once per session and is skipped if you've already set a title manually.
 
@@ -133,7 +133,7 @@ The title is applied immediately. If the session hasn't been created in the data
 You can also rename existing sessions from the command line:
 
 ```bash
-satan sessions rename 20250305_091523_a1b2c3d4 "refactoring auth module"
+satanclaw sessions rename 20250305_091523_a1b2c3d4 "refactoring auth module"
 ```
 
 ### Title Rules
@@ -145,13 +145,13 @@ satan sessions rename 20250305_091523_a1b2c3d4 "refactoring auth module"
 
 ### Auto-Lineage on Compression
 
-When a session's context is compressed (manually via `/compress` or automatically), Satan creates a new continuation session. If the original had a title, the new session automatically gets a numbered title:
+When a session's context is compressed (manually via `/compress` or automatically), SatanClaw creates a new continuation session. If the original had a title, the new session automatically gets a numbered title:
 
 ```
 "my project" → "my project #2" → "my project #3"
 ```
 
-When you resume by name (`satan -c "my project"`), it automatically picks the most recent session in the lineage.
+When you resume by name (`satanclaw -c "my project"`), it automatically picks the most recent session in the lineage.
 
 ### /title in Messaging Platforms
 
@@ -162,19 +162,19 @@ The `/title` command works in all gateway platforms (Telegram, Discord, Slack, W
 
 ## Session Management Commands
 
-Satan provides a full set of session management commands via `satan sessions`:
+SatanClaw provides a full set of session management commands via `satanclaw sessions`:
 
 ### List Sessions
 
 ```bash
 # List recent sessions (default: last 20)
-satan sessions list
+satanclaw sessions list
 
 # Filter by platform
-satan sessions list --source telegram
+satanclaw sessions list --source telegram
 
 # Show more sessions
-satan sessions list --limit 50
+satanclaw sessions list --limit 50
 ```
 
 When sessions have titles, the output shows titles, previews, and relative timestamps:
@@ -200,13 +200,13 @@ What's the weather in Las Vegas?                    3d ago        tele   2025030
 
 ```bash
 # Export all sessions to a JSONL file
-satan sessions export backup.jsonl
+satanclaw sessions export backup.jsonl
 
 # Export sessions from a specific platform
-satan sessions export telegram-history.jsonl --source telegram
+satanclaw sessions export telegram-history.jsonl --source telegram
 
 # Export a single session
-satan sessions export session.jsonl --session-id 20250305_091523_a1b2c3d4
+satanclaw sessions export session.jsonl --session-id 20250305_091523_a1b2c3d4
 ```
 
 Exported files contain one JSON object per line with full session metadata and all messages.
@@ -215,20 +215,20 @@ Exported files contain one JSON object per line with full session metadata and a
 
 ```bash
 # Delete a specific session (with confirmation)
-satan sessions delete 20250305_091523_a1b2c3d4
+satanclaw sessions delete 20250305_091523_a1b2c3d4
 
 # Delete without confirmation
-satan sessions delete 20250305_091523_a1b2c3d4 --yes
+satanclaw sessions delete 20250305_091523_a1b2c3d4 --yes
 ```
 
 ### Rename a Session
 
 ```bash
 # Set or change a session's title
-satan sessions rename 20250305_091523_a1b2c3d4 "debugging auth flow"
+satanclaw sessions rename 20250305_091523_a1b2c3d4 "debugging auth flow"
 
 # Multi-word titles don't need quotes in the CLI
-satan sessions rename 20250305_091523_a1b2c3d4 debugging auth flow
+satanclaw sessions rename 20250305_091523_a1b2c3d4 debugging auth flow
 ```
 
 If the title is already in use by another session, an error is shown.
@@ -237,16 +237,16 @@ If the title is already in use by another session, an error is shown.
 
 ```bash
 # Delete ended sessions older than 90 days (default)
-satan sessions prune
+satanclaw sessions prune
 
 # Custom age threshold
-satan sessions prune --older-than 30
+satanclaw sessions prune --older-than 30
 
 # Only prune sessions from a specific platform
-satan sessions prune --source telegram --older-than 60
+satanclaw sessions prune --source telegram --older-than 60
 
 # Skip confirmation
-satan sessions prune --older-than 30 --yes
+satanclaw sessions prune --older-than 30 --yes
 ```
 
 :::info
@@ -256,7 +256,7 @@ Pruning only deletes **ended** sessions (sessions that have been explicitly ende
 ### Session Statistics
 
 ```bash
-satan sessions stats
+satanclaw sessions stats
 ```
 
 Output:
@@ -270,7 +270,7 @@ Total messages: 3847
 Database size: 12.4 MB
 ```
 
-For deeper analytics — token usage, cost estimates, tool breakdown, and activity patterns — use [`satan insights`](/docs/reference/cli-commands#satan-insights).
+For deeper analytics — token usage, cost estimates, tool breakdown, and activity patterns — use [`satanclaw insights`](/docs/reference/cli-commands#satanclaw-insights).
 
 ## Session Search Tool
 
@@ -314,13 +314,13 @@ On messaging platforms, sessions are keyed by a deterministic session key built 
 | Group thread/topic | `agent:main:<platform>:group:<chat_id>:<thread_id>:<user_id>` | Per-user inside that thread/topic |
 | Channel | `agent:main:<platform>:channel:<chat_id>:<user_id>` | Per-user inside the channel when the platform exposes a user ID |
 
-When Satan cannot get a participant identifier for a shared chat, it falls back to one shared session for that room.
+When SatanClaw cannot get a participant identifier for a shared chat, it falls back to one shared session for that room.
 
 ### Shared vs Isolated Group Sessions
 
-By default, Satan uses `group_sessions_per_user: true` in `config.yaml`. That means:
+By default, SatanClaw uses `group_sessions_per_user: true` in `config.yaml`. That means:
 
-- Alice and Bob can both talk to Satan in the same Discord channel without sharing transcript history
+- Alice and Bob can both talk to SatanClaw in the same Discord channel without sharing transcript history
 - one user's long tool-heavy task does not pollute another user's context window
 - interrupt handling also stays per-user because the running-agent key matches the isolated session key
 
@@ -349,9 +349,9 @@ Sessions with **active background processes** are never auto-reset, regardless o
 
 | What | Path | Description |
 |------|------|-------------|
-| SQLite database | `~/.satan/state.db` | All session metadata + messages with FTS5 |
-| Gateway transcripts | `~/.satan/sessions/` | JSONL transcripts per session + sessions.json index |
-| Gateway index | `~/.satan/sessions/sessions.json` | Maps session keys to active session IDs |
+| SQLite database | `~/.satanclaw/state.db` | All session metadata + messages with FTS5 |
+| Gateway transcripts | `~/.satanclaw/sessions/` | JSONL transcripts per session + sessions.json index |
+| Gateway index | `~/.satanclaw/sessions/sessions.json` | Maps session keys to active session IDs |
 
 The SQLite database uses WAL mode for concurrent readers and a single writer, which suits the gateway's multi-platform architecture well.
 
@@ -375,14 +375,14 @@ Key tables in `state.db`:
 
 ```bash
 # Prune sessions older than 90 days
-satan sessions prune
+satanclaw sessions prune
 
 # Delete a specific session
-satan sessions delete <session_id>
+satanclaw sessions delete <session_id>
 
 # Export before pruning (backup)
-satan sessions export backup.jsonl
-satan sessions prune --older-than 30 --yes
+satanclaw sessions export backup.jsonl
+satanclaw sessions prune --older-than 30 --yes
 ```
 
 :::tip

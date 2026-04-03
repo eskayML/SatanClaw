@@ -1,6 +1,6 @@
 """Tests for cmd_update gateway auto-restart — systemd + launchd coverage.
 
-Ensures ``satan update`` correctly detects running gateways managed by
+Ensures ``satanclaw update`` correctly detects running gateways managed by
 systemd (Linux) or launchd (macOS) and restarts/informs the user properly,
 rather than leaving zombie processes or telling users to manually restart
 when launchd will auto-respawn.
@@ -12,8 +12,8 @@ from unittest.mock import patch, MagicMock
 
 import pytest
 
-import satan_cli.gateway as gateway_cli
-from satan_cli.main import cmd_update
+import satanclaw_cli.gateway as gateway_cli
+from satanclaw_cli.main import cmd_update
 
 
 # ---------------------------------------------------------------------------
@@ -66,10 +66,10 @@ def _make_run_side_effect(
                 return subprocess.CompletedProcess(cmd, system_restart_rc, stdout="", stderr=stderr)
             return subprocess.CompletedProcess(cmd, 0, stdout="", stderr="")
 
-        # launchctl list ai.satan.gateway
+        # launchctl list ai.satanclaw.gateway
         if "launchctl" in joined and "list" in joined:
             if launchctl_loaded:
-                return subprocess.CompletedProcess(cmd, 0, stdout="PID\tStatus\tLabel\n123\t0\tai.satan.gateway\n", stderr="")
+                return subprocess.CompletedProcess(cmd, 0, stdout="PID\tStatus\tLabel\n123\t0\tai.satanclaw.gateway\n", stderr="")
             return subprocess.CompletedProcess(cmd, 113, stdout="", stderr="Could not find service")
 
         return subprocess.CompletedProcess(cmd, 0, stdout="", stderr="")
@@ -185,7 +185,7 @@ class TestLaunchdPlistRefresh:
     refresh_systemd_unit_if_needed)."""
 
     def test_refresh_rewrites_stale_plist(self, tmp_path, monkeypatch):
-        plist_path = tmp_path / "ai.satan.gateway.plist"
+        plist_path = tmp_path / "ai.satanclaw.gateway.plist"
         plist_path.write_text("<plist>old content</plist>")
 
         monkeypatch.setattr(gateway_cli, "get_launchd_plist_path", lambda: plist_path)
@@ -207,7 +207,7 @@ class TestLaunchdPlistRefresh:
         assert any("load" in str(c) for c in calls)
 
     def test_refresh_skips_when_current(self, tmp_path, monkeypatch):
-        plist_path = tmp_path / "ai.satan.gateway.plist"
+        plist_path = tmp_path / "ai.satanclaw.gateway.plist"
         monkeypatch.setattr(gateway_cli, "get_launchd_plist_path", lambda: plist_path)
 
         # Write the current expected content
@@ -233,7 +233,7 @@ class TestLaunchdPlistRefresh:
 
     def test_launchd_start_calls_refresh(self, tmp_path, monkeypatch):
         """launchd_start refreshes the plist before starting."""
-        plist_path = tmp_path / "ai.satan.gateway.plist"
+        plist_path = tmp_path / "ai.satanclaw.gateway.plist"
         plist_path.write_text("<plist>old</plist>")
         monkeypatch.setattr(gateway_cli, "get_launchd_plist_path", lambda: plist_path)
 
@@ -253,7 +253,7 @@ class TestLaunchdPlistRefresh:
 
     def test_launchd_start_recreates_missing_plist_and_loads_service(self, tmp_path, monkeypatch):
         """launchd_start self-heals when the plist file is missing entirely."""
-        plist_path = tmp_path / "ai.satan.gateway.plist"
+        plist_path = tmp_path / "ai.satanclaw.gateway.plist"
         assert not plist_path.exists()
 
         monkeypatch.setattr(gateway_cli, "get_launchd_plist_path", lambda: plist_path)
@@ -288,9 +288,9 @@ class TestCmdUpdateLaunchdRestart:
         self, mock_run, _mock_which, mock_args, capsys, tmp_path, monkeypatch,
     ):
         """When launchd is running the gateway, update should print
-        'auto-restart via launchd' instead of 'Restart it with: satan gateway run'."""
+        'auto-restart via launchd' instead of 'Restart it with: satanclaw gateway run'."""
         # Create a fake launchd plist so is_macos + plist.exists() passes
-        plist_path = tmp_path / "ai.satan.gateway.plist"
+        plist_path = tmp_path / "ai.satanclaw.gateway.plist"
         plist_path.write_text("<plist/>")
 
         monkeypatch.setattr(
@@ -313,7 +313,7 @@ class TestCmdUpdateLaunchdRestart:
 
         captured = capsys.readouterr().out
         assert "Restarting gateway service" in captured
-        assert "Restart it with: satan gateway run" not in captured
+        assert "Restart it with: satanclaw gateway run" not in captured
         mock_launchd_restart.assert_called_once_with()
 
     @patch("shutil.which", return_value=None)
@@ -325,7 +325,7 @@ class TestCmdUpdateLaunchdRestart:
         monkeypatch.setattr(
             gateway_cli, "is_macos", lambda: True,
         )
-        plist_path = tmp_path / "ai.satan.gateway.plist"
+        plist_path = tmp_path / "ai.satanclaw.gateway.plist"
         # plist does NOT exist — no launchd service
         monkeypatch.setattr(
             gateway_cli, "get_launchd_plist_path", lambda: plist_path,
@@ -342,7 +342,7 @@ class TestCmdUpdateLaunchdRestart:
             cmd_update(mock_args)
 
         captured = capsys.readouterr().out
-        assert "Restart it with: satan gateway run" in captured
+        assert "Restart it with: satanclaw gateway run" in captured
         assert "Gateway restarted via launchd" not in captured
 
     @patch("shutil.which", return_value=None)

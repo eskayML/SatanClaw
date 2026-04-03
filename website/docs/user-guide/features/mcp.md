@@ -1,33 +1,33 @@
 ---
 sidebar_position: 4
 title: "MCP (Model Context Protocol)"
-description: "Connect Satan Agent to external tool servers via MCP — and control exactly which MCP tools Satan loads"
+description: "Connect SatanClaw Agent to external tool servers via MCP — and control exactly which MCP tools SatanClaw loads"
 ---
 
 # MCP (Model Context Protocol)
 
-MCP lets Satan Agent connect to external tool servers so the agent can use tools that live outside Satan itself — GitHub, databases, file systems, browser stacks, internal APIs, and more.
+MCP lets SatanClaw Agent connect to external tool servers so the agent can use tools that live outside SatanClaw itself — GitHub, databases, file systems, browser stacks, internal APIs, and more.
 
-If you have ever wanted Satan to use a tool that already exists somewhere else, MCP is usually the cleanest way to do it.
+If you have ever wanted SatanClaw to use a tool that already exists somewhere else, MCP is usually the cleanest way to do it.
 
 ## What MCP gives you
 
-- Access to external tool ecosystems without writing a native Satan tool first
+- Access to external tool ecosystems without writing a native SatanClaw tool first
 - Local stdio servers and remote HTTP MCP servers in the same config
 - Automatic tool discovery and registration at startup
 - Utility wrappers for MCP resources and prompts when supported by the server
-- Per-server filtering so you can expose only the MCP tools you actually want Satan to see
+- Per-server filtering so you can expose only the MCP tools you actually want SatanClaw to see
 
 ## Quick start
 
 1. Install MCP support (already included if you used the standard install script):
 
 ```bash
-cd ~/.satan/satan-agent
+cd ~/.satanclaw/satanclaw-agent
 uv pip install -e ".[mcp]"
 ```
 
-2. Add an MCP server to `~/.satan/config.yaml`:
+2. Add an MCP server to `~/.satanclaw/config.yaml`:
 
 ```yaml
 mcp_servers:
@@ -36,13 +36,13 @@ mcp_servers:
     args: ["-y", "@modelcontextprotocol/server-filesystem", "/home/user/projects"]
 ```
 
-3. Start Satan:
+3. Start SatanClaw:
 
 ```bash
-satan chat
+satanclaw chat
 ```
 
-4. Ask Satan to use the MCP-backed capability.
+4. Ask SatanClaw to use the MCP-backed capability.
 
 For example:
 
@@ -50,7 +50,7 @@ For example:
 List the files in /home/user/projects and summarize the repo structure.
 ```
 
-Satan will discover the MCP server's tools and use them like any other tool.
+SatanClaw will discover the MCP server's tools and use them like any other tool.
 
 ## Two kinds of MCP servers
 
@@ -74,7 +74,7 @@ Use stdio servers when:
 
 ### HTTP servers
 
-HTTP MCP servers are remote endpoints Satan connects to directly.
+HTTP MCP servers are remote endpoints SatanClaw connects to directly.
 
 ```yaml
 mcp_servers:
@@ -87,11 +87,11 @@ mcp_servers:
 Use HTTP servers when:
 - the MCP server is hosted elsewhere
 - your organization exposes internal MCP endpoints
-- you do not want Satan spawning a local subprocess for that integration
+- you do not want SatanClaw spawning a local subprocess for that integration
 
 ## Basic configuration reference
 
-Satan reads MCP config from `~/.satan/config.yaml` under `mcp_servers`.
+SatanClaw reads MCP config from `~/.satanclaw/config.yaml` under `mcp_servers`.
 
 ### Common keys
 
@@ -104,7 +104,7 @@ Satan reads MCP config from `~/.satan/config.yaml` under `mcp_servers`.
 | `headers` | mapping | HTTP headers for remote servers |
 | `timeout` | number | Tool call timeout |
 | `connect_timeout` | number | Initial connection timeout |
-| `enabled` | bool | If `false`, Satan skips the server entirely |
+| `enabled` | bool | If `false`, SatanClaw skips the server entirely |
 | `tools` | mapping | Per-server tool filtering and utility policy |
 
 ### Minimal stdio example
@@ -126,9 +126,9 @@ mcp_servers:
       Authorization: "Bearer ***"
 ```
 
-## How Satan registers MCP tools
+## How SatanClaw registers MCP tools
 
-Satan prefixes MCP tools so they do not collide with built-in names:
+SatanClaw prefixes MCP tools so they do not collide with built-in names:
 
 ```text
 mcp_<server_name>_<tool_name>
@@ -142,11 +142,11 @@ Examples:
 | `github` | `create-issue` | `mcp_github_create_issue` |
 | `my-api` | `query.data` | `mcp_my_api_query_data` |
 
-In practice, you usually do not need to call the prefixed name manually — Satan sees the tool and chooses it during normal reasoning.
+In practice, you usually do not need to call the prefixed name manually — SatanClaw sees the tool and chooses it during normal reasoning.
 
 ## MCP utility tools
 
-When supported, Satan also registers utility tools around MCP resources and prompts:
+When supported, SatanClaw also registers utility tools around MCP resources and prompts:
 
 - `list_resources`
 - `read_resource`
@@ -161,14 +161,14 @@ These are registered per server with the same prefix pattern, for example:
 ### Important
 
 These utility tools are now capability-aware:
-- Satan only registers resource utilities if the MCP session actually supports resource operations
-- Satan only registers prompt utilities if the MCP session actually supports prompt operations
+- SatanClaw only registers resource utilities if the MCP session actually supports resource operations
+- SatanClaw only registers prompt utilities if the MCP session actually supports prompt operations
 
 So a server that exposes callable tools but no resources/prompts will not get those extra wrappers.
 
 ## Per-server filtering
 
-You can control which tools each MCP server contributes to Satan, allowing fine-grained management of your tool namespace.
+You can control which tools each MCP server contributes to SatanClaw, allowing fine-grained management of your tool namespace.
 
 ### Disable a server entirely
 
@@ -179,7 +179,7 @@ mcp_servers:
     enabled: false
 ```
 
-If `enabled: false`, Satan skips the server completely and does not even attempt a connection.
+If `enabled: false`, SatanClaw skips the server completely and does not even attempt a connection.
 
 ### Whitelist server tools
 
@@ -222,7 +222,7 @@ tools:
 
 ### Filter utility tools too
 
-You can also separately disable Satan-added utility wrappers:
+You can also separately disable SatanClaw-added utility wrappers:
 
 ```yaml
 mcp_servers:
@@ -265,7 +265,7 @@ mcp_servers:
 
 ## What happens if everything is filtered out?
 
-If your config filters out all callable tools and disables or omits all supported utilities, Satan does not create an empty runtime MCP toolset for that server.
+If your config filters out all callable tools and disables or omits all supported utilities, SatanClaw does not create an empty runtime MCP toolset for that server.
 
 That keeps the tool list clean.
 
@@ -273,11 +273,11 @@ That keeps the tool list clean.
 
 ### Discovery time
 
-Satan discovers MCP servers at startup and registers their tools into the normal tool registry.
+SatanClaw discovers MCP servers at startup and registers their tools into the normal tool registry.
 
 ### Dynamic Tool Discovery
 
-MCP servers can notify Satan when their available tools change at runtime by sending a `notifications/tools/list_changed` notification. When Satan receives this notification, it automatically re-fetches the server's tool list and updates the registry — no manual `/reload-mcp` required.
+MCP servers can notify SatanClaw when their available tools change at runtime by sending a `notifications/tools/list_changed` notification. When SatanClaw receives this notification, it automatically re-fetches the server's tool list and updates the registry — no manual `/reload-mcp` required.
 
 This is useful for MCP servers whose capabilities change dynamically (e.g. a server that adds tools when a new database schema is loaded, or removes tools when a service goes offline).
 
@@ -307,7 +307,7 @@ That makes MCP servers easier to reason about at the toolset level.
 
 ### Stdio env filtering
 
-For stdio servers, Satan does not blindly pass your full shell environment.
+For stdio servers, SatanClaw does not blindly pass your full shell environment.
 
 Only explicitly configured `env` plus a safe baseline are passed through. This reduces accidental secret leakage.
 
@@ -382,13 +382,13 @@ Check:
 
 ```bash
 # Verify MCP deps are installed (already included in standard install)
-cd ~/.satan/satan-agent && uv pip install -e ".[mcp]"
+cd ~/.satanclaw/satanclaw-agent && uv pip install -e ".[mcp]"
 
 node --version
 npx --version
 ```
 
-Then verify your config and restart Satan.
+Then verify your config and restart SatanClaw.
 
 ### Tools not appearing
 
@@ -403,7 +403,7 @@ If you are intentionally filtering, this is expected.
 
 ### Why didn't resource or prompt utilities appear?
 
-Because Satan now only registers those wrappers when both are true:
+Because SatanClaw now only registers those wrappers when both are true:
 1. your config allows them
 2. the server session actually supports the capability
 
@@ -411,7 +411,7 @@ This is intentional and keeps the tool list honest.
 
 ## MCP Sampling Support
 
-MCP servers can request LLM inference from Satan via the `sampling/createMessage` protocol. This allows an MCP server to ask Satan to generate text on its behalf — useful for servers that need LLM capabilities but don't have their own model access.
+MCP servers can request LLM inference from SatanClaw via the `sampling/createMessage` protocol. This allows an MCP server to ask SatanClaw to generate text on its behalf — useful for servers that need LLM capabilities but don't have their own model access.
 
 Sampling is **enabled by default** for all MCP servers (when the MCP SDK supports it). Configure it per-server under the `sampling` key:
 
@@ -442,46 +442,46 @@ mcp_servers:
       enabled: false
 ```
 
-## Running Satan as an MCP server
+## Running SatanClaw as an MCP server
 
-In addition to connecting **to** MCP servers, Satan can also **be** an MCP server. This lets other MCP-capable agents (Claude Code, Cursor, Codex, or any MCP client) use Satan's messaging capabilities — list conversations, read message history, and send messages across all your connected platforms.
+In addition to connecting **to** MCP servers, SatanClaw can also **be** an MCP server. This lets other MCP-capable agents (Claude Code, Cursor, Codex, or any MCP client) use SatanClaw's messaging capabilities — list conversations, read message history, and send messages across all your connected platforms.
 
 ### When to use this
 
-- You want Claude Code, Cursor, or another coding agent to send and read Telegram/Discord/Slack messages through Satan
-- You want a single MCP server that bridges to all of Satan's connected messaging platforms at once
-- You already have a running Satan gateway with connected platforms
+- You want Claude Code, Cursor, or another coding agent to send and read Telegram/Discord/Slack messages through SatanClaw
+- You want a single MCP server that bridges to all of SatanClaw's connected messaging platforms at once
+- You already have a running SatanClaw gateway with connected platforms
 
 ### Quick start
 
 ```bash
-satan mcp serve
+satanclaw mcp serve
 ```
 
 This starts a stdio MCP server. The MCP client (not you) manages the process lifecycle.
 
 ### MCP client configuration
 
-Add Satan to your MCP client config. For example, in Claude Code's `~/.claude/claude_desktop_config.json`:
+Add SatanClaw to your MCP client config. For example, in Claude Code's `~/.claude/claude_desktop_config.json`:
 
 ```json
 {
   "mcpServers": {
-    "satan": {
-      "command": "satan",
+    "satanclaw": {
+      "command": "satanclaw",
       "args": ["mcp", "serve"]
     }
   }
 }
 ```
 
-Or if you installed Satan in a specific location:
+Or if you installed SatanClaw in a specific location:
 
 ```json
 {
   "mcpServers": {
-    "satan": {
-      "command": "/home/user/.satan/satan-agent/venv/bin/satan",
+    "satanclaw": {
+      "command": "/home/user/.satanclaw/satanclaw-agent/venv/bin/satanclaw",
       "args": ["mcp", "serve"]
     }
   }
@@ -490,7 +490,7 @@ Or if you installed Satan in a specific location:
 
 ### Available tools
 
-The MCP server exposes 10 tools, matching OpenClaw's channel bridge surface plus a Satan-specific channel browser:
+The MCP server exposes 10 tools, matching OpenClaw's channel bridge surface plus a SatanClaw-specific channel browser:
 
 | Tool | Description |
 |------|-------------|
@@ -507,7 +507,7 @@ The MCP server exposes 10 tools, matching OpenClaw's channel bridge surface plus
 
 ### Event system
 
-The MCP server includes a live event bridge that polls Satan's session database for new messages. This gives MCP clients near-real-time awareness of incoming conversations:
+The MCP server includes a live event bridge that polls SatanClaw's session database for new messages. This gives MCP clients near-real-time awareness of incoming conversations:
 
 ```
 # Poll for new events (non-blocking)
@@ -524,13 +524,13 @@ The event queue is in-memory and starts when the bridge connects. Older messages
 ### Options
 
 ```bash
-satan mcp serve              # Normal mode
-satan mcp serve --verbose    # Debug logging on stderr
+satanclaw mcp serve              # Normal mode
+satanclaw mcp serve --verbose    # Debug logging on stderr
 ```
 
 ### How it works
 
-The MCP server reads conversation data directly from Satan's session store (`~/.satan/sessions/sessions.json` and the SQLite database). A background thread polls the database for new messages and maintains an in-memory event queue. For sending messages, it uses the same `send_message` infrastructure as the Satan agent itself.
+The MCP server reads conversation data directly from SatanClaw's session store (`~/.satanclaw/sessions/sessions.json` and the SQLite database). A background thread polls the database for new messages and maintains an in-memory event queue. For sending messages, it uses the same `send_message` infrastructure as the SatanClaw agent itself.
 
 The gateway does NOT need to be running for read operations (listing conversations, reading history, polling events). It DOES need to be running for send operations, since the platform adapters need active connections.
 
@@ -543,7 +543,7 @@ The gateway does NOT need to be running for read operations (listing conversatio
 
 ## Related docs
 
-- [Use MCP with Satan](/docs/guides/use-mcp-with-satan)
+- [Use MCP with SatanClaw](/docs/guides/use-mcp-with-satanclaw)
 - [CLI Commands](/docs/reference/cli-commands)
 - [Slash Commands](/docs/reference/slash-commands)
 - [FAQ](/docs/reference/faq)

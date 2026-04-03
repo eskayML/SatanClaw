@@ -1,4 +1,4 @@
-from satan_cli import runtime_provider as rp
+from satanclaw_cli import runtime_provider as rp
 
 
 def test_resolve_runtime_provider_uses_credential_pool(monkeypatch):
@@ -107,7 +107,7 @@ def test_resolve_runtime_provider_falls_back_when_pool_empty(monkeypatch):
             "provider": "openai-codex",
             "base_url": "https://chatgpt.com/backend-api/codex",
             "api_key": "codex-token",
-            "source": "satan-auth-store",
+            "source": "satanclaw-auth-store",
             "last_refresh": "2026-02-26T00:00:00Z",
         },
     )
@@ -541,7 +541,7 @@ def test_named_custom_provider_does_not_shadow_builtin_provider(monkeypatch):
         rp,
         "resolve_nous_runtime_credentials",
         lambda **kwargs: {
-            "base_url": "https://inference-api.nousresearch.com/v1",
+            "base_url": "https://inference-api.eskayML.com/v1",
             "api_key": "nous-runtime-key",
             "source": "portal",
             "expires_at": None,
@@ -551,7 +551,7 @@ def test_named_custom_provider_does_not_shadow_builtin_provider(monkeypatch):
     resolved = rp.resolve_runtime_provider(requested="nous")
 
     assert resolved["provider"] == "nous"
-    assert resolved["base_url"] == "https://inference-api.nousresearch.com/v1"
+    assert resolved["base_url"] == "https://inference-api.eskayML.com/v1"
     assert resolved["api_key"] == "nous-runtime-key"
     assert resolved["requested_provider"] == "nous"
 
@@ -934,13 +934,13 @@ def test_named_custom_provider_anthropic_api_mode(monkeypatch):
 
 def test_resolve_provider_custom_returns_custom():
     """resolve_provider('custom') must return 'custom', not 'openrouter'."""
-    from satan_cli.auth import resolve_provider
+    from satanclaw_cli.auth import resolve_provider
     assert resolve_provider("custom") == "custom"
 
 
 def test_resolve_provider_openrouter_unchanged():
     """resolve_provider('openrouter') must still return 'openrouter'."""
-    from satan_cli.auth import resolve_provider
+    from satanclaw_cli.auth import resolve_provider
     assert resolve_provider("openrouter") == "openrouter"
 
 

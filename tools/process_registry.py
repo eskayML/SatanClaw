@@ -45,13 +45,13 @@ from tools.environments.local import _find_shell, _sanitize_subprocess_env
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
-from satan_cli.config import get_satan_home
+from satanclaw_cli.config import get_satanclaw_home
 
 logger = logging.getLogger(__name__)
 
 
 # Checkpoint file for crash recovery (gateway only)
-CHECKPOINT_PATH = get_satan_home() / "processes.json"
+CHECKPOINT_PATH = get_satanclaw_home() / "processes.json"
 
 # Limits
 MAX_OUTPUT_CHARS = 200_000      # 200KB rolling output buffer
@@ -265,8 +265,8 @@ class ProcessRegistry:
         )
 
         # Run the command in the sandbox with output capture
-        log_path = f"/tmp/satan_bg_{session.id}.log"
-        pid_path = f"/tmp/satan_bg_{session.id}.pid"
+        log_path = f"/tmp/satanclaw_bg_{session.id}.log"
+        pid_path = f"/tmp/satanclaw_bg_{session.id}.pid"
         quoted_command = shlex.quote(command)
         bg_command = (
             f"nohup bash -c {quoted_command} > {log_path} 2>&1 & "

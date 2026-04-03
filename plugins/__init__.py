@@ -1,1 +1,1 @@
-# Satan plugins package
+# SatanClaw plugins package

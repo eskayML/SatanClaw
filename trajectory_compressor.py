@@ -44,7 +44,7 @@ from datetime import datetime
 import fire
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn, TimeElapsedColumn, TimeRemainingColumn
 from rich.console import Console
-from satan_constants import OPENROUTER_BASE_URL
+from satanclaw_constants import OPENROUTER_BASE_URL
 
 # Load environment variables
 from dotenv import load_dotenv
@@ -364,7 +364,7 @@ class TrajectoryCompressor:
             if client is None:
                 raise RuntimeError(
                     f"Provider '{provider}' is not configured. "
-                    f"Check your API key or run: satan setup")
+                    f"Check your API key or run: satanclaw setup")
             self.client = None  # Not used directly
             self.async_client = None  # Not used directly
         else:
@@ -408,7 +408,7 @@ class TrajectoryCompressor:
         url = (self.config.base_url or "").lower()
         if "openrouter" in url:
             return "openrouter"
-        if "nousresearch.com" in url:
+        if "eskayML.com" in url:
             return "nous"
         if "chatgpt.com/backend-api/codex" in url:
             return "codex"

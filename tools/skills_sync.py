@@ -2,7 +2,7 @@
 """
 Skills Sync -- Manifest-based seeding and updating of bundled skills.
 
-Copies bundled skills from the repo's skills/ directory into ~/.satan/skills/
+Copies bundled skills from the repo's skills/ directory into ~/.satanclaw/skills/
 and uses a manifest to track which skills have been synced and their origin hash.
 
 Manifest format (v2): each line is "skill_name:origin_hash" where origin_hash
@@ -18,7 +18,7 @@ Update logic:
   - DELETED by user (in manifest, absent from user dir): respected, not re-added.
   - REMOVED from bundled (in manifest, gone from repo): cleaned from manifest.
 
-The manifest lives at ~/.satan/skills/.bundled_manifest.
+The manifest lives at ~/.satanclaw/skills/.bundled_manifest.
 """
 
 import hashlib
@@ -26,13 +26,13 @@ import logging
 import os
 import shutil
 from pathlib import Path
-from satan_constants import get_satan_home
+from satanclaw_constants import get_satanclaw_home
 from typing import Dict, List, Tuple
 
 logger = logging.getLogger(__name__)
 
 
-HERMES_HOME = get_satan_home()
+HERMES_HOME = get_satanclaw_home()
 SKILLS_DIR = HERMES_HOME / "skills"
 MANIFEST_FILE = SKILLS_DIR / ".bundled_manifest"
 
@@ -132,7 +132,7 @@ def _discover_bundled_skills(bundled_dir: Path) -> List[Tuple[str, Path]]:
 def _compute_relative_dest(skill_dir: Path, bundled_dir: Path) -> Path:
     """
     Compute the destination path in SKILLS_DIR preserving the category structure.
-    e.g., bundled/skills/mlops/axolotl -> ~/.satan/skills/mlops/axolotl
+    e.g., bundled/skills/mlops/axolotl -> ~/.satanclaw/skills/mlops/axolotl
     """
     rel = skill_dir.relative_to(bundled_dir)
     return SKILLS_DIR / rel
@@ -154,7 +154,7 @@ def _dir_hash(directory: Path) -> str:
 
 def sync_skills(quiet: bool = False) -> dict:
     """
-    Sync bundled skills into ~/.satan/skills/ using the manifest.
+    Sync bundled skills into ~/.satanclaw/skills/ using the manifest.
 
     Returns:
         dict with keys: copied (list), updated (list), skipped (int),
@@ -281,7 +281,7 @@ def sync_skills(quiet: bool = False) -> dict:
 
 
 if __name__ == "__main__":
-    print("Syncing bundled skills into ~/.satan/skills/ ...")
+    print("Syncing bundled skills into ~/.satanclaw/skills/ ...")
     result = sync_skills(quiet=False)
     parts = [
         f"{len(result['copied'])} new",

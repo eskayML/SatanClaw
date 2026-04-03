@@ -29,25 +29,25 @@ def _reset_modules(prefixes: tuple[str, ...]):
 
 @pytest.fixture(autouse=True)
 def _restore_tool_modules():
-    original_satan_home = os.environ.get("HERMES_HOME")
+    original_satanclaw_home = os.environ.get("HERMES_HOME")
     original_modules = {
         name: module
         for name, module in sys.modules.items()
         if name == "tools"
         or name.startswith("tools.")
-        or name == "satan_cli"
-        or name.startswith("satan_cli.")
+        or name == "satanclaw_cli"
+        or name.startswith("satanclaw_cli.")
         or name == "modal"
         or name.startswith("modal.")
     }
     try:
         yield
     finally:
-        if original_satan_home is None:
+        if original_satanclaw_home is None:
             os.environ.pop("HERMES_HOME", None)
         else:
-            os.environ["HERMES_HOME"] = original_satan_home
-        _reset_modules(("tools", "satan_cli", "modal"))
+            os.environ["HERMES_HOME"] = original_satanclaw_home
+        _reset_modules(("tools", "satanclaw_cli", "modal"))
         sys.modules.update(original_modules)
 
 
@@ -57,15 +57,15 @@ def _install_modal_test_modules(
     fail_on_snapshot_ids: set[str] | None = None,
     snapshot_id: str = "im-fresh",
 ):
-    _reset_modules(("tools", "satan_cli", "modal"))
+    _reset_modules(("tools", "satanclaw_cli", "modal"))
 
-    satan_cli = types.ModuleType("satan_cli")
-    satan_cli.__path__ = []  # type: ignore[attr-defined]
-    sys.modules["satan_cli"] = satan_cli
-    satan_home = tmp_path / "satan-home"
-    os.environ["HERMES_HOME"] = str(satan_home)
-    sys.modules["satan_cli.config"] = types.SimpleNamespace(
-        get_satan_home=lambda: satan_home,
+    satanclaw_cli = types.ModuleType("satanclaw_cli")
+    satanclaw_cli.__path__ = []  # type: ignore[attr-defined]
+    sys.modules["satanclaw_cli"] = satanclaw_cli
+    satanclaw_home = tmp_path / "satanclaw-home"
+    os.environ["HERMES_HOME"] = str(satanclaw_home)
+    sys.modules["satanclaw_cli.config"] = types.SimpleNamespace(
+        get_satanclaw_home=lambda: satanclaw_home,
     )
 
     tools_package = types.ModuleType("tools")
@@ -108,7 +108,7 @@ def _install_modal_test_modules(
             return {"kind": "registry", "image": image}
 
     async def _lookup_aio(_name: str, create_if_missing: bool = False):
-        return types.SimpleNamespace(name="satan-agent", create_if_missing=create_if_missing)
+        return types.SimpleNamespace(name="satanclaw-agent", create_if_missing=create_if_missing)
 
     class _FakeSandboxInstance:
         def __init__(self, image):
@@ -154,7 +154,7 @@ def _install_modal_test_modules(
     )
 
     return {
-        "snapshot_store": satan_home / "modal_snapshots.json",
+        "snapshot_store": satanclaw_home / "modal_snapshots.json",
         "create_calls": create_calls,
         "from_id_calls": from_id_calls,
         "registry_calls": registry_calls,

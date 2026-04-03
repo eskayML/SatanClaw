@@ -10,13 +10,13 @@ Cloud memory API with hybrid search (Vector + BM25 + Reranking) and 7 memory typ
 ## Setup
 
 ```bash
-satan memory setup    # select "retaindb"
+satanclaw memory setup    # select "retaindb"
 ```
 
 Or manually:
 ```bash
-satan config set memory.provider retaindb
-echo "RETAINDB_API_KEY=your-key" >> ~/.satan/.env
+satanclaw config set memory.provider retaindb
+echo "RETAINDB_API_KEY=your-key" >> ~/.satanclaw/.env
 ```
 
 ## Config

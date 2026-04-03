@@ -19,10 +19,10 @@ from tools.interrupt import is_interrupted
 # printf (no trailing newline) keeps the boundaries clean for splitting.
 _OUTPUT_FENCE = "__HERMES_FENCE_a9f7b3__"
 
-# Satan-internal env vars that should NOT leak into terminal subprocesses.
-# These are loaded from ~/.satan/.env for Satan' own LLM/provider calls
+# SatanClaw-internal env vars that should NOT leak into terminal subprocesses.
+# These are loaded from ~/.satanclaw/.env for SatanClaw' own LLM/provider calls
 # but can break external CLIs (e.g. codex) that also honor them.
-# See: https://github.com/NousResearch/satan-agent/issues/1002
+# See: https://github.com/NousResearch/satanclaw-agent/issues/1002
 #
 # Built dynamically from the provider registry so new providers are
 # automatically covered without manual blocklist maintenance.
@@ -34,13 +34,13 @@ def _build_provider_env_blocklist() -> frozenset:
 
     Automatically picks up api_key_env_vars and base_url_env_var from
     every registered provider, plus tool/messaging env vars from the
-    optional config registry, so new Satan-managed secrets are blocked
+    optional config registry, so new SatanClaw-managed secrets are blocked
     in subprocesses without having to maintain multiple static lists.
     """
     blocked: set[str] = set()
 
     try:
-        from satan_cli.auth import PROVIDER_REGISTRY
+        from satanclaw_cli.auth import PROVIDER_REGISTRY
         for pconfig in PROVIDER_REGISTRY.values():
             blocked.update(pconfig.api_key_env_vars)
             if pconfig.base_url_env_var:
@@ -49,7 +49,7 @@ def _build_provider_env_blocklist() -> frozenset:
         pass
 
     try:
-        from satan_cli.config import OPTIONAL_ENV_VARS
+        from satanclaw_cli.config import OPTIONAL_ENV_VARS
         for name, metadata in OPTIONAL_ENV_VARS.items():
             category = metadata.get("category")
             if category in {"tool", "messaging"}:
@@ -59,7 +59,7 @@ def _build_provider_env_blocklist() -> frozenset:
     except ImportError:
         pass
 
-    # Vars not covered above but still Satan-internal / conflict-prone.
+    # Vars not covered above but still SatanClaw-internal / conflict-prone.
     blocked.update({
         "OPENAI_BASE_URL",
         "OPENAI_API_KEY",
@@ -132,7 +132,7 @@ _HERMES_PROVIDER_ENV_BLOCKLIST = _build_provider_env_blocklist()
 
 
 def _sanitize_subprocess_env(base_env: dict | None, extra_env: dict | None = None) -> dict:
-    """Filter Satan-managed secrets from a subprocess environment.
+    """Filter SatanClaw-managed secrets from a subprocess environment.
 
     `_HERMES_FORCE_<VAR>` entries in ``extra_env`` opt a blocked variable back in
     intentionally for callers that truly need it.  Vars registered via
@@ -199,7 +199,7 @@ def _find_bash() -> str:
             return candidate
 
     raise RuntimeError(
-        "Git Bash not found. Satan Agent requires Git for Windows on Windows.\n"
+        "Git Bash not found. SatanClaw Agent requires Git for Windows on Windows.\n"
         "Install it from: https://git-scm.com/download/win\n"
         "Or set HERMES_GIT_BASH_PATH to your bash.exe location."
     )
@@ -335,7 +335,7 @@ class LocalEnvironment(PersistentShellMixin, BaseEnvironment):
 
     @property
     def _temp_prefix(self) -> str:
-        return f"/tmp/satan-local-{self._session_id}"
+        return f"/tmp/satanclaw-local-{self._session_id}"
 
     def _spawn_shell_process(self) -> subprocess.Popen:
         user_shell = _find_bash()
@@ -391,17 +391,17 @@ class LocalEnvironment(PersistentShellMixin, BaseEnvironment):
             effective_stdin = stdin_data
 
         user_shell = _find_bash()
-        # Newline-separated wrapper (not `cmd; __satan_rc=...` on one line).
-        # A trailing `; __satan_rc` glued to `<<EOF` / a closing `EOF` line breaks
+        # Newline-separated wrapper (not `cmd; __satanclaw_rc=...` on one line).
+        # A trailing `; __satanclaw_rc` glued to `<<EOF` / a closing `EOF` line breaks
         # heredoc parsing: the delimiter must be alone on its line, otherwise the
         # rest of this script becomes heredoc body and leaks into stdout (e.g. gh
         # issue/PR flows that use here-documents for bodies).
         fenced_cmd = (
             f"printf '{_OUTPUT_FENCE}'\n"
             f"{exec_command}\n"
-            f"__satan_rc=$?\n"
+            f"__satanclaw_rc=$?\n"
             f"printf '{_OUTPUT_FENCE}'\n"
-            f"exit $__satan_rc\n"
+            f"exit $__satanclaw_rc\n"
         )
         run_env = _make_run_env(self.env)
 

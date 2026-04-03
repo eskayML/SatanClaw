@@ -1,12 +1,12 @@
 ---
 sidebar_position: 5
 title: "Bundled Skills Catalog"
-description: "Catalog of bundled skills that ship with Satan Agent"
+description: "Catalog of bundled skills that ship with SatanClaw Agent"
 ---
 
 # Bundled Skills Catalog
 
-Satan ships with a large built-in skill library copied into `~/.satan/skills/` on install. This page catalogs the bundled skills that live in the repository under `skills/`.
+SatanClaw ships with a large built-in skill library copied into `~/.satanclaw/skills/` on install. This page catalogs the bundled skills that live in the repository under `skills/`.
 
 ## apple
 
@@ -27,7 +27,7 @@ Skills for spawning and orchestrating autonomous AI coding agents and multi-agen
 |-------|-------------|------|
 | `claude-code` | Delegate coding tasks to Claude Code (Anthropic's CLI agent). Use for building features, refactoring, PR reviews, and iterative coding. Requires the claude CLI installed. | `autonomous-ai-agents/claude-code` |
 | `codex` | Delegate coding tasks to OpenAI Codex CLI agent. Use for building features, refactoring, PR reviews, and batch issue fixing. Requires the codex CLI and a git repository. | `autonomous-ai-agents/codex` |
-| `satan-agent-spawning` | Spawn additional Satan Agent instances as autonomous subprocesses for independent long-running tasks. Supports non-interactive one-shot mode (-q) and interactive PTY mode for multi-turn collaboration. Different from delegate_task — this runs a full separate satan process. | `autonomous-ai-agents/satan-agent` |
+| `satanclaw-agent-spawning` | Spawn additional SatanClaw Agent instances as autonomous subprocesses for independent long-running tasks. Supports non-interactive one-shot mode (-q) and interactive PTY mode for multi-turn collaboration. Different from delegate_task — this runs a full separate satanclaw process. | `autonomous-ai-agents/satanclaw-agent` |
 | `opencode` | Delegate coding tasks to OpenCode CLI agent for feature implementation, refactoring, PR review, and long-running autonomous sessions. Requires the opencode CLI installed and authenticated. | `autonomous-ai-agents/opencode` |
 
 ## data-science
@@ -61,7 +61,7 @@ DevOps and infrastructure automation skills.
 | Skill | Description | Path |
 |-------|-------------|------|
 | `dogfood` | Systematic exploratory QA testing of web applications — find bugs, capture evidence, and generate structured reports. | `dogfood/dogfood` |
-| `satan-agent-setup` | Help users configure Satan Agent — CLI usage, setup wizard, model/provider selection, tools, skills, voice/STT/TTS, gateway, and troubleshooting. | `dogfood/satan-agent-setup` |
+| `satanclaw-agent-setup` | Help users configure SatanClaw Agent — CLI usage, setup wizard, model/provider selection, tools, skills, voice/STT/TTS, gateway, and troubleshooting. | `dogfood/satanclaw-agent-setup` |
 
 ## email
 
@@ -114,7 +114,7 @@ Skills for working with MCP (Model Context Protocol) servers, tools, and integra
 | Skill | Description | Path |
 |-------|-------------|------|
 | `mcporter` | Use the mcporter CLI to list, configure, auth, and call MCP servers/tools directly (HTTP or stdio), including ad-hoc servers, config edits, and CLI/type generation. | `mcp/mcporter` |
-| `native-mcp` | Built-in MCP (Model Context Protocol) client that connects to external MCP servers, discovers their tools, and registers them as native Satan Agent tools. Supports stdio and HTTP transports with automatic reconnection, security filtering, and zero-config tool injection. | `mcp/native-mcp` |
+| `native-mcp` | Built-in MCP (Model Context Protocol) client that connects to external MCP servers, discovers their tools, and registers them as native SatanClaw Agent tools. Supports stdio and HTTP transports with automatic reconnection, security filtering, and zero-config tool injection. | `mcp/native-mcp` |
 
 ## media
 
@@ -202,7 +202,7 @@ Fine-tuning, RLHF/DPO/GRPO training, distributed training frameworks, and optimi
 | `distributed-llm-pretraining-torchtitan` | Provides PyTorch-native distributed LLM pretraining using torchtitan with 4D parallelism (FSDP2, TP, PP, CP). Use when pretraining Llama 3.1, DeepSeek V3, or custom models at scale from 8 to 512+ GPUs with Float8, torch.compile, and distributed checkpointing. | `mlops/training/torchtitan` |
 | `fine-tuning-with-trl` | Fine-tune LLMs using reinforcement learning with TRL - SFT for instruction tuning, DPO for preference alignment, PPO/GRPO for reward optimization, and reward model training. Use when need RLHF, align model with preferences, or train from human feedback. Works with HuggingFace Tr… | `mlops/training/trl-fine-tuning` |
 | `grpo-rl-training` | Expert guidance for GRPO/RL fine-tuning with TRL for reasoning and task-specific model training | `mlops/training/grpo-rl-training` |
-| `satan-atropos-environments` | Build, test, and debug Satan Agent RL environments for Atropos training. Covers the SatanAgentBaseEnv interface, reward functions, agent loop integration, evaluation with tools, wandb logging, and the three CLI modes (serve/process/evaluate). Use when creating, reviewing, or f… | `mlops/training/satan-atropos-environments` |
+| `satanclaw-atropos-environments` | Build, test, and debug SatanClaw Agent RL environments for Atropos training. Covers the SatanClawAgentBaseEnv interface, reward functions, agent loop integration, evaluation with tools, wandb logging, and the three CLI modes (serve/process/evaluate). Use when creating, reviewing, or f… | `mlops/training/satanclaw-atropos-environments` |
 | `huggingface-accelerate` | Simplest distributed training API. 4 lines to add distributed support to any PyTorch script. Unified API for DeepSpeed/FSDP/Megatron/DDP. Automatic device placement, mixed precision (FP16/BF16/FP8). Interactive config, single launch command. HuggingFace ecosystem standard. | `mlops/training/accelerate` |
 | `optimizing-attention-flash` | Optimizes transformer attention with Flash Attention for 2-4x speedup and 10-20x memory reduction. Use when training/running transformers with long sequences (&gt;512 tokens), encountering GPU memory issues with attention, or need faster inference. Supports PyTorch native SDPA,… | `mlops/training/flash-attention` |
 | `peft-fine-tuning` | Parameter-efficient fine-tuning for LLMs using LoRA, QLoRA, and 25+ methods. Use when fine-tuning large models (7B-70B) with limited GPU memory, when you need to train &lt;1% of parameters with minimal accuracy loss, or for multi-adapter serving. HuggingFace's official library i… | `mlops/training/peft` |
@@ -237,7 +237,7 @@ Skills for document creation, presentations, spreadsheets, and other productivit
 
 | Skill | Description | Path |
 |-------|-------------|------|
-| `google-workspace` | Gmail, Calendar, Drive, Contacts, Sheets, and Docs integration via Python. Uses OAuth2 with automatic token refresh. No external binaries needed — runs entirely with Google's Python client libraries in the Satan venv. | `productivity/google-workspace` |
+| `google-workspace` | Gmail, Calendar, Drive, Contacts, Sheets, and Docs integration via Python. Uses OAuth2 with automatic token refresh. No external binaries needed — runs entirely with Google's Python client libraries in the SatanClaw venv. | `productivity/google-workspace` |
 | `linear` | Manage Linear issues, projects, and teams via the GraphQL API. Create, update, search, and organize issues. | `productivity/linear` |
 | `nano-pdf` | Edit PDFs with natural-language instructions using the nano-pdf CLI. Modify text, fix typos, update titles, and make content changes to specific pages without manual editing. | `productivity/nano-pdf` |
 | `notion` | Notion API for creating and managing pages, databases, and blocks via curl. Search, create, update, and query Notion workspaces directly from the terminal. | `productivity/notion` |
@@ -263,7 +263,7 @@ Skills for LLM red-teaming, jailbreaking, and safety filter bypass research.
 
 | Skill | Description | Path |
 |-------|-------------|------|
-| `godmode` | Jailbreak API-served LLMs using G0DM0D3 techniques — Parseltongue input obfuscation (33 techniques), GODMODE CLASSIC system prompt templates, ULTRAPLINIAN multi-model racing, encoding escalation, and Satan-native prefill/system prompt integration. Works on any model accessible via API including closed-source models. | `red-teaming/godmode` |
+| `godmode` | Jailbreak API-served LLMs using G0DM0D3 techniques — Parseltongue input obfuscation (33 techniques), GODMODE CLASSIC system prompt templates, ULTRAPLINIAN multi-model racing, encoding escalation, and SatanClaw-native prefill/system prompt integration. Works on any model accessible via API including closed-source models. | `red-teaming/godmode` |
 
 ## smart-home
 
@@ -286,7 +286,7 @@ Skills for interacting with social platforms — posting, reading, monitoring, a
 | Skill | Description | Path |
 |-------|-------------|------|
 | `code-review` | Guidelines for performing thorough code reviews with security and quality focus | `software-development/code-review` |
-| `plan` | Plan mode for Satan — inspect context, write a markdown plan into `.satan/plans/` in the active workspace/backend working directory, and do not execute the work. | `software-development/plan` |
+| `plan` | Plan mode for SatanClaw — inspect context, write a markdown plan into `.satanclaw/plans/` in the active workspace/backend working directory, and do not execute the work. | `software-development/plan` |
 | `requesting-code-review` | Use when completing tasks, implementing major features, or before merging. Validates work meets requirements through systematic review process. | `software-development/requesting-code-review` |
 | `subagent-driven-development` | Use when executing implementation plans with independent tasks. Dispatches fresh delegate_task per task with two-stage review (spec compliance then code quality). | `software-development/subagent-driven-development` |
 | `systematic-debugging` | Use when encountering any bug, test failure, or unexpected behavior. 4-phase root cause investigation — NO fixes without understanding the problem first. | `software-development/systematic-debugging` |
@@ -300,7 +300,7 @@ Skills for interacting with social platforms — posting, reading, monitoring, a
 Optional skills ship with the repository under `optional-skills/` but are **not active by default**. They cover heavier or niche use cases. Install them with:
 
 ```bash
-satan skills install official/<category>/<skill>
+satanclaw skills install official/<category>/<skill>
 ```
 
 ## autonomous-ai-agents
@@ -320,7 +320,7 @@ satan skills install official/<category>/<skill>
 
 | Skill | Description | Path |
 |-------|-------------|------|
-| `blender-mcp` | Control Blender directly from Satan via socket connection to the blender-mcp addon. Create 3D objects, materials, animations, and run arbitrary Blender Python (bpy) code. | `creative/blender-mcp` |
+| `blender-mcp` | Control Blender directly from SatanClaw via socket connection to the blender-mcp addon. Create 3D objects, materials, animations, and run arbitrary Blender Python (bpy) code. | `creative/blender-mcp` |
 | `meme-generation` | Generate real meme images by picking a template and overlaying text with Pillow. Produces actual .png meme files. | `creative/meme-generation` |
 
 ## devops
@@ -333,7 +333,7 @@ satan skills install official/<category>/<skill>
 
 | Skill | Description | Path |
 |-------|-------------|------|
-| `agentmail` | Give the agent its own dedicated email inbox via AgentMail. Send, receive, and manage email autonomously using agent-owned email addresses (e.g. satan-agent@agentmail.to). | `email/agentmail` |
+| `agentmail` | Give the agent its own dedicated email inbox via AgentMail. Send, receive, and manage email autonomously using agent-owned email addresses (e.g. satanclaw-agent@agentmail.to). | `email/agentmail` |
 
 ## health
 
@@ -351,13 +351,13 @@ satan skills install official/<category>/<skill>
 
 | Skill | Description | Path |
 |-------|-------------|------|
-| `openclaw-migration` | Migrate a user's OpenClaw customization footprint into Satan Agent. Imports Satan-compatible memories, SOUL.md, command allowlists, user skills, and selected workspace assets from ~/.openclaw, then reports what could not be migrated and why. | `migration/openclaw-migration` |
+| `openclaw-migration` | Migrate a user's OpenClaw customization footprint into SatanClaw Agent. Imports SatanClaw-compatible memories, SOUL.md, command allowlists, user skills, and selected workspace assets from ~/.openclaw, then reports what could not be migrated and why. | `migration/openclaw-migration` |
 
 ## productivity
 
 | Skill | Description | Path |
 |-------|-------------|------|
-| `telephony` | Give Satan phone capabilities — provision and persist a Twilio number, send and receive SMS/MMS, make direct calls, and place AI-driven outbound calls through Bland.ai or Vapi. | `productivity/telephony` |
+| `telephony` | Give SatanClaw phone capabilities — provision and persist a Twilio number, send and receive SMS/MMS, make direct calls, and place AI-driven outbound calls through Bland.ai or Vapi. | `productivity/telephony` |
 
 ## research
 

@@ -1,69 +1,69 @@
 ---
 name: openclaw-migration
-description: Migrate a user's OpenClaw customization footprint into Satan Agent. Imports Satan-compatible memories, SOUL.md, command allowlists, user skills, and selected workspace assets from ~/.openclaw, then reports exactly what could not be migrated and why.
+description: Migrate a user's OpenClaw customization footprint into SatanClaw Agent. Imports SatanClaw-compatible memories, SOUL.md, command allowlists, user skills, and selected workspace assets from ~/.openclaw, then reports exactly what could not be migrated and why.
 version: 1.0.0
-author: Satan Agent (Nous Research)
+author: SatanClaw Agent (Samuel Kalu)
 license: MIT
 metadata:
-  satan:
-    tags: [Migration, OpenClaw, Satan, Memory, Persona, Import]
-    related_skills: [satan-agent]
+  satanclaw:
+    tags: [Migration, OpenClaw, SatanClaw, Memory, Persona, Import]
+    related_skills: [satanclaw-agent]
 ---
 
-# OpenClaw -> Satan Migration
+# OpenClaw -> SatanClaw Migration
 
-Use this skill when a user wants to move their OpenClaw setup into Satan Agent with minimal manual cleanup.
+Use this skill when a user wants to move their OpenClaw setup into SatanClaw Agent with minimal manual cleanup.
 
 ## CLI Command
 
 For a quick, non-interactive migration, use the built-in CLI command:
 
 ```bash
-satan claw migrate              # Full interactive migration
-satan claw migrate --dry-run    # Preview what would be migrated
-satan claw migrate --preset user-data   # Migrate without secrets
-satan claw migrate --overwrite  # Overwrite existing conflicts
-satan claw migrate --source /custom/path/.openclaw  # Custom source
+satanclaw claw migrate              # Full interactive migration
+satanclaw claw migrate --dry-run    # Preview what would be migrated
+satanclaw claw migrate --preset user-data   # Migrate without secrets
+satanclaw claw migrate --overwrite  # Overwrite existing conflicts
+satanclaw claw migrate --source /custom/path/.openclaw  # Custom source
 ```
 
 The CLI command runs the same migration script described below. Use this skill (via the agent) when you want an interactive, guided migration with dry-run previews and per-item conflict resolution.
 
-**First-time setup:** The `satan setup` wizard automatically detects `~/.openclaw` and offers migration before configuration begins.
+**First-time setup:** The `satanclaw setup` wizard automatically detects `~/.openclaw` and offers migration before configuration begins.
 
 ## What this skill does
 
-It uses `scripts/openclaw_to_satan.py` to:
+It uses `scripts/openclaw_to_satanclaw.py` to:
 
-- import `SOUL.md` into the Satan home directory as `SOUL.md`
-- transform OpenClaw `MEMORY.md` and `USER.md` into Satan memory entries
-- merge OpenClaw command approval patterns into Satan `command_allowlist`
-- migrate Satan-compatible messaging settings such as `TELEGRAM_ALLOWED_USERS` and `MESSAGING_CWD`
-- copy OpenClaw skills into `~/.satan/skills/openclaw-imports/`
-- optionally copy the OpenClaw workspace instructions file into a chosen Satan workspace
-- mirror compatible workspace assets such as `workspace/tts/` into `~/.satan/tts/`
-- archive non-secret docs that do not have a direct Satan destination
+- import `SOUL.md` into the SatanClaw home directory as `SOUL.md`
+- transform OpenClaw `MEMORY.md` and `USER.md` into SatanClaw memory entries
+- merge OpenClaw command approval patterns into SatanClaw `command_allowlist`
+- migrate SatanClaw-compatible messaging settings such as `TELEGRAM_ALLOWED_USERS` and `MESSAGING_CWD`
+- copy OpenClaw skills into `~/.satanclaw/skills/openclaw-imports/`
+- optionally copy the OpenClaw workspace instructions file into a chosen SatanClaw workspace
+- mirror compatible workspace assets such as `workspace/tts/` into `~/.satanclaw/tts/`
+- archive non-secret docs that do not have a direct SatanClaw destination
 - produce a structured report listing migrated items, conflicts, skipped items, and reasons
 
 ## Path resolution
 
 The helper script lives in this skill directory at:
 
-- `scripts/openclaw_to_satan.py`
+- `scripts/openclaw_to_satanclaw.py`
 
 When this skill is installed from the Skills Hub, the normal location is:
 
-- `~/.satan/skills/migration/openclaw-migration/scripts/openclaw_to_satan.py`
+- `~/.satanclaw/skills/migration/openclaw-migration/scripts/openclaw_to_satanclaw.py`
 
-Do not guess a shorter path like `~/.satan/skills/openclaw-migration/...`.
+Do not guess a shorter path like `~/.satanclaw/skills/openclaw-migration/...`.
 
 Before running the helper:
 
-1. Prefer the installed path under `~/.satan/skills/migration/openclaw-migration/`.
+1. Prefer the installed path under `~/.satanclaw/skills/migration/openclaw-migration/`.
 2. If that path fails, inspect the installed skill directory and resolve the script relative to the installed `SKILL.md`.
 3. Only use `find` as a fallback if the installed location is missing or the skill was moved manually.
 4. When calling the terminal tool, do not pass `workdir: "~"`. Use an absolute directory such as the user's home directory, or omit `workdir` entirely.
 
-With `--migrate-secrets`, it will also import a small allowlisted set of Satan-compatible secrets, currently:
+With `--migrate-secrets`, it will also import a small allowlisted set of SatanClaw-compatible secrets, currently:
 
 - `TELEGRAM_BOT_TOKEN`
 
@@ -83,7 +83,7 @@ With `--migrate-secrets`, it will also import a small allowlisted set of Satan-c
 
 ## User interaction protocol
 
-Satan CLI supports the `clarify` tool for interactive prompts, but it is limited to:
+SatanClaw CLI supports the `clarify` tool for interactive prompts, but it is limited to:
 
 - one choice at a time
 - up to 4 predefined choices
@@ -158,9 +158,9 @@ Execution gate:
 Use these exact `clarify` payload shapes as the default pattern:
 
 - `{"question":"Your existing SOUL.md conflicts with the imported one. What should I do?","choices":["keep existing","overwrite with backup","review first"]}`
-- `{"question":"One or more imported OpenClaw skills already exist in Satan. How should I handle those skill conflicts?","choices":["keep existing skills","overwrite conflicting skills with backup","import conflicting skills under renamed folders"]}`
+- `{"question":"One or more imported OpenClaw skills already exist in SatanClaw. How should I handle those skill conflicts?","choices":["keep existing skills","overwrite conflicting skills with backup","import conflicting skills under renamed folders"]}`
 - `{"question":"Choose migration mode: migrate only user data, or run the full compatible migration including allowlisted secrets?","choices":["user-data only","full compatible migration","cancel"]}`
-- `{"question":"Do you want to copy the OpenClaw workspace instructions file into a Satan workspace?","choices":["skip workspace instructions","copy to a workspace path","decide later"]}`
+- `{"question":"Do you want to copy the OpenClaw workspace instructions file into a SatanClaw workspace?","choices":["skip workspace instructions","copy to a workspace path","decide later"]}`
 - `{"question":"Please provide an absolute path where the workspace instructions should be copied."}`
 
 ## Decision-to-command mapping
@@ -196,7 +196,7 @@ After execution, treat the script's JSON output as the source of truth.
 10. If `report.skill_conflict_mode` is present, use it as the source of truth for the selected imported-skill conflict policy.
 11. If an item has `status="skipped"`, do not describe it as overwritten, backed up, migrated, or resolved.
 12. If `kind="soul"` has `status="skipped"` with reason `Target already matches source`, say it was left unchanged and do not mention a backup.
-13. If a renamed imported skill has an empty `details.backup`, do not imply the existing Satan skill was renamed or backed up. Say only that the imported copy was placed in the new destination and reference `details.renamed_from` as the pre-existing folder that remained in place.
+13. If a renamed imported skill has an empty `details.backup`, do not imply the existing SatanClaw skill was renamed or backed up. Say only that the imported copy was placed in the new destination and reference `details.renamed_from` as the pre-existing folder that remained in place.
 
 ## Migration presets
 
@@ -228,37 +228,37 @@ The helper script still supports category-level `--include` / `--exclude`, but t
 Dry run with full discovery:
 
 ```bash
-python3 ~/.satan/skills/migration/openclaw-migration/scripts/openclaw_to_satan.py
+python3 ~/.satanclaw/skills/migration/openclaw-migration/scripts/openclaw_to_satanclaw.py
 ```
 
 When using the terminal tool, prefer an absolute invocation pattern such as:
 
 ```json
-{"command":"python3 /home/USER/.satan/skills/migration/openclaw-migration/scripts/openclaw_to_satan.py","workdir":"/home/USER"}
+{"command":"python3 /home/USER/.satanclaw/skills/migration/openclaw-migration/scripts/openclaw_to_satanclaw.py","workdir":"/home/USER"}
 ```
 
 Dry run with the user-data preset:
 
 ```bash
-python3 ~/.satan/skills/migration/openclaw-migration/scripts/openclaw_to_satan.py --preset user-data
+python3 ~/.satanclaw/skills/migration/openclaw-migration/scripts/openclaw_to_satanclaw.py --preset user-data
 ```
 
 Execute a user-data migration:
 
 ```bash
-python3 ~/.satan/skills/migration/openclaw-migration/scripts/openclaw_to_satan.py --execute --preset user-data --skill-conflict skip
+python3 ~/.satanclaw/skills/migration/openclaw-migration/scripts/openclaw_to_satanclaw.py --execute --preset user-data --skill-conflict skip
 ```
 
 Execute a full compatible migration:
 
 ```bash
-python3 ~/.satan/skills/migration/openclaw-migration/scripts/openclaw_to_satan.py --execute --preset full --migrate-secrets --skill-conflict skip
+python3 ~/.satanclaw/skills/migration/openclaw-migration/scripts/openclaw_to_satanclaw.py --execute --preset full --migrate-secrets --skill-conflict skip
 ```
 
 Execute with workspace instructions included:
 
 ```bash
-python3 ~/.satan/skills/migration/openclaw-migration/scripts/openclaw_to_satan.py --execute --preset user-data --skill-conflict rename --workspace-target "/absolute/workspace/path"
+python3 ~/.satanclaw/skills/migration/openclaw-migration/scripts/openclaw_to_satanclaw.py --execute --preset user-data --skill-conflict rename --workspace-target "/absolute/workspace/path"
 ```
 
 Do not use `$PWD` or the home directory as the workspace target by default. Ask for an explicit workspace path first.
@@ -266,11 +266,11 @@ Do not use `$PWD` or the home directory as the workspace target by default. Ask 
 ## Important rules
 
 1. Run a dry run before writing unless the user explicitly says to proceed immediately.
-2. Do not migrate secrets by default. Tokens, auth blobs, device credentials, and raw gateway config should stay out of Satan unless the user explicitly asks for secret migration.
-3. Do not silently overwrite non-empty Satan targets unless the user explicitly wants that. The helper script will preserve backups when overwriting is enabled.
+2. Do not migrate secrets by default. Tokens, auth blobs, device credentials, and raw gateway config should stay out of SatanClaw unless the user explicitly asks for secret migration.
+3. Do not silently overwrite non-empty SatanClaw targets unless the user explicitly wants that. The helper script will preserve backups when overwriting is enabled.
 4. Always give the user the skipped-items report. That report is part of the migration, not an optional extra.
 5. Prefer the primary OpenClaw workspace (`~/.openclaw/workspace/`) over `workspace.default/`. Only use the default workspace as fallback when the primary files are missing.
-6. Even in secret-migration mode, only migrate secrets with a clean Satan destination. Unsupported auth blobs must still be reported as skipped.
+6. Even in secret-migration mode, only migrate secrets with a clean SatanClaw destination. Unsupported auth blobs must still be reported as skipped.
 7. If the dry run shows a large asset copy, a conflicting `SOUL.md`, or overflowed memory entries, call those out separately before execution.
 8. Default to `user-data only` if the user is unsure.
 9. Only include `workspace-agents` when the user has explicitly provided a destination workspace path.
@@ -291,7 +291,7 @@ Do not use `$PWD` or the home directory as the workspace target by default. Ask 
 
 After a successful run, the user should have:
 
-- Satan persona state imported
-- Satan memory files populated with converted OpenClaw knowledge
-- OpenClaw skills available under `~/.satan/skills/openclaw-imports/`
+- SatanClaw persona state imported
+- SatanClaw memory files populated with converted OpenClaw knowledge
+- OpenClaw skills available under `~/.satanclaw/skills/openclaw-imports/`
 - a migration report showing any conflicts, omissions, or unsupported data

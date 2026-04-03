@@ -10,13 +10,13 @@ Server-side LLM fact extraction with semantic search, reranking, and automatic d
 ## Setup
 
 ```bash
-satan memory setup    # select "mem0"
+satanclaw memory setup    # select "mem0"
 ```
 
 Or manually:
 ```bash
-satan config set memory.provider mem0
-echo "MEM0_API_KEY=your-key" >> ~/.satan/.env
+satanclaw config set memory.provider mem0
+echo "MEM0_API_KEY=your-key" >> ~/.satanclaw/.env
 ```
 
 ## Config
@@ -25,8 +25,8 @@ Config file: `$HERMES_HOME/mem0.json`
 
 | Key | Default | Description |
 |-----|---------|-------------|
-| `user_id` | `satan-user` | User identifier on Mem0 |
-| `agent_id` | `satan` | Agent identifier |
+| `user_id` | `satanclaw-user` | User identifier on Mem0 |
+| `agent_id` | `satanclaw` | Agent identifier |
 | `rerank` | `true` | Enable reranking for recall |
 
 ## Tools

@@ -5,7 +5,7 @@ version: 1.3.0
 author: gamedevCloudy
 license: MIT
 metadata:
-  satan:
+  satanclaw:
     tags: [search, duckduckgo, web-search, free, fallback]
     related_skills: [arxiv]
     fallback_for_toolsets: [web]

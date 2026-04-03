@@ -1,6 +1,6 @@
-"""Shared Satan-side execution flow for Modal transports.
+"""Shared SatanClaw-side execution flow for Modal transports.
 
-This module deliberately stops at the Satan boundary:
+This module deliberately stops at the SatanClaw boundary:
 - command preparation
 - cwd/timeout normalization
 - stdin/sudo shell wrapping

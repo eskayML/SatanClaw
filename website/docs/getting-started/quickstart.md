@@ -1,20 +1,20 @@
 ---
 sidebar_position: 1
 title: "Quickstart"
-description: "Your first conversation with Satan Agent — from install to chatting in 2 minutes"
+description: "Your first conversation with SatanClaw Agent — from install to chatting in 2 minutes"
 ---
 
 # Quickstart
 
-This guide walks you through installing Satan Agent, setting up a provider, and having your first conversation. By the end, you'll know the key features and how to explore further.
+This guide walks you through installing SatanClaw Agent, setting up a provider, and having your first conversation. By the end, you'll know the key features and how to explore further.
 
-## 1. Install Satan Agent
+## 1. Install SatanClaw Agent
 
 Run the one-line installer:
 
 ```bash
 # Linux / macOS / WSL2
-curl -fsSL https://raw.githubusercontent.com/NousResearch/satan-agent/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/NousResearch/satanclaw-agent/main/scripts/install.sh | bash
 ```
 
 :::tip Windows Users
@@ -32,18 +32,18 @@ source ~/.bashrc   # or source ~/.zshrc
 The installer configures your LLM provider automatically. To change it later, use one of these commands:
 
 ```bash
-satan model       # Choose your LLM provider and model
-satan tools       # Configure which tools are enabled
-satan setup       # Or configure everything at once
+satanclaw model       # Choose your LLM provider and model
+satanclaw tools       # Configure which tools are enabled
+satanclaw setup       # Or configure everything at once
 ```
 
-`satan model` walks you through selecting an inference provider:
+`satanclaw model` walks you through selecting an inference provider:
 
 | Provider | What it is | How to set up |
 |----------|-----------|---------------|
-| **Nous Portal** | Subscription-based, zero-config | OAuth login via `satan model` |
-| **OpenAI Codex** | ChatGPT OAuth, uses Codex models | Device code auth via `satan model` |
-| **Anthropic** | Claude models directly (Pro/Max or API key) | `satan model` with Claude Code auth, or an Anthropic API key |
+| **Nous Portal** | Subscription-based, zero-config | OAuth login via `satanclaw model` |
+| **OpenAI Codex** | ChatGPT OAuth, uses Codex models | Device code auth via `satanclaw model` |
+| **Anthropic** | Claude models directly (Pro/Max or API key) | `satanclaw model` with Claude Code auth, or an Anthropic API key |
 | **OpenRouter** | Multi-provider routing across many models | Enter your API key |
 | **Z.AI** | GLM / Zhipu-hosted models | Set `GLM_API_KEY` / `ZAI_API_KEY` |
 | **Kimi / Moonshot** | Moonshot-hosted coding and chat models | Set `KIMI_API_KEY` |
@@ -55,19 +55,19 @@ satan setup       # Or configure everything at once
 | **OpenCode Zen** | Pay-as-you-go access to curated models | Set `OPENCODE_ZEN_API_KEY` |
 | **OpenCode Go** | $10/month subscription for open models | Set `OPENCODE_GO_API_KEY` |
 | **DeepSeek** | Direct DeepSeek API access | Set `DEEPSEEK_API_KEY` |
-| **GitHub Copilot** | GitHub Copilot subscription (GPT-5.x, Claude, Gemini, etc.) | OAuth via `satan model`, or `COPILOT_GITHUB_TOKEN` / `GH_TOKEN` |
-| **GitHub Copilot ACP** | Copilot ACP agent backend (spawns local `copilot` CLI) | `satan model` (requires `copilot` CLI + `copilot login`) |
+| **GitHub Copilot** | GitHub Copilot subscription (GPT-5.x, Claude, Gemini, etc.) | OAuth via `satanclaw model`, or `COPILOT_GITHUB_TOKEN` / `GH_TOKEN` |
+| **GitHub Copilot ACP** | Copilot ACP agent backend (spawns local `copilot` CLI) | `satanclaw model` (requires `copilot` CLI + `copilot login`) |
 | **Vercel AI Gateway** | Vercel AI Gateway routing | Set `AI_GATEWAY_API_KEY` |
 | **Custom Endpoint** | VLLM, SGLang, Ollama, or any OpenAI-compatible API | Set base URL + API key |
 
 :::tip
-You can switch providers at any time with `satan model` — no code changes, no lock-in. When configuring a custom endpoint, Satan will prompt for the context window size and auto-detect it when possible. See [Context Length Detection](../integrations/providers.md#context-length-detection) for details.
+You can switch providers at any time with `satanclaw model` — no code changes, no lock-in. When configuring a custom endpoint, SatanClaw will prompt for the context window size and auto-detect it when possible. See [Context Length Detection](../integrations/providers.md#context-length-detection) for details.
 :::
 
 ## 3. Start Chatting
 
 ```bash
-satan
+satanclaw
 ```
 
 That's it! You'll see a welcome banner with your model, available tools, and skills. Type a message and press Enter.
@@ -110,11 +110,11 @@ If the agent is taking too long, just type a new message and press Enter — it 
 
 ### Resume a session
 
-When you exit, satan prints a resume command:
+When you exit, satanclaw prints a resume command:
 
 ```bash
-satan --continue    # Resume the most recent session
-satan -c            # Short form
+satanclaw --continue    # Resume the most recent session
+satanclaw -c            # Short form
 ```
 
 ## 5. Explore Further
@@ -126,16 +126,16 @@ Here are some things to try next:
 For safety, run the agent in a Docker container or on a remote server:
 
 ```bash
-satan config set terminal.backend docker    # Docker isolation
-satan config set terminal.backend ssh       # Remote server
+satanclaw config set terminal.backend docker    # Docker isolation
+satanclaw config set terminal.backend ssh       # Remote server
 ```
 
 ### Connect messaging platforms
 
-Chat with Satan from your phone or other surfaces via Telegram, Discord, Slack, WhatsApp, Signal, Email, or Home Assistant:
+Chat with SatanClaw from your phone or other surfaces via Telegram, Discord, Slack, WhatsApp, Signal, Email, or Home Assistant:
 
 ```bash
-satan gateway setup    # Interactive platform configuration
+satanclaw gateway setup    # Interactive platform configuration
 ```
 
 ### Add voice mode
@@ -143,19 +143,19 @@ satan gateway setup    # Interactive platform configuration
 Want microphone input in the CLI or spoken replies in messaging?
 
 ```bash
-pip install "satan-agent[voice]"
+pip install "satanclaw-agent[voice]"
 
 # Optional but recommended for free local speech-to-text
 pip install faster-whisper
 ```
 
-Then start Satan and enable it inside the CLI:
+Then start SatanClaw and enable it inside the CLI:
 
 ```text
 /voice on
 ```
 
-Press `Ctrl+B` to record, or use `/voice tts` to have Satan speak its replies. See [Voice Mode](../user-guide/features/voice-mode.md) for the full setup across CLI, Telegram, Discord, and Discord voice channels.
+Press `Ctrl+B` to record, or use `/voice tts` to have SatanClaw speak its replies. See [Voice Mode](../user-guide/features/voice-mode.md) for the full setup across CLI, Telegram, Discord, and Discord voice channels.
 
 ### Schedule automated tasks
 
@@ -168,12 +168,12 @@ The agent will set up a cron job that runs automatically via the gateway.
 ### Browse and install skills
 
 ```bash
-satan skills search kubernetes
-satan skills search react --source skills-sh
-satan skills search https://mintlify.com/docs --source well-known
-satan skills install openai/skills/k8s
-satan skills install official/security/1password
-satan skills install skills-sh/vercel-labs/json-render/json-render-react --force
+satanclaw skills search kubernetes
+satanclaw skills search react --source skills-sh
+satanclaw skills search https://mintlify.com/docs --source well-known
+satanclaw skills install openai/skills/k8s
+satanclaw skills install official/security/1password
+satanclaw skills install skills-sh/vercel-labs/json-render/json-render-react --force
 ```
 
 Tips:
@@ -183,13 +183,13 @@ Tips:
 
 Or use the `/skills` slash command inside chat.
 
-### Use Satan inside an editor via ACP
+### Use SatanClaw inside an editor via ACP
 
-Satan can also run as an ACP server for ACP-compatible editors like VS Code, Zed, and JetBrains:
+SatanClaw can also run as an ACP server for ACP-compatible editors like VS Code, Zed, and JetBrains:
 
 ```bash
 pip install -e '.[acp]'
-satan acp
+satanclaw acp
 ```
 
 See [ACP Editor Integration](../user-guide/features/acp.md) for setup details.
@@ -199,7 +199,7 @@ See [ACP Editor Integration](../user-guide/features/acp.md) for setup details.
 Connect to external tools via the Model Context Protocol:
 
 ```yaml
-# Add to ~/.satan/config.yaml
+# Add to ~/.satanclaw/config.yaml
 mcp_servers:
   github:
     command: npx
@@ -214,14 +214,14 @@ mcp_servers:
 
 | Command | Description |
 |---------|-------------|
-| `satan` | Start chatting |
-| `satan model` | Choose your LLM provider and model |
-| `satan tools` | Configure which tools are enabled per platform |
-| `satan setup` | Full setup wizard (configures everything at once) |
-| `satan doctor` | Diagnose issues |
-| `satan update` | Update to latest version |
-| `satan gateway` | Start the messaging gateway |
-| `satan --continue` | Resume last session |
+| `satanclaw` | Start chatting |
+| `satanclaw model` | Choose your LLM provider and model |
+| `satanclaw tools` | Configure which tools are enabled per platform |
+| `satanclaw setup` | Full setup wizard (configures everything at once) |
+| `satanclaw doctor` | Diagnose issues |
+| `satanclaw update` | Update to latest version |
+| `satanclaw gateway` | Start the messaging gateway |
+| `satanclaw --continue` | Resume last session |
 
 ## Next Steps
 

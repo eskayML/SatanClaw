@@ -9,17 +9,17 @@ None — uses SQLite (always available). NumPy optional for HRR algebra.
 ## Setup
 
 ```bash
-satan memory setup    # select "holographic"
+satanclaw memory setup    # select "holographic"
 ```
 
 Or manually:
 ```bash
-satan config set memory.provider holographic
+satanclaw config set memory.provider holographic
 ```
 
 ## Config
 
-Config in `config.yaml` under `plugins.satan-memory-store`:
+Config in `config.yaml` under `plugins.satanclaw-memory-store`:
 
 | Key | Default | Description |
 |-----|---------|-------------|

@@ -15,14 +15,14 @@ def test_gateway_config_stt_disabled_from_dict_nested():
 
 
 def test_load_gateway_config_bridges_stt_enabled_from_config_yaml(tmp_path, monkeypatch):
-    satan_home = tmp_path / ".satan"
-    satan_home.mkdir()
-    (satan_home / "config.yaml").write_text(
+    satanclaw_home = tmp_path / ".satanclaw"
+    satanclaw_home.mkdir()
+    (satanclaw_home / "config.yaml").write_text(
         yaml.dump({"stt": {"enabled": False}}),
         encoding="utf-8",
     )
 
-    monkeypatch.setenv("HERMES_HOME", str(satan_home))
+    monkeypatch.setenv("HERMES_HOME", str(satanclaw_home))
     monkeypatch.setattr(Path, "home", lambda: tmp_path)
 
     config = load_gateway_config()

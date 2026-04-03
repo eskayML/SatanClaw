@@ -219,13 +219,13 @@ TOOLSETS = {
     },
     
     # ==========================================================================
-    # Full Satan toolsets (CLI + messaging platforms)
+    # Full SatanClaw toolsets (CLI + messaging platforms)
     #
     # All platforms share the same core tools (including send_message,
     # which is gated on gateway running via its check_fn).
     # ==========================================================================
 
-    "satan-acp": {
+    "satanclaw-acp": {
         "description": "Editor integration (VS Code, Zed, JetBrains) — coding-focused tools without messaging, audio, or clarify UI",
         "tools": [
             "web_search", "web_extract",
@@ -244,7 +244,7 @@ TOOLSETS = {
         "includes": []
     },
 
-    "satan-api-server": {
+    "satanclaw-api-server": {
         "description": "OpenAI-compatible API server — full agent tools accessible via HTTP (no interactive UI tools like clarify or send_message)",
         "tools": [
             # Web
@@ -279,100 +279,100 @@ TOOLSETS = {
         "includes": []
     },
     
-    "satan-cli": {
+    "satanclaw-cli": {
         "description": "Full interactive CLI toolset - all default tools plus cronjob management",
         "tools": _HERMES_CORE_TOOLS,
         "includes": []
     },
     
-    "satan-telegram": {
+    "satanclaw-telegram": {
         "description": "Telegram bot toolset - full access for personal use (terminal has safety checks)",
         "tools": _HERMES_CORE_TOOLS,
         "includes": []
     },
     
-    "satan-discord": {
+    "satanclaw-discord": {
         "description": "Discord bot toolset - full access (terminal has safety checks via dangerous command approval)",
         "tools": _HERMES_CORE_TOOLS,
         "includes": []
     },
     
-    "satan-whatsapp": {
+    "satanclaw-whatsapp": {
         "description": "WhatsApp bot toolset - similar to Telegram (personal messaging, more trusted)",
         "tools": _HERMES_CORE_TOOLS,
         "includes": []
     },
     
-    "satan-slack": {
+    "satanclaw-slack": {
         "description": "Slack bot toolset - full access for workspace use (terminal has safety checks)",
         "tools": _HERMES_CORE_TOOLS,
         "includes": []
     },
     
-    "satan-signal": {
+    "satanclaw-signal": {
         "description": "Signal bot toolset - encrypted messaging platform (full access)",
         "tools": _HERMES_CORE_TOOLS,
         "includes": []
     },
 
-    "satan-homeassistant": {
+    "satanclaw-homeassistant": {
         "description": "Home Assistant bot toolset - smart home event monitoring and control",
         "tools": _HERMES_CORE_TOOLS,
         "includes": []
     },
 
-    "satan-email": {
-        "description": "Email bot toolset - interact with Satan via email (IMAP/SMTP)",
+    "satanclaw-email": {
+        "description": "Email bot toolset - interact with SatanClaw via email (IMAP/SMTP)",
         "tools": _HERMES_CORE_TOOLS,
         "includes": []
     },
 
-    "satan-mattermost": {
+    "satanclaw-mattermost": {
         "description": "Mattermost bot toolset - self-hosted team messaging (full access)",
         "tools": _HERMES_CORE_TOOLS,
         "includes": []
     },
 
-    "satan-matrix": {
+    "satanclaw-matrix": {
         "description": "Matrix bot toolset - decentralized encrypted messaging (full access)",
         "tools": _HERMES_CORE_TOOLS,
         "includes": []
     },
 
-    "satan-dingtalk": {
+    "satanclaw-dingtalk": {
         "description": "DingTalk bot toolset - enterprise messaging platform (full access)",
         "tools": _HERMES_CORE_TOOLS,
         "includes": []
     },
 
-    "satan-feishu": {
+    "satanclaw-feishu": {
         "description": "Feishu/Lark bot toolset - enterprise messaging via Feishu/Lark (full access)",
         "tools": _HERMES_CORE_TOOLS,
         "includes": []
     },
 
-    "satan-wecom": {
+    "satanclaw-wecom": {
         "description": "WeCom bot toolset - enterprise WeChat messaging (full access)",
         "tools": _HERMES_CORE_TOOLS,
         "includes": []
     },
 
-    "satan-sms": {
-        "description": "SMS bot toolset - interact with Satan via SMS (Twilio)",
+    "satanclaw-sms": {
+        "description": "SMS bot toolset - interact with SatanClaw via SMS (Twilio)",
         "tools": _HERMES_CORE_TOOLS,
         "includes": []
     },
 
-    "satan-webhook": {
+    "satanclaw-webhook": {
         "description": "Webhook toolset - receive and process external webhook events",
         "tools": _HERMES_CORE_TOOLS,
         "includes": []
     },
 
-    "satan-gateway": {
+    "satanclaw-gateway": {
         "description": "Gateway toolset - union of all messaging platform tools",
         "tools": [],
-        "includes": ["satan-telegram", "satan-discord", "satan-whatsapp", "satan-slack", "satan-signal", "satan-homeassistant", "satan-email", "satan-sms", "satan-mattermost", "satan-matrix", "satan-dingtalk", "satan-feishu", "satan-wecom", "satan-webhook"]
+        "includes": ["satanclaw-telegram", "satanclaw-discord", "satanclaw-whatsapp", "satanclaw-slack", "satanclaw-signal", "satanclaw-homeassistant", "satanclaw-email", "satanclaw-sms", "satanclaw-mattermost", "satanclaw-matrix", "satanclaw-dingtalk", "satanclaw-feishu", "satanclaw-wecom", "satanclaw-webhook"]
     }
 }
 

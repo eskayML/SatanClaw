@@ -1,12 +1,12 @@
 ---
 sidebar_position: 8
 title: "Extending the CLI"
-description: "Build wrapper CLIs that extend the Satan TUI with custom widgets, keybindings, and layout changes"
+description: "Build wrapper CLIs that extend the SatanClaw TUI with custom widgets, keybindings, and layout changes"
 ---
 
 # Extending the CLI
 
-Satan exposes protected extension hooks on `SatanCLI` so wrapper CLIs can add widgets, keybindings, and layout customizations without overriding the 1000+ line `run()` method. This keeps your extension decoupled from internal changes.
+SatanClaw exposes protected extension hooks on `SatanClawCLI` so wrapper CLIs can add widgets, keybindings, and layout customizations without overriding the 1000+ line `run()` method. This keeps your extension decoupled from internal changes.
 
 ## Extension points
 
@@ -26,14 +26,14 @@ The first three are new protected hooks. The last two already existed.
 
 ```python
 #!/usr/bin/env python3
-"""my_cli.py — Example wrapper CLI that extends Satan."""
+"""my_cli.py — Example wrapper CLI that extends SatanClaw."""
 
-from cli import SatanCLI
+from cli import SatanClawCLI
 from prompt_toolkit.layout import FormattedTextControl, Window
 from prompt_toolkit.filters import Condition
 
 
-class MyCLI(SatanCLI):
+class MyCLI(SatanClawCLI):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -76,7 +76,7 @@ if __name__ == "__main__":
 Run it:
 
 ```bash
-cd ~/.satan/satan-agent
+cd ~/.satanclaw/satanclaw-agent
 source .venv/bin/activate
 python my_cli.py
 ```
@@ -109,7 +109,7 @@ def _get_extra_tui_widgets(self):
 
 ### `_register_extra_tui_keybindings(kb, *, input_area)`
 
-Called after Satan registers its own keybindings and before the layout is built. Add your keybindings to `kb`.
+Called after SatanClaw registers its own keybindings and before the layout is built. Add your keybindings to `kb`.
 
 ```python
 def _register_extra_tui_keybindings(self, kb, *, input_area):

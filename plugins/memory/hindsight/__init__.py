@@ -7,7 +7,7 @@ Original PR #1811 by benfrank241, adapted to MemoryProvider ABC.
 
 Config via environment variables:
   HINDSIGHT_API_KEY   — API key for Hindsight Cloud
-  HINDSIGHT_BANK_ID   — memory bank identifier (default: satan)
+  HINDSIGHT_BANK_ID   — memory bank identifier (default: satanclaw)
   HINDSIGHT_BUDGET    — recall budget: low/mid/high (default: mid)
   HINDSIGHT_API_URL   — API endpoint
   HINDSIGHT_MODE      — cloud or local (default: cloud)
@@ -120,10 +120,10 @@ def _load_config() -> dict:
       3. Environment variables
     """
     from pathlib import Path
-    from satan_constants import get_satan_home
+    from satanclaw_constants import get_satanclaw_home
 
     # Profile-scoped path (preferred)
-    profile_path = get_satan_home() / "hindsight" / "config.json"
+    profile_path = get_satanclaw_home() / "hindsight" / "config.json"
     if profile_path.exists():
         try:
             return json.loads(profile_path.read_text(encoding="utf-8"))
@@ -142,8 +142,8 @@ def _load_config() -> dict:
         "mode": os.environ.get("HINDSIGHT_MODE", "cloud"),
         "apiKey": os.environ.get("HINDSIGHT_API_KEY", ""),
         "banks": {
-            "satan": {
-                "bankId": os.environ.get("HINDSIGHT_BANK_ID", "satan"),
+            "satanclaw": {
+                "bankId": os.environ.get("HINDSIGHT_BANK_ID", "satanclaw"),
                 "budget": os.environ.get("HINDSIGHT_BUDGET", "mid"),
                 "enabled": True,
             }
@@ -161,7 +161,7 @@ class HindsightMemoryProvider(MemoryProvider):
     def __init__(self):
         self._config = None
         self._api_key = None
-        self._bank_id = "satan"
+        self._bank_id = "satanclaw"
         self._budget = "mid"
         self._mode = "cloud"
         self._prefetch_result = ""
@@ -185,11 +185,11 @@ class HindsightMemoryProvider(MemoryProvider):
         except Exception:
             return False
 
-    def save_config(self, values, satan_home):
+    def save_config(self, values, satanclaw_home):
         """Write config to $HERMES_HOME/hindsight/config.json."""
         import json
         from pathlib import Path
-        config_dir = Path(satan_home) / "hindsight"
+        config_dir = Path(satanclaw_home) / "hindsight"
         config_dir.mkdir(parents=True, exist_ok=True)
         config_path = config_dir / "config.json"
         existing = {}
@@ -205,7 +205,7 @@ class HindsightMemoryProvider(MemoryProvider):
         return [
             {"key": "mode", "description": "Cloud API or local embedded mode", "default": "cloud", "choices": ["cloud", "local"]},
             {"key": "api_key", "description": "Hindsight Cloud API key", "secret": True, "env_var": "HINDSIGHT_API_KEY", "url": "https://app.hindsight.vectorize.io"},
-            {"key": "bank_id", "description": "Memory bank identifier", "default": "satan"},
+            {"key": "bank_id", "description": "Memory bank identifier", "default": "satanclaw"},
             {"key": "budget", "description": "Recall thoroughness", "default": "mid", "choices": ["low", "mid", "high"]},
             {"key": "llm_provider", "description": "LLM provider for local mode", "default": "anthropic", "choices": ["anthropic", "openai", "groq", "ollama"]},
             {"key": "llm_api_key", "description": "LLM API key for local mode", "secret": True, "env_var": "HINDSIGHT_LLM_API_KEY"},
@@ -218,7 +218,7 @@ class HindsightMemoryProvider(MemoryProvider):
             from hindsight import HindsightEmbedded
             embed = self._config.get("embed", {})
             return HindsightEmbedded(
-                profile=embed.get("profile", "satan"),
+                profile=embed.get("profile", "satanclaw"),
                 llm_provider=embed.get("llmProvider", ""),
                 llm_api_key=embed.get("llmApiKey", ""),
                 llm_model=embed.get("llmModel", ""),
@@ -231,8 +231,8 @@ class HindsightMemoryProvider(MemoryProvider):
         self._mode = self._config.get("mode", "cloud")
         self._api_key = self._config.get("apiKey") or os.environ.get("HINDSIGHT_API_KEY", "")
 
-        banks = self._config.get("banks", {}).get("satan", {})
-        self._bank_id = banks.get("bankId", "satan")
+        banks = self._config.get("banks", {}).get("satanclaw", {})
+        self._bank_id = banks.get("bankId", "satanclaw")
         budget = banks.get("budget", "mid")
         self._budget = budget if budget in _VALID_BUDGETS else "mid"
 

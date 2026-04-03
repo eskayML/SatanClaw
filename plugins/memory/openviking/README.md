@@ -11,13 +11,13 @@ Context database by Volcengine (ByteDance) with filesystem-style knowledge hiera
 ## Setup
 
 ```bash
-satan memory setup    # select "openviking"
+satanclaw memory setup    # select "openviking"
 ```
 
 Or manually:
 ```bash
-satan config set memory.provider openviking
-echo "OPENVIKING_ENDPOINT=http://localhost:1933" >> ~/.satan/.env
+satanclaw config set memory.provider openviking
+echo "OPENVIKING_ENDPOINT=http://localhost:1933" >> ~/.satanclaw/.env
 ```
 
 ## Config

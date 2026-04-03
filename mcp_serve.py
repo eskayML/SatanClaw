@@ -1,5 +1,5 @@
 """
-Satan MCP Server — expose messaging conversations as MCP tools.
+SatanClaw MCP Server — expose messaging conversations as MCP tools.
 
 Starts a stdio MCP server that lets any MCP client (Claude Code, Cursor, Codex,
 etc.) list conversations, read message history, send messages, poll for live
@@ -10,17 +10,17 @@ Matches OpenClaw's 9-tool MCP channel bridge surface:
   events_poll, events_wait, messages_send, permissions_list_open,
   permissions_respond
 
-Plus: channels_list (Satan-specific extra)
+Plus: channels_list (SatanClaw-specific extra)
 
 Usage:
-    satan mcp serve
-    satan mcp serve --verbose
+    satanclaw mcp serve
+    satanclaw mcp serve --verbose
 
 MCP client config (e.g. claude_desktop_config.json):
     {
         "mcpServers": {
-            "satan": {
-                "command": "satan",
+            "satanclaw": {
+                "command": "satanclaw",
                 "args": ["mcp", "serve"]
             }
         }
@@ -41,7 +41,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-logger = logging.getLogger("satan.mcp_serve")
+logger = logging.getLogger("satanclaw.mcp_serve")
 
 # ---------------------------------------------------------------------------
 # Lazy MCP SDK import
@@ -63,16 +63,16 @@ except ImportError:
 def _get_sessions_dir() -> Path:
     """Return the sessions directory using HERMES_HOME."""
     try:
-        from satan_constants import get_satan_home
-        return get_satan_home() / "sessions"
+        from satanclaw_constants import get_satanclaw_home
+        return get_satanclaw_home() / "sessions"
     except ImportError:
-        return Path(os.environ.get("HERMES_HOME", Path.home() / ".satan")) / "sessions"
+        return Path(os.environ.get("HERMES_HOME", Path.home() / ".satanclaw")) / "sessions"
 
 
 def _get_session_db():
     """Get a SessionDB instance for reading message transcripts."""
     try:
-        from satan_state import SessionDB
+        from satanclaw_state import SessionDB
         return SessionDB()
     except Exception as e:
         logger.debug("SessionDB unavailable: %s", e)
@@ -99,11 +99,11 @@ def _load_sessions_index() -> dict:
 def _load_channel_directory() -> dict:
     """Load the cached channel directory for available targets."""
     try:
-        from satan_constants import get_satan_home
-        directory_file = get_satan_home() / "channel_directory.json"
+        from satanclaw_constants import get_satanclaw_home
+        directory_file = get_satanclaw_home() / "channel_directory.json"
     except ImportError:
         directory_file = Path(
-            os.environ.get("HERMES_HOME", Path.home() / ".satan")
+            os.environ.get("HERMES_HOME", Path.home() / ".satanclaw")
         ) / "channel_directory.json"
 
     if not directory_file.exists():
@@ -187,7 +187,7 @@ class EventBridge:
     """Background poller that watches SessionDB for new messages and
     maintains an in-memory event queue with waiter support.
 
-    This is the Satan equivalent of OpenClaw's WebSocket gateway bridge.
+    This is the SatanClaw equivalent of OpenClaw's WebSocket gateway bridge.
     Instead of WebSocket events, we poll the SQLite database for changes.
     """
 
@@ -344,10 +344,10 @@ class EventBridge:
 
         # Check if state.db has changed
         try:
-            from satan_constants import get_satan_home
-            db_file = get_satan_home() / "state.db"
+            from satanclaw_constants import get_satanclaw_home
+            db_file = get_satanclaw_home() / "state.db"
         except ImportError:
-            db_file = Path(os.environ.get("HERMES_HOME", Path.home() / ".satan")) / "state.db"
+            db_file = Path(os.environ.get("HERMES_HOME", Path.home() / ".satanclaw")) / "state.db"
 
         try:
             db_mtime = db_file.stat().st_mtime if db_file.exists() else 0.0
@@ -430,17 +430,17 @@ class EventBridge:
 # ---------------------------------------------------------------------------
 
 def create_mcp_server(event_bridge: Optional[EventBridge] = None) -> "FastMCP":
-    """Create and return the Satan MCP server with all tools registered."""
+    """Create and return the SatanClaw MCP server with all tools registered."""
     if not _MCP_SERVER_AVAILABLE:
         raise ImportError(
             "MCP server requires the 'mcp' package. "
-            "Install with: pip install 'satan-agent[mcp]'"
+            "Install with: pip install 'satanclaw-agent[mcp]'"
         )
 
     mcp = FastMCP(
-        "satan",
+        "satanclaw",
         instructions=(
-            "Satan Agent messaging bridge. Use these tools to interact with "
+            "SatanClaw Agent messaging bridge. Use these tools to interact with "
             "conversations across Telegram, Discord, Slack, WhatsApp, Signal, "
             "Matrix, and other connected platforms."
         ),
@@ -835,11 +835,11 @@ def create_mcp_server(event_bridge: Optional[EventBridge] = None) -> "FastMCP":
 # ---------------------------------------------------------------------------
 
 def run_mcp_server(verbose: bool = False) -> None:
-    """Start the Satan MCP server on stdio."""
+    """Start the SatanClaw MCP server on stdio."""
     if not _MCP_SERVER_AVAILABLE:
         print(
             "Error: MCP server requires the 'mcp' package.\n"
-            "Install with: pip install 'satan-agent[mcp]'",
+            "Install with: pip install 'satanclaw-agent[mcp]'",
             file=sys.stderr,
         )
         sys.exit(1)

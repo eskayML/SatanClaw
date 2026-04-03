@@ -1,13 +1,13 @@
 ---
 sidebar_position: 8
 sidebar_label: "Build a Plugin"
-title: "Build a Satan Plugin"
-description: "Step-by-step guide to building a complete Satan plugin with tools, hooks, data files, and skills"
+title: "Build a SatanClaw Plugin"
+description: "Step-by-step guide to building a complete SatanClaw plugin with tools, hooks, data files, and skills"
 ---
 
-# Build a Satan Plugin
+# Build a SatanClaw Plugin
 
-This guide walks through building a complete Satan plugin from scratch. By the end you'll have a working plugin with multiple tools, lifecycle hooks, shipped data files, and a bundled skill — everything the plugin system supports.
+This guide walks through building a complete SatanClaw plugin from scratch. By the end you'll have a working plugin with multiple tools, lifecycle hooks, shipped data files, and a bundled skill — everything the plugin system supports.
 
 ## What you're building
 
@@ -20,8 +20,8 @@ Plus a hook that logs every tool call, and a bundled skill file.
 ## Step 1: Create the plugin directory
 
 ```bash
-mkdir -p ~/.satan/plugins/calculator
-cd ~/.satan/plugins/calculator
+mkdir -p ~/.satanclaw/plugins/calculator
+cd ~/.satanclaw/plugins/calculator
 ```
 
 ## Step 2: Write the manifest
@@ -39,7 +39,7 @@ provides_hooks:
   - post_tool_call
 ```
 
-This tells Satan: "I'm a plugin called calculator, I provide tools and hooks." The `provides_tools` and `provides_hooks` fields are lists of what the plugin registers.
+This tells SatanClaw: "I'm a plugin called calculator, I provide tools and hooks." The `provides_tools` and `provides_hooks` fields are lists of what the plugin registers.
 
 Optional fields you could add:
 ```yaml
@@ -196,7 +196,7 @@ def unit_convert(args: dict, **kwargs) -> str:
 1. **Signature:** `def my_handler(args: dict, **kwargs) -> str`
 2. **Return:** Always a JSON string. Success and errors alike.
 3. **Never raise:** Catch all exceptions, return error JSON instead.
-4. **Accept `**kwargs`:** Satan may pass additional context in the future.
+4. **Accept `**kwargs`:** SatanClaw may pass additional context in the future.
 
 ## Step 5: Write the registration
 
@@ -238,14 +238,14 @@ def register(ctx):
 - `ctx.register_tool()` puts your tool in the registry — the model sees it immediately
 - `ctx.register_hook()` subscribes to lifecycle events
 - `ctx.register_command()` — _planned but not yet implemented_
-- If this function crashes, the plugin is disabled but Satan continues fine
+- If this function crashes, the plugin is disabled but SatanClaw continues fine
 
 ## Step 6: Test it
 
-Start Satan:
+Start SatanClaw:
 
 ```bash
-satan
+satanclaw
 ```
 
 You should see `calculator: calculate, unit_convert` in the banner's tool list.
@@ -272,7 +272,7 @@ Plugins (1):
 ## Your plugin's final structure
 
 ```
-~/.satan/plugins/calculator/
+~/.satanclaw/plugins/calculator/
 ├── plugin.yaml      # "I'm calculator, I provide tools and hooks"
 ├── __init__.py      # Wiring: schemas → handlers, register hooks
 ├── schemas.py       # What the LLM reads (descriptions + parameter specs)
@@ -311,12 +311,12 @@ import shutil
 from pathlib import Path
 
 def _install_skill():
-    """Copy our skill to ~/.satan/skills/ on first load."""
+    """Copy our skill to ~/.satanclaw/skills/ on first load."""
     try:
-        from satan_cli.config import get_satan_home
-        dest = get_satan_home() / "skills" / "my-plugin" / "SKILL.md"
+        from satanclaw_cli.config import get_satanclaw_home
+        dest = get_satanclaw_home() / "skills" / "my-plugin" / "SKILL.md"
     except Exception:
-        dest = Path.home() / ".satan" / "skills" / "my-plugin" / "SKILL.md"
+        dest = Path.home() / ".satanclaw" / "skills" / "my-plugin" / "SKILL.md"
 
     if dest.exists():
         return  # don't overwrite user edits
@@ -387,13 +387,13 @@ For sharing plugins publicly, add an entry point to your Python package:
 
 ```toml
 # pyproject.toml
-[project.entry-points."satan_agent.plugins"]
+[project.entry-points."satanclaw_agent.plugins"]
 my-plugin = "my_plugin_package"
 ```
 
 ```bash
-pip install satan-plugin-calculator
-# Plugin auto-discovered on next satan startup
+pip install satanclaw-plugin-calculator
+# Plugin auto-discovered on next satanclaw startup
 ```
 
 ## Common mistakes
@@ -411,7 +411,7 @@ def handler(args, **kwargs):
 
 **Missing `**kwargs` in handler signature:**
 ```python
-# Wrong — will break if Satan passes extra context
+# Wrong — will break if SatanClaw passes extra context
 def handler(args):
     ...
 

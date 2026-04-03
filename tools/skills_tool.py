@@ -40,7 +40,7 @@ SKILL.md Format (YAML Frontmatter, agentskills.io compatible):
       commands: [curl, jq]        #   Command checks remain advisory only.
     compatibility: Requires X     # Optional (agentskills.io)
     metadata:                     # Optional, arbitrary key-value (agentskills.io)
-      satan:
+      satanclaw:
         tags: [fine-tuning, llm]
         related_skills: [peft, lora]
     ---
@@ -69,7 +69,7 @@ Usage:
 import json
 import logging
 
-from satan_constants import get_satan_home
+from satanclaw_constants import get_satanclaw_home
 import os
 import re
 import sys
@@ -83,10 +83,10 @@ from tools.registry import registry
 logger = logging.getLogger(__name__)
 
 
-# All skills live in ~/.satan/skills/ (seeded from bundled skills/ on install).
+# All skills live in ~/.satanclaw/skills/ (seeded from bundled skills/ on install).
 # This is the single source of truth -- agent edits, hub installs, and bundled
 # skills all coexist here without polluting the git repo.
-HERMES_HOME = get_satan_home()
+HERMES_HOME = get_satanclaw_home()
 SKILLS_DIR = HERMES_HOME / "skills"
 
 # Anthropic-recommended limits for progressive disclosure efficiency
@@ -108,7 +108,7 @@ _secret_capture_callback = None
 
 def load_env() -> Dict[str, str]:
     """Load profile-scoped environment variables from HERMES_HOME/.env."""
-    env_path = get_satan_home() / ".env"
+    env_path = get_satanclaw_home() / ".env"
     env_vars: Dict[str, str] = {}
     if not env_path.exists():
         return env_vars
@@ -390,7 +390,7 @@ def _gateway_setup_hint() -> str:
 
         return GATEWAY_SECRET_CAPTURE_UNSUPPORTED_MESSAGE
     except Exception:
-        return "Secure secret entry is not available. Load this skill in the local CLI to be prompted, or add the key to ~/.satan/.env manually."
+        return "Secure secret entry is not available. Load this skill in the local CLI to be prompted, or add the key to ~/.satanclaw/.env manually."
 
 
 def _build_setup_note(
@@ -426,7 +426,7 @@ def _get_category_from_path(skill_path: Path) -> Optional[str]:
     """
     Extract category from skill path based on directory structure.
 
-    For paths like: ~/.satan/skills/mlops/axolotl/SKILL.md -> "mlops"
+    For paths like: ~/.satanclaw/skills/mlops/axolotl/SKILL.md -> "mlops"
     """
     try:
         rel_path = skill_path.relative_to(SKILLS_DIR)
@@ -496,7 +496,7 @@ def _is_skill_disabled(name: str, platform: str = None) -> bool:
     """Check if a skill is disabled in config."""
     import os
     try:
-        from satan_cli.config import load_config
+        from satanclaw_cli.config import load_config
         config = load_config()
         skills_cfg = config.get("skills", {})
         resolved_platform = platform or os.getenv("HERMES_PLATFORM")
@@ -510,11 +510,11 @@ def _is_skill_disabled(name: str, platform: str = None) -> bool:
 
 
 def _find_all_skills(*, skip_disabled: bool = False) -> List[Dict[str, Any]]:
-    """Recursively find all skills in ~/.satan/skills/ and external dirs.
+    """Recursively find all skills in ~/.satanclaw/skills/ and external dirs.
 
     Args:
         skip_disabled: If True, return ALL skills regardless of disabled
-            state (used by ``satan skills`` config UI). Default False
+            state (used by ``satanclaw skills`` config UI). Default False
             filters out disabled skills.
 
     Returns:
@@ -722,7 +722,7 @@ def skills_list(category: str = None, task_id: str = None) -> str:
                     "success": True,
                     "skills": [],
                     "categories": [],
-                    "message": "No skills found. Skills directory created at ~/.satan/skills/",
+                    "message": "No skills found. Skills directory created at ~/.satanclaw/skills/",
                 },
                 ensure_ascii=False,
             )
@@ -892,7 +892,7 @@ def skill_view(name: str, file_path: str = None, task_id: str = None) -> str:
         if _outside_skills_dir or _injection_detected:
             _warnings = []
             if _outside_skills_dir:
-                _warnings.append(f"skill file is outside the trusted skills directory (~/.satan/skills/): {skill_md}")
+                _warnings.append(f"skill file is outside the trusted skills directory (~/.satanclaw/skills/): {skill_md}")
             if _injection_detected:
                 _warnings.append("skill content contains patterns that may indicate prompt injection")
             import logging as _logging
@@ -922,7 +922,7 @@ def skill_view(name: str, file_path: str = None, task_id: str = None) -> str:
                     "success": False,
                     "error": (
                         f"Skill '{resolved_name}' is disabled. "
-                        "Enable it with `satan skills` or inspect the files directly on disk."
+                        "Enable it with `satanclaw skills` or inspect the files directly on disk."
                     ),
                 },
                 ensure_ascii=False,
@@ -1088,15 +1088,15 @@ def skill_view(name: str, file_path: str = None, task_id: str = None) -> str:
                     )
 
         # Read tags/related_skills with backward compat:
-        # Check metadata.satan.* first (agentskills.io convention), fall back to top-level
-        satan_meta = {}
+        # Check metadata.satanclaw.* first (agentskills.io convention), fall back to top-level
+        satanclaw_meta = {}
         metadata = frontmatter.get("metadata")
         if isinstance(metadata, dict):
-            satan_meta = metadata.get("satan", {}) or {}
+            satanclaw_meta = metadata.get("satanclaw", {}) or {}
 
-        tags = _parse_tags(satan_meta.get("tags") or frontmatter.get("tags", ""))
+        tags = _parse_tags(satanclaw_meta.get("tags") or frontmatter.get("tags", ""))
         related_skills = _parse_tags(
-            satan_meta.get("related_skills") or frontmatter.get("related_skills", "")
+            satanclaw_meta.get("related_skills") or frontmatter.get("related_skills", "")
         )
 
         # Build linked files structure for clear discovery

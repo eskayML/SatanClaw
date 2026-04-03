@@ -1,6 +1,6 @@
 """Website access policy helpers for URL-capable tools.
 
-This module loads a user-managed website blocklist from ~/.satan/config.yaml
+This module loads a user-managed website blocklist from ~/.satanclaw/config.yaml
 and optional shared list files. It is intentionally lightweight so web/browser
 tools can enforce URL policy without pulling in the heavier CLI config stack.
 
@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 from urllib.parse import urlparse
 
-from satan_constants import get_satan_home
+from satanclaw_constants import get_satanclaw_home
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +39,7 @@ _cached_policy_time: float = 0.0
 
 
 def _get_default_config_path() -> Path:
-    return get_satan_home() / "config.yaml"
+    return get_satanclaw_home() / "config.yaml"
 
 
 class WebsitePolicyError(Exception):
@@ -180,7 +180,7 @@ def load_website_blocklist(config_path: Optional[Path] = None) -> Dict[str, Any]
             continue
         path = Path(shared_file).expanduser()
         if not path.is_absolute():
-            path = (get_satan_home() / path).resolve()
+            path = (get_satanclaw_home() / path).resolve()
         for normalized in _iter_blocklist_file_rules(path):
             key = (str(path), normalized)
             if key in seen:

@@ -13,7 +13,7 @@ author: Willard Moore
 license: MIT
 category: communication
 metadata:
-  satan:
+  satanclaw:
     tags: [communication, decision-making, proposals, trade-offs]
 ---
 

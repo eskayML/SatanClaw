@@ -1,5 +1,5 @@
 """
-Cron job scheduling system for Satan Agent.
+Cron job scheduling system for SatanClaw Agent.
 
 This module provides scheduled task execution, allowing the agent to:
 - Run automated tasks on schedules (cron expressions, intervals, one-shot)
@@ -7,9 +7,9 @@ This module provides scheduled task execution, allowing the agent to:
 - Execute tasks in isolated sessions (no prior context)
 
 Cron jobs are executed automatically by the gateway daemon:
-    satan gateway install    # Install as a user service
-    sudo satan gateway install --system  # Linux servers: boot-time system service
-    satan gateway            # Or run in foreground
+    satanclaw gateway install    # Install as a user service
+    sudo satanclaw gateway install --system  # Linux servers: boot-time system service
+    satanclaw gateway            # Or run in foreground
 
 The gateway ticks the scheduler every 60 seconds. A file lock prevents
 duplicate execution if multiple processes overlap.

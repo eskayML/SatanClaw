@@ -1,4 +1,4 @@
-"""satan-memory-store — holographic memory plugin using MemoryProvider interface.
+"""satanclaw-memory-store — holographic memory plugin using MemoryProvider interface.
 
 Registers as a MemoryProvider plugin, giving the agent structured fact storage
 with entity resolution, trust scoring, and HRR-based compositional retrieval.
@@ -7,7 +7,7 @@ Original plugin by dusterbloom (PR #2351), adapted to the MemoryProvider ABC.
 
 Config in $HERMES_HOME/config.yaml (profile-scoped):
   plugins:
-    satan-memory-store:
+    satanclaw-memory-store:
       db_path: $HERMES_HOME/memory_store.db
       auto_extract: false
       default_trust: 0.5
@@ -94,15 +94,15 @@ FACT_FEEDBACK_SCHEMA = {
 # ---------------------------------------------------------------------------
 
 def _load_plugin_config() -> dict:
-    from satan_constants import get_satan_home
-    config_path = get_satan_home() / "config.yaml"
+    from satanclaw_constants import get_satanclaw_home
+    config_path = get_satanclaw_home() / "config.yaml"
     if not config_path.exists():
         return {}
     try:
         import yaml
         with open(config_path) as f:
             all_config = yaml.safe_load(f) or {}
-        return all_config.get("plugins", {}).get("satan-memory-store", {}) or {}
+        return all_config.get("plugins", {}).get("satanclaw-memory-store", {}) or {}
     except Exception:
         return {}
 
@@ -127,10 +127,10 @@ class HolographicMemoryProvider(MemoryProvider):
     def is_available(self) -> bool:
         return True  # SQLite is always available, numpy is optional
 
-    def save_config(self, values, satan_home):
-        """Write config to config.yaml under plugins.satan-memory-store."""
+    def save_config(self, values, satanclaw_home):
+        """Write config to config.yaml under plugins.satanclaw-memory-store."""
         from pathlib import Path
-        config_path = Path(satan_home) / "config.yaml"
+        config_path = Path(satanclaw_home) / "config.yaml"
         try:
             import yaml
             existing = {}
@@ -138,15 +138,15 @@ class HolographicMemoryProvider(MemoryProvider):
                 with open(config_path) as f:
                     existing = yaml.safe_load(f) or {}
             existing.setdefault("plugins", {})
-            existing["plugins"]["satan-memory-store"] = values
+            existing["plugins"]["satanclaw-memory-store"] = values
             with open(config_path, "w") as f:
                 yaml.dump(existing, f, default_flow_style=False)
         except Exception:
             pass
 
     def get_config_schema(self):
-        from satan_constants import display_satan_home
-        _default_db = f"{display_satan_home()}/memory_store.db"
+        from satanclaw_constants import display_satanclaw_home
+        _default_db = f"{display_satanclaw_home()}/memory_store.db"
         return [
             {"key": "db_path", "description": "SQLite database path", "default": _default_db},
             {"key": "auto_extract", "description": "Auto-extract facts at session end", "default": "false", "choices": ["true", "false"]},
@@ -155,8 +155,8 @@ class HolographicMemoryProvider(MemoryProvider):
         ]
 
     def initialize(self, session_id: str, **kwargs) -> None:
-        from satan_constants import get_satan_home
-        _default_db = str(get_satan_home() / "memory_store.db")
+        from satanclaw_constants import get_satanclaw_home
+        _default_db = str(get_satanclaw_home() / "memory_store.db")
         db_path = self._config.get("db_path", _default_db)
         default_trust = float(self._config.get("default_trust", 0.5))
         hrr_dim = int(self._config.get("hrr_dim", 1024))

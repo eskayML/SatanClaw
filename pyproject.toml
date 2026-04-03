@@ -3,12 +3,12 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "satan-agent"
+name = "satanclaw-agent"
 version = "0.6.0"
 description = "The self-improving AI agent — creates skills from experience, improves them during use, and runs anywhere"
 readme = "README.md"
 requires-python = ">=3.11"
-authors = [{ name = "Nous Research" }]
+authors = [{ name = "Samuel Kalu" }]
 license = { text = "MIT" }
 dependencies = [
   # Core — pinned to known-good ranges to limit supply chain attack surface
@@ -73,39 +73,39 @@ rl = [
 ]
 yc-bench = ["yc-bench @ git+https://github.com/collinear-ai/yc-bench.git ; python_version >= '3.12'"]
 all = [
-  "satan-agent[modal]",
-  "satan-agent[daytona]",
-  "satan-agent[messaging]",
+  "satanclaw-agent[modal]",
+  "satanclaw-agent[daytona]",
+  "satanclaw-agent[messaging]",
   # matrix excluded: python-olm (required by matrix-nio[e2e]) is upstream-broken
   # on modern macOS (archived libolm, C++ errors with Clang 21+). Including it
   # here causes the entire [all] install to fail, dropping all other extras.
-  # Users who need Matrix can install manually: pip install 'satan-agent[matrix]'
-  "satan-agent[cron]",
-  "satan-agent[cli]",
-  "satan-agent[dev]",
-  "satan-agent[tts-premium]",
-  "satan-agent[slack]",
-  "satan-agent[pty]",
-  "satan-agent[honcho]",
-  "satan-agent[mcp]",
-  "satan-agent[homeassistant]",
-  "satan-agent[sms]",
-  "satan-agent[acp]",
-  "satan-agent[voice]",
-  "satan-agent[dingtalk]",
-  "satan-agent[feishu]",
+  # Users who need Matrix can install manually: pip install 'satanclaw-agent[matrix]'
+  "satanclaw-agent[cron]",
+  "satanclaw-agent[cli]",
+  "satanclaw-agent[dev]",
+  "satanclaw-agent[tts-premium]",
+  "satanclaw-agent[slack]",
+  "satanclaw-agent[pty]",
+  "satanclaw-agent[honcho]",
+  "satanclaw-agent[mcp]",
+  "satanclaw-agent[homeassistant]",
+  "satanclaw-agent[sms]",
+  "satanclaw-agent[acp]",
+  "satanclaw-agent[voice]",
+  "satanclaw-agent[dingtalk]",
+  "satanclaw-agent[feishu]",
 ]
 
 [project.scripts]
-satan = "satan_cli.main:main"
-satan-agent = "run_agent:main"
-satan-acp = "acp_adapter.entry:main"
+satanclaw = "satanclaw_cli.main:main"
+satanclaw-agent = "run_agent:main"
+satanclaw-acp = "acp_adapter.entry:main"
 
 [tool.setuptools]
-py-modules = ["run_agent", "model_tools", "toolsets", "batch_runner", "trajectory_compressor", "toolset_distributions", "cli", "satan_constants", "satan_state", "satan_time", "rl_cli", "utils"]
+py-modules = ["run_agent", "model_tools", "toolsets", "batch_runner", "trajectory_compressor", "toolset_distributions", "cli", "satanclaw_constants", "satanclaw_state", "satanclaw_time", "rl_cli", "utils"]
 
 [tool.setuptools.packages.find]
-include = ["agent", "tools", "tools.*", "satan_cli", "gateway", "gateway.*", "cron", "acp_adapter", "plugins", "plugins.*"]
+include = ["agent", "tools", "tools.*", "satanclaw_cli", "gateway", "gateway.*", "cron", "acp_adapter", "plugins", "plugins.*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

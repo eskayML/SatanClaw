@@ -104,7 +104,7 @@ async def test_run_agent_progress_stays_in_originating_topic(monkeypatch, tmp_pa
     adapter = ProgressCaptureAdapter()
     runner = _make_runner(adapter)
     gateway_run = importlib.import_module("gateway.run")
-    monkeypatch.setattr(gateway_run, "_satan_home", tmp_path)
+    monkeypatch.setattr(gateway_run, "_satanclaw_home", tmp_path)
     monkeypatch.setattr(gateway_run, "_resolve_runtime_agent_kwargs", lambda: {"api_key": "fake"})
     source = SessionSource(
         platform=Platform.TELEGRAM,
@@ -151,7 +151,7 @@ async def test_run_agent_progress_does_not_use_event_message_id_for_telegram_dm(
     adapter = ProgressCaptureAdapter(platform=Platform.TELEGRAM)
     runner = _make_runner(adapter)
     gateway_run = importlib.import_module("gateway.run")
-    monkeypatch.setattr(gateway_run, "_satan_home", tmp_path)
+    monkeypatch.setattr(gateway_run, "_satanclaw_home", tmp_path)
     monkeypatch.setattr(gateway_run, "_resolve_runtime_agent_kwargs", lambda: {"api_key": "***"})
 
     source = SessionSource(
@@ -193,7 +193,7 @@ async def test_run_agent_progress_uses_event_message_id_for_slack_dm(monkeypatch
     adapter = ProgressCaptureAdapter(platform=Platform.SLACK)
     runner = _make_runner(adapter)
     gateway_run = importlib.import_module("gateway.run")
-    monkeypatch.setattr(gateway_run, "_satan_home", tmp_path)
+    monkeypatch.setattr(gateway_run, "_satanclaw_home", tmp_path)
     monkeypatch.setattr(gateway_run, "_resolve_runtime_agent_kwargs", lambda: {"api_key": "***"})
 
     source = SessionSource(

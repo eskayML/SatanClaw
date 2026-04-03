@@ -1,17 +1,17 @@
 ---
 sidebar_position: 2
 title: "Configuration"
-description: "Configure Satan Agent — config.yaml, providers, models, API keys, and more"
+description: "Configure SatanClaw Agent — config.yaml, providers, models, API keys, and more"
 ---
 
 # Configuration
 
-All settings are stored in the `~/.satan/` directory for easy access.
+All settings are stored in the `~/.satanclaw/` directory for easy access.
 
 ## Directory Structure
 
 ```text
-~/.satan/
+~/.satanclaw/
 ├── config.yaml     # Settings (model, terminal, TTS, compression, etc.)
 ├── .env            # API keys and secrets
 ├── auth.json       # OAuth provider credentials (Nous Portal, etc.)
@@ -26,29 +26,29 @@ All settings are stored in the `~/.satan/` directory for easy access.
 ## Managing Configuration
 
 ```bash
-satan config              # View current configuration
-satan config edit         # Open config.yaml in your editor
-satan config set KEY VAL  # Set a specific value
-satan config check        # Check for missing options (after updates)
-satan config migrate      # Interactively add missing options
+satanclaw config              # View current configuration
+satanclaw config edit         # Open config.yaml in your editor
+satanclaw config set KEY VAL  # Set a specific value
+satanclaw config check        # Check for missing options (after updates)
+satanclaw config migrate      # Interactively add missing options
 
 # Examples:
-satan config set model anthropic/claude-opus-4
-satan config set terminal.backend docker
-satan config set OPENROUTER_API_KEY sk-or-...  # Saves to .env
+satanclaw config set model anthropic/claude-opus-4
+satanclaw config set terminal.backend docker
+satanclaw config set OPENROUTER_API_KEY sk-or-...  # Saves to .env
 ```
 
 :::tip
-The `satan config set` command automatically routes values to the right file — API keys are saved to `.env`, everything else to `config.yaml`.
+The `satanclaw config set` command automatically routes values to the right file — API keys are saved to `.env`, everything else to `config.yaml`.
 :::
 
 ## Configuration Precedence
 
 Settings are resolved in this order (highest priority first):
 
-1. **CLI arguments** — e.g., `satan chat --model anthropic/claude-sonnet-4` (per-invocation override)
-2. **`~/.satan/config.yaml`** — the primary config file for all non-secret settings
-3. **`~/.satan/.env`** — fallback for env vars; **required** for secrets (API keys, tokens, passwords)
+1. **CLI arguments** — e.g., `satanclaw chat --model anthropic/claude-sonnet-4` (per-invocation override)
+2. **`~/.satanclaw/config.yaml`** — the primary config file for all non-secret settings
+3. **`~/.satanclaw/.env`** — fallback for env vars; **required** for secrets (API keys, tokens, passwords)
 4. **Built-in defaults** — hardcoded safe defaults when nothing else is set
 
 :::info Rule of Thumb
@@ -75,7 +75,7 @@ For AI provider setup (OpenRouter, Anthropic, Copilot, custom endpoints, self-ho
 
 ## Terminal Backend Configuration
 
-Satan supports six terminal backends. Each determines where the agent's shell commands actually execute — your local machine, a Docker container, a remote server via SSH, a Modal cloud sandbox, a Daytona workspace, or a Singularity/Apptainer container.
+SatanClaw supports six terminal backends. Each determines where the agent's shell commands actually execute — your local machine, a Docker container, a remote server via SSH, a Modal cloud sandbox, a Daytona workspace, or a Singularity/Apptainer container.
 
 ```yaml
 terminal:
@@ -88,7 +88,7 @@ terminal:
   daytona_image: "nikolaik/python-nodejs:python3.11-nodejs20"               # Container image for Daytona backend
 ```
 
-For cloud sandboxes such as Modal and Daytona, `container_persistent: true` means Satan will try to preserve filesystem state across sandbox recreation. It does not promise that the same live sandbox, PID space, or background processes will still be running later.
+For cloud sandboxes such as Modal and Daytona, `container_persistent: true` means SatanClaw will try to preserve filesystem state across sandbox recreation. It does not promise that the same live sandbox, PID space, or background processes will still be running later.
 
 ### Backend Overview
 
@@ -111,7 +111,7 @@ terminal:
 ```
 
 :::warning
-The agent has the same filesystem access as your user account. Use `satan tools` to disable tools you don't want, or switch to Docker for sandboxing.
+The agent has the same filesystem access as your user account. Use `satanclaw tools` to disable tools you don't want, or switch to Docker for sandboxing.
 :::
 
 ### Docker Backend
@@ -136,7 +136,7 @@ terminal:
   container_persistent: true       # Persist /workspace and /root across sessions
 ```
 
-**Requirements:** Docker Desktop or Docker Engine installed and running. Satan probes `$PATH` plus common macOS install locations (`/usr/local/bin/docker`, `/opt/homebrew/bin/docker`, Docker Desktop app bundle).
+**Requirements:** Docker Desktop or Docker Engine installed and running. SatanClaw probes `$PATH` plus common macOS install locations (`/usr/local/bin/docker`, `/opt/homebrew/bin/docker`, Docker Desktop app bundle).
 
 **Container lifecycle:** Each session starts a long-lived container (`docker run -d ... sleep 2h`). Commands run via `docker exec` with a login shell. On cleanup, the container is stopped and removed.
 
@@ -146,7 +146,7 @@ terminal:
 - `--pids-limit 256`
 - Size-limited tmpfs for `/tmp` (512MB), `/var/tmp` (256MB), `/run` (64MB)
 
-**Credential forwarding:** Env vars listed in `docker_forward_env` are resolved from your shell environment first, then `~/.satan/.env`. Skills can also declare `required_environment_variables` which are merged automatically.
+**Credential forwarding:** Env vars listed in `docker_forward_env` are resolved from your shell environment first, then `~/.satanclaw/.env`. Skills can also declare `required_environment_variables` which are merged automatically.
 
 ### SSH Backend
 
@@ -190,9 +190,9 @@ terminal:
 
 **Required:** Either `MODAL_TOKEN_ID` + `MODAL_TOKEN_SECRET` environment variables, or a `~/.modal.toml` config file.
 
-**Persistence:** When enabled, the sandbox filesystem is snapshotted on cleanup and restored on next session. Snapshots are tracked in `~/.satan/modal_snapshots.json`. This preserves filesystem state, not live processes, PID space, or background jobs.
+**Persistence:** When enabled, the sandbox filesystem is snapshotted on cleanup and restored on next session. Snapshots are tracked in `~/.satanclaw/modal_snapshots.json`. This preserves filesystem state, not live processes, PID space, or background jobs.
 
-**Credential files:** Automatically mounted from `~/.satan/` (OAuth tokens, etc.) and synced before each command.
+**Credential files:** Automatically mounted from `~/.satanclaw/` (OAuth tokens, etc.) and synced before each command.
 
 ### Daytona Backend
 
@@ -209,7 +209,7 @@ terminal:
 
 **Required:** `DAYTONA_API_KEY` environment variable.
 
-**Persistence:** When enabled, sandboxes are stopped (not deleted) on cleanup and resumed on next session. Sandbox names follow the pattern `satan-{task_id}`.
+**Persistence:** When enabled, sandboxes are stopped (not deleted) on cleanup and resumed on next session. Sandbox names follow the pattern `satanclaw-{task_id}`.
 
 **Disk limit:** Daytona enforces a 10 GiB maximum. Requests above this are capped with a warning.
 
@@ -230,7 +230,7 @@ terminal:
 
 **Image handling:** Docker URLs (`docker://...`) are automatically converted to SIF files and cached. Existing `.sif` files are used directly.
 
-**Scratch directory:** Resolved in order: `TERMINAL_SCRATCH_DIR` → `TERMINAL_SANDBOX_DIR/singularity` → `/scratch/$USER/satan-agent` (HPC convention) → `~/.satan/sandboxes/singularity`.
+**Scratch directory:** Resolved in order: `TERMINAL_SCRATCH_DIR` → `TERMINAL_SANDBOX_DIR/singularity` → `/scratch/$USER/satanclaw-agent` (HPC convention) → `~/.satanclaw/sandboxes/singularity`.
 
 **Isolation:** Uses `--containall --no-home` for full namespace isolation without mounting the host home directory.
 
@@ -239,9 +239,9 @@ terminal:
 If terminal commands fail immediately or the terminal tool is reported as disabled:
 
 - **Local** — No special requirements. The safest default when getting started.
-- **Docker** — Run `docker version` to verify Docker is working. If it fails, fix Docker or `satan config set terminal.backend local`.
-- **SSH** — Both `TERMINAL_SSH_HOST` and `TERMINAL_SSH_USER` must be set. Satan logs a clear error if either is missing.
-- **Modal** — Needs `MODAL_TOKEN_ID` env var or `~/.modal.toml`. Run `satan doctor` to check.
+- **Docker** — Run `docker version` to verify Docker is working. If it fails, fix Docker or `satanclaw config set terminal.backend local`.
+- **SSH** — Both `TERMINAL_SSH_HOST` and `TERMINAL_SSH_USER` must be set. SatanClaw logs a clear error if either is missing.
+- **Modal** — Needs `MODAL_TOKEN_ID` env var or `~/.modal.toml`. Run `satanclaw doctor` to check.
 - **Daytona** — Needs `DAYTONA_API_KEY`. The Daytona SDK handles server URL configuration.
 - **Singularity** — Needs `apptainer` or `singularity` in `$PATH`. Common on HPC clusters.
 
@@ -279,7 +279,7 @@ terminal:
     - "NPM_TOKEN"
 ```
 
-Satan resolves each listed variable from your current shell first, then falls back to `~/.satan/.env` if it was saved with `satan config set`.
+SatanClaw resolves each listed variable from your current shell first, then falls back to `~/.satanclaw/.env` if it was saved with `satanclaw config set`.
 
 :::warning
 Anything listed in `docker_forward_env` becomes visible to commands run inside the container. Only forward credentials you are comfortable exposing to the terminal session.
@@ -287,7 +287,7 @@ Anything listed in `docker_forward_env` becomes visible to commands run inside t
 
 ### Optional: Mount the Launch Directory into `/workspace`
 
-Docker sandboxes stay isolated by default. Satan does **not** pass your current host working directory into the container unless you explicitly opt in.
+Docker sandboxes stay isolated by default. SatanClaw does **not** pass your current host working directory into the container unless you explicitly opt in.
 
 Enable it in `config.yaml`:
 
@@ -298,7 +298,7 @@ terminal:
 ```
 
 When enabled:
-- if you launch Satan from `~/projects/my-app`, that host directory is bind-mounted to `/workspace`
+- if you launch SatanClaw from `~/projects/my-app`, that host directory is bind-mounted to `/workspace`
 - the Docker backend starts in `/workspace`
 - file tools and terminal commands both see the same mounted project
 
@@ -306,7 +306,7 @@ When disabled, `/workspace` stays sandbox-owned unless you explicitly mount some
 
 Security tradeoff:
 - `false` preserves the sandbox boundary
-- `true` gives the sandbox direct access to the directory you launched Satan from
+- `true` gives the sandbox direct access to the directory you launched SatanClaw from
 
 Use the opt-in only when you intentionally want the container to work on live host files.
 
@@ -324,7 +324,7 @@ terminal:
 To disable:
 
 ```bash
-satan config set terminal.persistent_shell false
+satanclaw config set terminal.persistent_shell false
 ```
 
 **What persists across commands:**
@@ -387,7 +387,7 @@ The agent also deduplicates file reads automatically — if the same file region
 Enable isolated git worktrees for running multiple agents in parallel on the same repo:
 
 ```yaml
-worktree: true    # Always create a worktree (same as satan -w)
+worktree: true    # Always create a worktree (same as satanclaw -w)
 # worktree: false # Default — only when -w flag is passed
 ```
 
@@ -404,7 +404,7 @@ node_modules/
 
 ## Context Compression
 
-Satan automatically compresses long conversations to stay within your model's context window. The compression summarizer is a separate LLM call — you can point it at any provider or endpoint.
+SatanClaw automatically compresses long conversations to stay within your model's context window. The compression summarizer is a separate LLM call — you can point it at any provider or endpoint.
 
 All compression settings live in `config.yaml` (no environment variables).
 
@@ -514,11 +514,11 @@ Options: `fill_first` (default), `round_robin`, `least_used`, `random`. See [Cre
 
 ## Auxiliary Models
 
-Satan uses lightweight "auxiliary" models for side tasks like image analysis, web page summarization, and browser screenshot analysis. By default, these use **Gemini Flash** via auto-detection — you don't need to configure anything.
+SatanClaw uses lightweight "auxiliary" models for side tasks like image analysis, web page summarization, and browser screenshot analysis. By default, these use **Gemini Flash** via auto-detection — you don't need to configure anything.
 
 ### The universal config pattern
 
-Every model slot in Satan — auxiliary tasks, compression, fallback — uses the same three knobs:
+Every model slot in SatanClaw — auxiliary tasks, compression, fallback — uses the same three knobs:
 
 | Key | What it does | Default |
 |-----|-------------|---------|
@@ -526,7 +526,7 @@ Every model slot in Satan — auxiliary tasks, compression, fallback — uses th
 | `model` | Which model to request | provider's default |
 | `base_url` | Custom OpenAI-compatible endpoint (overrides provider) | not set |
 
-When `base_url` is set, Satan ignores the provider and calls that endpoint directly (using `api_key` or `OPENAI_API_KEY` for auth). When only `provider` is set, Satan uses that provider's built-in auth and base URL.
+When `base_url` is set, SatanClaw ignores the provider and calls that endpoint directly (using `api_key` or `OPENAI_API_KEY` for auth). When only `provider` is set, SatanClaw uses that provider's built-in auth and base URL.
 
 Available providers: `auto`, `openrouter`, `nous`, `codex`, `copilot`, `anthropic`, `main`, `zai`, `kimi-coding`, `minimax`, and any provider registered in the [provider registry](/docs/reference/environment-variables).
 
@@ -614,7 +614,7 @@ auxiliary:
     model: "openai/gpt-4o"
 ```
 
-Or via environment variable (in `~/.satan/.env`):
+Or via environment variable (in `~/.satanclaw/.env`):
 
 ```bash
 AUXILIARY_VISION_MODEL=openai/gpt-4o
@@ -626,9 +626,9 @@ AUXILIARY_VISION_MODEL=openai/gpt-4o
 |----------|-------------|-------------|
 | `"auto"` | Best available (default). Vision tries OpenRouter → Nous → Codex. | — |
 | `"openrouter"` | Force OpenRouter — routes to any model (Gemini, GPT-4o, Claude, etc.) | `OPENROUTER_API_KEY` |
-| `"nous"` | Force Nous Portal | `satan login` |
-| `"codex"` | Force Codex OAuth (ChatGPT account). Supports vision (gpt-5.3-codex). | `satan model` → Codex |
-| `"main"` | Use your active custom/main endpoint. This can come from `OPENAI_BASE_URL` + `OPENAI_API_KEY` or from a custom endpoint saved via `satan model` / `config.yaml`. Works with OpenAI, local models, or any OpenAI-compatible API. | Custom endpoint credentials + base URL |
+| `"nous"` | Force Nous Portal | `satanclaw login` |
+| `"codex"` | Force Codex OAuth (ChatGPT account). Supports vision (gpt-5.3-codex). | `satanclaw model` → Codex |
+| `"main"` | Use your active custom/main endpoint. This can come from `OPENAI_BASE_URL` + `OPENAI_API_KEY` or from a custom endpoint saved via `satanclaw model` / `config.yaml`. Works with OpenAI, local models, or any OpenAI-compatible API. | Custom endpoint credentials + base URL |
 
 ### Common Setups
 
@@ -641,11 +641,11 @@ auxiliary:
     model: "qwen2.5-vl"
 ```
 
-`base_url` takes precedence over `provider`, so this is the most explicit way to route an auxiliary task to a specific endpoint. For direct endpoint overrides, Satan uses the configured `api_key` or falls back to `OPENAI_API_KEY`; it does not reuse `OPENROUTER_API_KEY` for that custom endpoint.
+`base_url` takes precedence over `provider`, so this is the most explicit way to route an auxiliary task to a specific endpoint. For direct endpoint overrides, SatanClaw uses the configured `api_key` or falls back to `OPENAI_API_KEY`; it does not reuse `OPENROUTER_API_KEY` for that custom endpoint.
 
 **Using OpenAI API key for vision:**
 ```yaml
-# In ~/.satan/.env:
+# In ~/.satanclaw/.env:
 # OPENAI_BASE_URL=https://api.openai.com/v1
 # OPENAI_API_KEY=sk-...
 
@@ -679,7 +679,7 @@ auxiliary:
     model: "my-local-model"
 ```
 
-`provider: "main"` follows the same custom endpoint Satan uses for normal chat. That endpoint can be set directly with `OPENAI_BASE_URL`, or saved once through `satan model` and persisted in `config.yaml`.
+`provider: "main"` follows the same custom endpoint SatanClaw uses for normal chat. That endpoint can be set directly with `OPENAI_BASE_URL`, or saved once through `satanclaw model` and persisted in `config.yaml`.
 
 :::tip
 If you use Codex OAuth as your main model provider, vision works automatically — no extra configuration needed. Codex is included in the auto-detection chain for vision.
@@ -707,7 +707,7 @@ Auxiliary models can also be configured via environment variables. However, `con
 Compression and fallback model settings are config.yaml-only.
 
 :::tip
-Run `satan config` to see your current auxiliary model settings. Overrides only show up when they differ from the defaults.
+Run `satanclaw config` to see your current auxiliary model settings. Overrides only show up when they differ from the defaults.
 :::
 
 ## Reasoning Effort
@@ -851,7 +851,7 @@ Provider behavior:
 - `groq` uses Groq's Whisper-compatible endpoint and reads `GROQ_API_KEY`.
 - `openai` uses the OpenAI speech API and reads `VOICE_TOOLS_OPENAI_KEY`.
 
-If the requested provider is unavailable, Satan falls back automatically in this order: `local` → `groq` → `openai`.
+If the requested provider is unavailable, SatanClaw falls back automatically in this order: `local` → `groq` → `openai`.
 
 Groq and OpenAI model overrides are environment-driven:
 
@@ -905,7 +905,7 @@ When enabled, the bot sends a message on the first token, then progressively edi
 **Overflow handling:** If the streamed text exceeds the platform's message length limit (~4096 chars), the current message is finalized and a new one starts automatically.
 
 :::note
-Streaming is disabled by default. Enable it in `~/.satan/config.yaml` to try the streaming UX.
+Streaming is disabled by default. Enable it in `~/.satanclaw/config.yaml` to try the streaming UX.
 :::
 
 ## Group Chat Session Isolation
@@ -917,15 +917,15 @@ group_sessions_per_user: true  # true = per-user isolation in groups/channels, f
 ```
 
 - `true` is the default and recommended setting. In Discord channels, Telegram groups, Slack channels, and similar shared contexts, each sender gets their own session when the platform provides a user ID.
-- `false` reverts to the old shared-room behavior. That can be useful if you explicitly want Satan to treat a channel like one collaborative conversation, but it also means users share context, token costs, and interrupt state.
-- Direct messages are unaffected. Satan still keys DMs by chat/DM ID as usual.
+- `false` reverts to the old shared-room behavior. That can be useful if you explicitly want SatanClaw to treat a channel like one collaborative conversation, but it also means users share context, token costs, and interrupt state.
+- Direct messages are unaffected. SatanClaw still keys DMs by chat/DM ID as usual.
 - Threads stay isolated from their parent channel either way; with `true`, each participant also gets their own session inside the thread.
 
 For the behavior details and examples, see [Sessions](/docs/user-guide/sessions) and the [Discord guide](/docs/user-guide/messaging/discord).
 
 ## Unauthorized DM Behavior
 
-Control what Satan does when an unknown user sends a direct message:
+Control what SatanClaw does when an unknown user sends a direct message:
 
 ```yaml
 unauthorized_dm_behavior: pair
@@ -934,7 +934,7 @@ whatsapp:
   unauthorized_dm_behavior: ignore
 ```
 
-- `pair` is the default. Satan denies access, but replies with a one-time pairing code in DMs.
+- `pair` is the default. SatanClaw denies access, but replies with a one-time pairing code in DMs.
 - `ignore` silently drops unauthorized DMs.
 - Platform sections override the global default, so you can keep pairing enabled broadly while making one platform quieter.
 
@@ -946,13 +946,13 @@ Define custom commands that run shell commands without invoking the LLM — zero
 quick_commands:
   status:
     type: exec
-    command: systemctl status satan-agent
+    command: systemctl status satanclaw-agent
   disk:
     type: exec
     command: df -h /
   update:
     type: exec
-    command: cd ~/.satan/satan-agent && git pull && pip install -e .
+    command: cd ~/.satanclaw/satanclaw-agent && git pull && pip install -e .
   gpu:
     type: exec
     command: nvidia-smi --query-gpu=name,utilization.gpu,memory.used,memory.total --format=csv,noheader
@@ -989,7 +989,7 @@ code_execution:
 
 ## Web Search Backends
 
-The `web_search`, `web_extract`, and `web_crawl` tools support four backend providers. Configure the backend in `config.yaml` or via `satan tools`:
+The `web_search`, `web_extract`, and `web_crawl` tools support four backend providers. Configure the backend in `config.yaml` or via `satanclaw tools`:
 
 ```yaml
 web:
@@ -1017,7 +1017,7 @@ Configure browser automation behavior:
 browser:
   inactivity_timeout: 120        # Seconds before auto-closing idle sessions
   command_timeout: 30             # Timeout in seconds for browser commands (screenshot, navigate, etc.)
-  record_sessions: false         # Auto-record browser sessions as WebM videos to ~/.satan/browser_recordings/
+  record_sessions: false         # Auto-record browser sessions as WebM videos to ~/.satanclaw/browser_recordings/
   camofox:
     managed_persistence: false   # When true, Camofox sessions persist cookies/logins across restarts
 ```
@@ -1085,7 +1085,7 @@ security:
       - "admin.example.com"
       - "*.local"
     shared_files:                # Load additional rules from external files
-      - "/etc/satan/blocked-sites.txt"
+      - "/etc/satanclaw/blocked-sites.txt"
 ```
 
 When enabled, any URL matching a blocked domain pattern is rejected before the web or browser tool executes. This applies to `web_search`, `web_extract`, `browser_navigate`, and any tool that accesses URLs.
@@ -1101,7 +1101,7 @@ The policy is cached for 30 seconds, so config changes take effect quickly witho
 
 ## Smart Approvals
 
-Control how Satan handles potentially dangerous commands:
+Control how SatanClaw handles potentially dangerous commands:
 
 ```yaml
 approvals:
@@ -1126,7 +1126,7 @@ Automatic filesystem snapshots before destructive file operations. See the [Chec
 
 ```yaml
 checkpoints:
-  enabled: true                  # Enable automatic checkpoints (also: satan --checkpoints)
+  enabled: true                  # Enable automatic checkpoints (also: satanclaw --checkpoints)
   max_snapshots: 50              # Max checkpoints to keep per directory
 ```
 
@@ -1145,7 +1145,7 @@ delegation:
 
 **Subagent provider:model override:** By default, subagents inherit the parent agent's provider and model. Set `delegation.provider` and `delegation.model` to route subagents to a different provider:model pair — e.g., use a cheap/fast model for narrowly-scoped subtasks while your primary agent runs an expensive reasoning model.
 
-**Direct endpoint override:** If you want the obvious custom-endpoint path, set `delegation.base_url`, `delegation.api_key`, and `delegation.model`. That sends subagents directly to that OpenAI-compatible endpoint and takes precedence over `delegation.provider`. If `delegation.api_key` is omitted, Satan falls back to `OPENAI_API_KEY` only.
+**Direct endpoint override:** If you want the obvious custom-endpoint path, set `delegation.base_url`, `delegation.api_key`, and `delegation.model`. That sends subagents directly to that OpenAI-compatible endpoint and takes precedence over `delegation.provider`. If `delegation.api_key` is omitted, SatanClaw falls back to `OPENAI_API_KEY` only.
 
 The delegation provider uses the same credential resolution as CLI/gateway startup. All configured providers are supported: `openrouter`, `nous`, `copilot`, `zai`, `kimi-coding`, `minimax`, `minimax-cn`. When a provider is set, the system automatically resolves the correct base URL, API key, and API mode — no manual credential wiring needed.
 
@@ -1162,22 +1162,22 @@ clarify:
 
 ## Context Files (SOUL.md, AGENTS.md)
 
-Satan uses two different context scopes:
+SatanClaw uses two different context scopes:
 
 | File | Purpose | Scope |
 |------|---------|-------|
-| `SOUL.md` | **Primary agent identity** — defines who the agent is (slot #1 in the system prompt) | `~/.satan/SOUL.md` or `$HERMES_HOME/SOUL.md` |
-| `.satan.md` / `HERMES.md` | Project-specific instructions (highest priority) | Walks to git root |
+| `SOUL.md` | **Primary agent identity** — defines who the agent is (slot #1 in the system prompt) | `~/.satanclaw/SOUL.md` or `$HERMES_HOME/SOUL.md` |
+| `.satanclaw.md` / `HERMES.md` | Project-specific instructions (highest priority) | Walks to git root |
 | `AGENTS.md` | Project-specific instructions, coding conventions | Recursive directory walk |
 | `CLAUDE.md` | Claude Code context files (also detected) | Working directory only |
 | `.cursorrules` | Cursor IDE rules (also detected) | Working directory only |
 | `.cursor/rules/*.mdc` | Cursor rule files (also detected) | Working directory only |
 
 - **SOUL.md** is the agent's primary identity. It occupies slot #1 in the system prompt, completely replacing the built-in default identity. Edit it to fully customize who the agent is.
-- If SOUL.md is missing, empty, or cannot be loaded, Satan falls back to a built-in default identity.
-- **Project context files use a priority system** — only ONE type is loaded (first match wins): `.satan.md` → `AGENTS.md` → `CLAUDE.md` → `.cursorrules`. SOUL.md is always loaded independently.
+- If SOUL.md is missing, empty, or cannot be loaded, SatanClaw falls back to a built-in default identity.
+- **Project context files use a priority system** — only ONE type is loaded (first match wins): `.satanclaw.md` → `AGENTS.md` → `CLAUDE.md` → `.cursorrules`. SOUL.md is always loaded independently.
 - **AGENTS.md** is hierarchical: if subdirectories also have AGENTS.md, all are combined.
-- Satan automatically seeds a default `SOUL.md` if one does not already exist.
+- SatanClaw automatically seeds a default `SOUL.md` if one does not already exist.
 - All loaded context files are capped at 20,000 characters with smart truncation.
 
 See also:
@@ -1188,13 +1188,13 @@ See also:
 
 | Context | Default |
 |---------|---------|
-| **CLI (`satan`)** | Current directory where you run the command |
+| **CLI (`satanclaw`)** | Current directory where you run the command |
 | **Messaging gateway** | Home directory `~` (override with `MESSAGING_CWD`) |
 | **Docker / Singularity / Modal / SSH** | User's home directory inside the container or remote machine |
 
 Override the working directory:
 ```bash
-# In ~/.satan/.env or ~/.satan/config.yaml:
+# In ~/.satanclaw/.env or ~/.satanclaw/config.yaml:
 MESSAGING_CWD=/home/myuser/projects    # Gateway sessions
 TERMINAL_CWD=/workspace                # All terminal sessions
 ```

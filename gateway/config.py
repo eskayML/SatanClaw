@@ -16,7 +16,7 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Any
 from enum import Enum
 
-from satan_cli.config import get_satan_home
+from satanclaw_cli.config import get_satanclaw_home
 from utils import is_truthy_value
 
 logger = logging.getLogger(__name__)
@@ -236,7 +236,7 @@ class GatewayConfig:
     quick_commands: Dict[str, Any] = field(default_factory=dict)
     
     # Storage paths
-    sessions_dir: Path = field(default_factory=lambda: get_satan_home() / "sessions")
+    sessions_dir: Path = field(default_factory=lambda: get_satanclaw_home() / "sessions")
     
     # Delivery settings
     always_log_local: bool = True  # Always save cron outputs to local files
@@ -363,7 +363,7 @@ class GatewayConfig:
         if "default_reset_policy" in data:
             default_policy = SessionResetPolicy.from_dict(data["default_reset_policy"])
         
-        sessions_dir = get_satan_home() / "sessions"
+        sessions_dir = get_satanclaw_home() / "sessions"
         if "sessions_dir" in data:
             sessions_dir = Path(data["sessions_dir"])
         
@@ -414,11 +414,11 @@ def load_gateway_config() -> GatewayConfig:
 
     Priority (highest to lowest):
     1. Environment variables
-    2. ~/.satan/config.yaml (primary user-facing config)
-    3. ~/.satan/gateway.json (legacy — provides defaults under config.yaml)
+    2. ~/.satanclaw/config.yaml (primary user-facing config)
+    3. ~/.satanclaw/gateway.json (legacy — provides defaults under config.yaml)
     4. Built-in defaults
     """
-    _home = get_satan_home()
+    _home = get_satanclaw_home()
     gw_data: dict = {}
 
     # Legacy fallback: gateway.json provides the base layer.

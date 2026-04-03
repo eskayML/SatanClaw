@@ -4,7 +4,7 @@ Skill Manager Tool -- Agent-Managed Skill Creation & Editing
 
 Allows the agent to create, update, and delete skills, turning successful
 approaches into reusable procedural knowledge. New skills are created in
-~/.satan/skills/. Existing skills (bundled, hub-installed, or user-created)
+~/.satanclaw/skills/. Existing skills (bundled, hub-installed, or user-created)
 can be modified or deleted wherever they live.
 
 Skills are the agent's procedural memory: they capture *how to do a specific
@@ -20,7 +20,7 @@ Actions:
   remove_file-- Remove a supporting file from a user skill
 
 Directory layout for user skills:
-    ~/.satan/skills/
+    ~/.satanclaw/skills/
     ├── my-skill/
     │   ├── SKILL.md
     │   ├── references/
@@ -39,7 +39,7 @@ import re
 import shutil
 import tempfile
 from pathlib import Path
-from satan_constants import get_satan_home
+from satanclaw_constants import get_satanclaw_home
 from typing import Dict, Any, Optional
 
 logger = logging.getLogger(__name__)
@@ -76,8 +76,8 @@ def _security_scan_skill(skill_dir: Path) -> Optional[str]:
 import yaml
 
 
-# All skills live in ~/.satan/skills/ (single source of truth)
-HERMES_HOME = get_satan_home()
+# All skills live in ~/.satanclaw/skills/ (single source of truth)
+HERMES_HOME = get_satanclaw_home()
 SKILLS_DIR = HERMES_HOME / "skills"
 
 MAX_NAME_LENGTH = 64
@@ -203,7 +203,7 @@ def _resolve_skill_dir(name: str, category: str = None) -> Path:
 
 def _find_skill(name: str) -> Optional[Dict[str, Any]]:
     """
-    Find a skill by name in ~/.satan/skills/.
+    Find a skill by name in ~/.satanclaw/skills/.
     Returns {"path": Path} or None.
     """
     if not SKILLS_DIR.exists():
@@ -636,7 +636,7 @@ SKILL_MANAGE_SCHEMA = {
     "description": (
         "Manage skills (create, update, delete). Skills are your procedural "
         "memory — reusable approaches for recurring task types. "
-        "New skills go to ~/.satan/skills/; existing skills can be modified wherever they live.\n\n"
+        "New skills go to ~/.satanclaw/skills/; existing skills can be modified wherever they live.\n\n"
         "Actions: create (full SKILL.md + optional category), "
         "patch (old_string/new_string — preferred for fixes), "
         "edit (full SKILL.md rewrite — major overhauls only), "

@@ -21,8 +21,8 @@ from plugins.memory.honcho.client import (
 class TestHonchoClientConfigDefaults:
     def test_default_values(self):
         config = HonchoClientConfig()
-        assert config.host == "satan"
-        assert config.workspace_id == "satan"
+        assert config.host == "satanclaw"
+        assert config.workspace_id == "satanclaw"
         assert config.api_key is None
         assert config.environment == "production"
         assert config.enabled is False
@@ -95,7 +95,7 @@ class TestFromGlobalConfig:
             "workspace": "my-workspace",
             "environment": "staging",
             "peerName": "alice",
-            "aiPeer": "satan-custom",
+            "aiPeer": "satanclaw-custom",
             "enabled": True,
             "saveMessages": False,
             "contextTokens": 2000,
@@ -103,7 +103,7 @@ class TestFromGlobalConfig:
             "sessionPeerPrefix": True,
             "sessions": {"/home/user/proj": "my-session"},
             "hosts": {
-                "satan": {
+                "satanclaw": {
                     "workspace": "override-ws",
                     "aiPeer": "override-ai",
                     "linkedHosts": ["cursor"],
@@ -131,7 +131,7 @@ class TestFromGlobalConfig:
             "workspace": "root-ws",
             "aiPeer": "root-ai",
             "hosts": {
-                "satan": {
+                "satanclaw": {
                     "workspace": "host-ws",
                     "aiPeer": "host-ai",
                 }
@@ -167,7 +167,7 @@ class TestFromGlobalConfig:
         config_file.write_text(json.dumps({
             "apiKey": "key",
             "contextTokens": 1000,
-            "hosts": {"satan": {"contextTokens": 2000}},
+            "hosts": {"satanclaw": {"contextTokens": 2000}},
         }))
         config = HonchoClientConfig.from_global_config(config_path=config_file)
         assert config.context_tokens == 2000
@@ -178,7 +178,7 @@ class TestFromGlobalConfig:
         config_file.write_text(json.dumps({
             "apiKey": "key",
             "recallMode": "tools",
-            "hosts": {"satan": {"recallMode": "context"}},
+            "hosts": {"satanclaw": {"recallMode": "context"}},
         }))
         config = HonchoClientConfig.from_global_config(config_path=config_file)
         assert config.recall_mode == "context"
@@ -229,7 +229,7 @@ class TestFromGlobalConfig:
         config_file = tmp_path / "config.json"
         config_file.write_text(json.dumps({
             "baseUrl": "http://root:9000",
-            "hosts": {"satan": {"baseUrl": "http://host-block:9001"}},
+            "hosts": {"satanclaw": {"baseUrl": "http://host-block:9001"}},
         }))
 
         config = HonchoClientConfig.from_global_config(config_path=config_file)
@@ -265,10 +265,10 @@ class TestResolveSessionName:
     def test_per_repo_uses_git_root(self):
         config = HonchoClientConfig(session_strategy="per-repo")
         with patch.object(
-            HonchoClientConfig, "_git_repo_name", return_value="satan-agent"
+            HonchoClientConfig, "_git_repo_name", return_value="satanclaw-agent"
         ):
-            result = config.resolve_session_name("/home/user/satan-agent/subdir")
-        assert result == "satan-agent"
+            result = config.resolve_session_name("/home/user/satanclaw-agent/subdir")
+        assert result == "satanclaw-agent"
 
     def test_per_repo_with_peer_prefix(self):
         config = HonchoClientConfig(
@@ -300,7 +300,7 @@ class TestResolveSessionName:
 class TestGetLinkedWorkspaces:
     def test_resolves_linked_hosts(self):
         config = HonchoClientConfig(
-            workspace_id="satan-ws",
+            workspace_id="satanclaw-ws",
             linked_hosts=["cursor", "windsurf"],
             raw={
                 "hosts": {
@@ -315,16 +315,16 @@ class TestGetLinkedWorkspaces:
 
     def test_excludes_own_workspace(self):
         config = HonchoClientConfig(
-            workspace_id="satan-ws",
+            workspace_id="satanclaw-ws",
             linked_hosts=["other"],
-            raw={"hosts": {"other": {"workspace": "satan-ws"}}},
+            raw={"hosts": {"other": {"workspace": "satanclaw-ws"}}},
         )
         workspaces = config.get_linked_workspaces()
         assert workspaces == []
 
     def test_uses_host_key_as_fallback(self):
         config = HonchoClientConfig(
-            workspace_id="satan-ws",
+            workspace_id="satanclaw-ws",
             linked_hosts=["cursor"],
             raw={"hosts": {"cursor": {}}},  # no workspace field
         )
@@ -333,124 +333,124 @@ class TestGetLinkedWorkspaces:
 
 
 class TestResolveConfigPath:
-    def test_prefers_satan_home_when_exists(self, tmp_path):
-        satan_home = tmp_path / "satan"
-        satan_home.mkdir()
-        local_cfg = satan_home / "honcho.json"
+    def test_prefers_satanclaw_home_when_exists(self, tmp_path):
+        satanclaw_home = tmp_path / "satanclaw"
+        satanclaw_home.mkdir()
+        local_cfg = satanclaw_home / "honcho.json"
         local_cfg.write_text('{"apiKey": "local"}')
 
-        with patch.dict(os.environ, {"HERMES_HOME": str(satan_home)}):
+        with patch.dict(os.environ, {"HERMES_HOME": str(satanclaw_home)}):
             result = resolve_config_path()
         assert result == local_cfg
 
     def test_falls_back_to_global_when_no_local(self, tmp_path):
-        satan_home = tmp_path / "satan"
-        satan_home.mkdir()
+        satanclaw_home = tmp_path / "satanclaw"
+        satanclaw_home.mkdir()
         # No honcho.json in HERMES_HOME
 
-        with patch.dict(os.environ, {"HERMES_HOME": str(satan_home)}):
+        with patch.dict(os.environ, {"HERMES_HOME": str(satanclaw_home)}):
             result = resolve_config_path()
         assert result == GLOBAL_CONFIG_PATH
 
-    def test_falls_back_to_global_without_satan_home_env(self):
+    def test_falls_back_to_global_without_satanclaw_home_env(self):
         with patch.dict(os.environ, {}, clear=False):
             os.environ.pop("HERMES_HOME", None)
             result = resolve_config_path()
         assert result == GLOBAL_CONFIG_PATH
 
     def test_from_global_config_uses_local_path(self, tmp_path):
-        satan_home = tmp_path / "satan"
-        satan_home.mkdir()
-        local_cfg = satan_home / "honcho.json"
+        satanclaw_home = tmp_path / "satanclaw"
+        satanclaw_home.mkdir()
+        local_cfg = satanclaw_home / "honcho.json"
         local_cfg.write_text(json.dumps({
             "apiKey": "local-key",
             "workspace": "local-ws",
         }))
 
-        with patch.dict(os.environ, {"HERMES_HOME": str(satan_home)}):
+        with patch.dict(os.environ, {"HERMES_HOME": str(satanclaw_home)}):
             config = HonchoClientConfig.from_global_config()
         assert config.api_key == "local-key"
         assert config.workspace_id == "local-ws"
 
 
 class TestResolveActiveHost:
-    def test_default_returns_satan(self):
+    def test_default_returns_satanclaw(self):
         with patch.dict(os.environ, {}, clear=True):
             os.environ.pop("HERMES_HONCHO_HOST", None)
             os.environ.pop("HERMES_HOME", None)
-            assert resolve_active_host() == "satan"
+            assert resolve_active_host() == "satanclaw"
 
     def test_explicit_env_var_wins(self):
-        with patch.dict(os.environ, {"HERMES_HONCHO_HOST": "satan.coder"}):
-            assert resolve_active_host() == "satan.coder"
+        with patch.dict(os.environ, {"HERMES_HONCHO_HOST": "satanclaw.coder"}):
+            assert resolve_active_host() == "satanclaw.coder"
 
     def test_profile_name_derives_host(self):
         with patch.dict(os.environ, {}, clear=False):
             os.environ.pop("HERMES_HONCHO_HOST", None)
-            with patch("satan_cli.profiles.get_active_profile_name", return_value="coder"):
-                assert resolve_active_host() == "satan.coder"
+            with patch("satanclaw_cli.profiles.get_active_profile_name", return_value="coder"):
+                assert resolve_active_host() == "satanclaw.coder"
 
-    def test_default_profile_returns_satan(self):
+    def test_default_profile_returns_satanclaw(self):
         with patch.dict(os.environ, {}, clear=False):
             os.environ.pop("HERMES_HONCHO_HOST", None)
-            with patch("satan_cli.profiles.get_active_profile_name", return_value="default"):
-                assert resolve_active_host() == "satan"
+            with patch("satanclaw_cli.profiles.get_active_profile_name", return_value="default"):
+                assert resolve_active_host() == "satanclaw"
 
-    def test_custom_profile_returns_satan(self):
+    def test_custom_profile_returns_satanclaw(self):
         with patch.dict(os.environ, {}, clear=False):
             os.environ.pop("HERMES_HONCHO_HOST", None)
-            with patch("satan_cli.profiles.get_active_profile_name", return_value="custom"):
-                assert resolve_active_host() == "satan"
+            with patch("satanclaw_cli.profiles.get_active_profile_name", return_value="custom"):
+                assert resolve_active_host() == "satanclaw"
 
     def test_profiles_import_failure_falls_back(self):
         import sys
         with patch.dict(os.environ, {}, clear=False):
             os.environ.pop("HERMES_HONCHO_HOST", None)
-            # Temporarily remove satan_cli.profiles to simulate import failure
-            saved = sys.modules.get("satan_cli.profiles")
-            sys.modules["satan_cli.profiles"] = None  # type: ignore
+            # Temporarily remove satanclaw_cli.profiles to simulate import failure
+            saved = sys.modules.get("satanclaw_cli.profiles")
+            sys.modules["satanclaw_cli.profiles"] = None  # type: ignore
             try:
-                assert resolve_active_host() == "satan"
+                assert resolve_active_host() == "satanclaw"
             finally:
                 if saved is not None:
-                    sys.modules["satan_cli.profiles"] = saved
+                    sys.modules["satanclaw_cli.profiles"] = saved
                 else:
-                    sys.modules.pop("satan_cli.profiles", None)
+                    sys.modules.pop("satanclaw_cli.profiles", None)
 
 
 class TestProfileScopedConfig:
     def test_from_env_uses_profile_host(self):
         with patch.dict(os.environ, {"HONCHO_API_KEY": "key"}):
-            config = HonchoClientConfig.from_env(host="satan.coder")
-        assert config.host == "satan.coder"
-        assert config.workspace_id == "satan"  # shared workspace
-        assert config.ai_peer == "satan.coder"
+            config = HonchoClientConfig.from_env(host="satanclaw.coder")
+        assert config.host == "satanclaw.coder"
+        assert config.workspace_id == "satanclaw"  # shared workspace
+        assert config.ai_peer == "satanclaw.coder"
 
     def test_from_env_default_workspace_preserved_for_default_host(self):
         with patch.dict(os.environ, {"HONCHO_API_KEY": "key"}):
-            config = HonchoClientConfig.from_env(host="satan")
-        assert config.host == "satan"
-        assert config.workspace_id == "satan"
+            config = HonchoClientConfig.from_env(host="satanclaw")
+        assert config.host == "satanclaw"
+        assert config.workspace_id == "satanclaw"
 
     def test_from_global_config_reads_profile_host_block(self, tmp_path):
         config_file = tmp_path / "config.json"
         config_file.write_text(json.dumps({
             "apiKey": "shared-key",
             "hosts": {
-                "satan": {"aiPeer": "satan", "peerName": "alice"},
-                "satan.coder": {
-                    "aiPeer": "satan.coder",
+                "satanclaw": {"aiPeer": "satanclaw", "peerName": "alice"},
+                "satanclaw.coder": {
+                    "aiPeer": "satanclaw.coder",
                     "peerName": "alice-coder",
                     "workspace": "coder-ws",
                 },
             },
         }))
         config = HonchoClientConfig.from_global_config(
-            host="satan.coder", config_path=config_file,
+            host="satanclaw.coder", config_path=config_file,
         )
-        assert config.host == "satan.coder"
+        assert config.host == "satanclaw.coder"
         assert config.workspace_id == "coder-ws"
-        assert config.ai_peer == "satan.coder"
+        assert config.ai_peer == "satanclaw.coder"
         assert config.peer_name == "alice-coder"
 
     def test_from_global_config_auto_resolves_host(self, tmp_path):
@@ -458,12 +458,12 @@ class TestProfileScopedConfig:
         config_file.write_text(json.dumps({
             "apiKey": "key",
             "hosts": {
-                "satan.dreamer": {"peerName": "dreamer-user"},
+                "satanclaw.dreamer": {"peerName": "dreamer-user"},
             },
         }))
-        with patch("plugins.memory.honcho.client.resolve_active_host", return_value="satan.dreamer"):
+        with patch("plugins.memory.honcho.client.resolve_active_host", return_value="satanclaw.dreamer"):
             config = HonchoClientConfig.from_global_config(config_path=config_file)
-        assert config.host == "satan.dreamer"
+        assert config.host == "satanclaw.dreamer"
         assert config.peer_name == "dreamer-user"
 
 

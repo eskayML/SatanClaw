@@ -32,7 +32,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Optional, List, Dict, Any
 from pathlib import Path
-from satan_constants import get_satan_home
+from satanclaw_constants import get_satanclaw_home
 
 
 # ---------------------------------------------------------------------------
@@ -47,7 +47,7 @@ WRITE_DENIED_PATHS = {
         os.path.join(_HOME, ".ssh", "id_rsa"),
         os.path.join(_HOME, ".ssh", "id_ed25519"),
         os.path.join(_HOME, ".ssh", "config"),
-        str(get_satan_home() / ".env"),
+        str(get_satanclaw_home() / ".env"),
         os.path.join(_HOME, ".bashrc"),
         os.path.join(_HOME, ".zshrc"),
         os.path.join(_HOME, ".profile"),

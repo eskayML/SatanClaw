@@ -58,7 +58,7 @@ Read these before every investigation step. Violating them invalidates the repor
 
 > **Path convention**: Throughout this skill, `SKILL_DIR` refers to the root of this skill's
 > installation directory (the folder containing this `SKILL.md`). When the skill is loaded,
-> resolve `SKILL_DIR` to the actual path — e.g. `~/.satan/skills/security/oss-forensics/`
+> resolve `SKILL_DIR` to the actual path — e.g. `~/.satanclaw/skills/security/oss-forensics/`
 > or the `optional-skills/` equivalent. All script and template references are relative to it.
 
 ## Phase 0: Initialization

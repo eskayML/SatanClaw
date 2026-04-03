@@ -1,8 +1,8 @@
 ---
 name: google-workspace
-description: Gmail, Calendar, Drive, Contacts, Sheets, and Docs integration via Python. Uses OAuth2 with automatic token refresh. No external binaries needed — runs entirely with Google's Python client libraries in the Satan venv.
+description: Gmail, Calendar, Drive, Contacts, Sheets, and Docs integration via Python. Uses OAuth2 with automatic token refresh. No external binaries needed — runs entirely with Google's Python client libraries in the SatanClaw venv.
 version: 1.0.0
-author: Nous Research
+author: Samuel Kalu
 license: MIT
 required_credential_files:
   - path: google_token.json
@@ -10,9 +10,9 @@ required_credential_files:
   - path: google_client_secret.json
     description: Google OAuth2 client credentials (downloaded from Google Cloud Console)
 metadata:
-  satan:
+  satanclaw:
     tags: [Google, Gmail, Calendar, Drive, Sheets, Docs, Contacts, Email, OAuth]
-    homepage: https://github.com/NousResearch/satan-agent
+    homepage: https://github.com/NousResearch/satanclaw-agent
     related_skills: [himalaya]
 ---
 
@@ -37,7 +37,7 @@ on CLI, Telegram, Discord, or any platform.
 Define a shorthand first:
 
 ```bash
-GSETUP="python ~/.satan/skills/productivity/google-workspace/scripts/setup.py"
+GSETUP="python ~/.satanclaw/skills/productivity/google-workspace/scripts/setup.py"
 ```
 
 ### Step 0: Check if already set up
@@ -125,8 +125,8 @@ Should print `AUTHENTICATED`. Setup is complete — token refreshes automaticall
 
 ### Notes
 
-- Token is stored at `~/.satan/google_token.json` and auto-refreshes.
-- Pending OAuth session state/verifier are stored temporarily at `~/.satan/google_oauth_pending.json` until exchange completes.
+- Token is stored at `~/.satanclaw/google_token.json` and auto-refreshes.
+- Pending OAuth session state/verifier are stored temporarily at `~/.satanclaw/google_oauth_pending.json` until exchange completes.
 - To revoke: `$GSETUP --revoke`
 
 ## Usage
@@ -134,7 +134,7 @@ Should print `AUTHENTICATED`. Setup is complete — token refreshes automaticall
 All commands go through the API script. Set `GAPI` as a shorthand:
 
 ```bash
-GAPI="python ~/.satan/skills/productivity/google-workspace/scripts/google_api.py"
+GAPI="python ~/.satanclaw/skills/productivity/google-workspace/scripts/google_api.py"
 ```
 
 ### Gmail

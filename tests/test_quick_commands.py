@@ -8,7 +8,7 @@ import pytest
 # ── CLI tests ──────────────────────────────────────────────────────────────
 
 class TestCLIQuickCommands:
-    """Test quick command dispatch in SatanCLI.process_command."""
+    """Test quick command dispatch in SatanClawCLI.process_command."""
 
     @staticmethod
     def _printed_plain(call_arg):
@@ -17,8 +17,8 @@ class TestCLIQuickCommands:
         return str(call_arg)
 
     def _make_cli(self, quick_commands):
-        from cli import SatanCLI
-        cli = SatanCLI.__new__(SatanCLI)
+        from cli import SatanClawCLI
+        cli = SatanClawCLI.__new__(SatanClawCLI)
         cli.config = {"quick_commands": quick_commands}
         cli.console = MagicMock()
         cli.agent = None

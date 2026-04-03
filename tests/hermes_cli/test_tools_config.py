@@ -1,8 +1,8 @@
-"""Tests for satan_cli.tools_config platform tool persistence."""
+"""Tests for satanclaw_cli.tools_config platform tool persistence."""
 
 from unittest.mock import patch
 
-from satan_cli.tools_config import (
+from satanclaw_cli.tools_config import (
     _configure_provider,
     _get_platform_tools,
     _platform_toolset_summary,
@@ -93,7 +93,7 @@ def test_toolset_has_keys_for_vision_accepts_codex_auth(tmp_path, monkeypatch):
 def test_save_platform_tools_preserves_mcp_server_names():
     """Ensure MCP server names are preserved when saving platform tools.
 
-    Regression test for https://github.com/NousResearch/satan-agent/issues/1247
+    Regression test for https://github.com/NousResearch/satanclaw-agent/issues/1247
     """
     config = {
         "platform_toolsets": {
@@ -103,7 +103,7 @@ def test_save_platform_tools_preserves_mcp_server_names():
 
     new_selection = {"web", "browser"}
 
-    with patch("satan_cli.tools_config.save_config"):
+    with patch("satanclaw_cli.tools_config.save_config"):
         _save_platform_tools(config, "cli", new_selection)
 
     saved_toolsets = config["platform_toolsets"]["cli"]
@@ -120,7 +120,7 @@ def test_save_platform_tools_handles_empty_existing_config():
     """Saving platform tools works when no existing config exists."""
     config = {}
 
-    with patch("satan_cli.tools_config.save_config"):
+    with patch("satanclaw_cli.tools_config.save_config"):
         _save_platform_tools(config, "telegram", {"web", "terminal"})
 
     saved_toolsets = config["platform_toolsets"]["telegram"]
@@ -136,7 +136,7 @@ def test_save_platform_tools_handles_invalid_existing_config():
         }
     }
 
-    with patch("satan_cli.tools_config.save_config"):
+    with patch("satanclaw_cli.tools_config.save_config"):
         _save_platform_tools(config, "cli", {"web"})
 
     saved_toolsets = config["platform_toolsets"]["cli"]
@@ -144,7 +144,7 @@ def test_save_platform_tools_handles_invalid_existing_config():
 
 
 def test_save_platform_tools_does_not_preserve_platform_default_toolsets():
-    """Platform default toolsets (satan-cli, satan-telegram, etc.) must NOT
+    """Platform default toolsets (satanclaw-cli, satanclaw-telegram, etc.) must NOT
     be preserved across saves.
 
     These "super" toolsets resolve to ALL tools, so if they survive in the
@@ -154,14 +154,14 @@ def test_save_platform_tools_does_not_preserve_platform_default_toolsets():
     (like MCP server names), causing them to be kept unconditionally.
 
     Regression test: user unchecks image_gen and homeassistant via
-    ``satan tools``, but satan-cli stays in the config and re-enables
+    ``satanclaw tools``, but satanclaw-cli stays in the config and re-enables
     everything on the next read.
     """
     config = {
         "platform_toolsets": {
             "cli": [
                 "browser", "clarify", "code_execution", "cronjob",
-                "delegation", "file", "satan-cli",  # <-- the culprit
+                "delegation", "file", "satanclaw-cli",  # <-- the culprit
                 "memory", "session_search", "skills", "terminal",
                 "todo", "tts", "vision", "web",
             ]
@@ -175,13 +175,13 @@ def test_save_platform_tools_does_not_preserve_platform_default_toolsets():
         "skills", "terminal", "todo", "tts", "vision", "web",
     }
 
-    with patch("satan_cli.tools_config.save_config"):
+    with patch("satanclaw_cli.tools_config.save_config"):
         _save_platform_tools(config, "cli", new_selection)
 
     saved = config["platform_toolsets"]["cli"]
 
-    # satan-cli must NOT survive — it's a platform default, not an MCP server
-    assert "satan-cli" not in saved
+    # satanclaw-cli must NOT survive — it's a platform default, not an MCP server
+    assert "satanclaw-cli" not in saved
 
     # The individual toolset keys the user selected must be present
     assert "web" in saved
@@ -194,23 +194,23 @@ def test_save_platform_tools_does_not_preserve_platform_default_toolsets():
     assert "moa" not in saved
 
 
-def test_save_platform_tools_does_not_preserve_satan_telegram():
-    """Same bug for Telegram — satan-telegram must not be preserved."""
+def test_save_platform_tools_does_not_preserve_satanclaw_telegram():
+    """Same bug for Telegram — satanclaw-telegram must not be preserved."""
     config = {
         "platform_toolsets": {
             "telegram": [
-                "browser", "file", "satan-telegram", "terminal", "web",
+                "browser", "file", "satanclaw-telegram", "terminal", "web",
             ]
         }
     }
 
     new_selection = {"browser", "file", "terminal", "web"}
 
-    with patch("satan_cli.tools_config.save_config"):
+    with patch("satanclaw_cli.tools_config.save_config"):
         _save_platform_tools(config, "telegram", new_selection)
 
     saved = config["platform_toolsets"]["telegram"]
-    assert "satan-telegram" not in saved
+    assert "satanclaw-telegram" not in saved
     assert "web" in saved
 
 
@@ -220,14 +220,14 @@ def test_save_platform_tools_still_preserves_mcp_with_platform_default_present()
     config = {
         "platform_toolsets": {
             "cli": [
-                "web", "terminal", "satan-cli", "my-mcp-server", "github-tools",
+                "web", "terminal", "satanclaw-cli", "my-mcp-server", "github-tools",
             ]
         }
     }
 
     new_selection = {"web", "browser"}
 
-    with patch("satan_cli.tools_config.save_config"):
+    with patch("satanclaw_cli.tools_config.save_config"):
         _save_platform_tools(config, "cli", new_selection)
 
     saved = config["platform_toolsets"]["cli"]
@@ -237,7 +237,7 @@ def test_save_platform_tools_still_preserves_mcp_with_platform_default_present()
     assert "github-tools" in saved
 
     # Platform default stripped
-    assert "satan-cli" not in saved
+    assert "satanclaw-cli" not in saved
 
     # User selections present
     assert "web" in saved
@@ -252,7 +252,7 @@ def test_visible_providers_include_nous_subscription_when_logged_in(monkeypatch)
     config = {"model": {"provider": "nous"}}
 
     monkeypatch.setattr(
-        "satan_cli.nous_subscription.get_nous_auth_status",
+        "satanclaw_cli.nous_subscription.get_nous_auth_status",
         lambda: {"logged_in": True},
     )
 
@@ -266,7 +266,7 @@ def test_visible_providers_hide_nous_subscription_when_feature_flag_is_off(monke
     config = {"model": {"provider": "nous"}}
 
     monkeypatch.setattr(
-        "satan_cli.nous_subscription.get_nous_auth_status",
+        "satanclaw_cli.nous_subscription.get_nous_auth_status",
         lambda: {"logged_in": True},
     )
 
@@ -282,7 +282,7 @@ def test_local_browser_provider_is_saved_explicitly(monkeypatch):
         for provider in TOOL_CATEGORIES["browser"]["providers"]
         if provider.get("browser_provider") == "local"
     )
-    monkeypatch.setattr("satan_cli.tools_config._run_post_setup", lambda key: None)
+    monkeypatch.setattr("satanclaw_cli.tools_config._run_post_setup", lambda key: None)
 
     _configure_provider(local_provider, config)
 
@@ -311,18 +311,18 @@ def test_first_install_nous_auto_configures_managed_defaults(monkeypatch):
         monkeypatch.delenv(env_var, raising=False)
 
     monkeypatch.setattr(
-        "satan_cli.tools_config._prompt_toolset_checklist",
+        "satanclaw_cli.tools_config._prompt_toolset_checklist",
         lambda *args, **kwargs: {"web", "image_gen", "tts", "browser"},
     )
-    monkeypatch.setattr("satan_cli.tools_config.save_config", lambda config: None)
+    monkeypatch.setattr("satanclaw_cli.tools_config.save_config", lambda config: None)
     monkeypatch.setattr(
-        "satan_cli.nous_subscription.get_nous_auth_status",
+        "satanclaw_cli.nous_subscription.get_nous_auth_status",
         lambda: {"logged_in": True},
     )
 
     configured = []
     monkeypatch.setattr(
-        "satan_cli.tools_config._configure_toolset",
+        "satanclaw_cli.tools_config._configure_toolset",
         lambda ts_key, config: configured.append(ts_key),
     )
 
@@ -341,7 +341,7 @@ class TestPlatformToolsetConsistency:
 
     def test_all_platforms_have_toolset_definitions(self):
         """Each platform's default_toolset must exist in TOOLSETS."""
-        from satan_cli.tools_config import PLATFORMS
+        from satanclaw_cli.tools_config import PLATFORMS
         from toolsets import TOOLSETS
 
         for platform, meta in PLATFORMS.items():
@@ -352,11 +352,11 @@ class TestPlatformToolsetConsistency:
             )
 
     def test_gateway_toolset_includes_all_messaging_platforms(self):
-        """satan-gateway includes list should cover all messaging platforms."""
-        from satan_cli.tools_config import PLATFORMS
+        """satanclaw-gateway includes list should cover all messaging platforms."""
+        from satanclaw_cli.tools_config import PLATFORMS
         from toolsets import TOOLSETS
 
-        gateway_includes = set(TOOLSETS["satan-gateway"]["includes"])
+        gateway_includes = set(TOOLSETS["satanclaw-gateway"]["includes"])
         # Exclude non-messaging platforms from the check
         non_messaging = {"cli", "api_server"}
         for platform, meta in PLATFORMS.items():
@@ -365,13 +365,13 @@ class TestPlatformToolsetConsistency:
             ts_name = meta["default_toolset"]
             assert ts_name in gateway_includes, (
                 f"Platform {platform!r} toolset {ts_name!r} missing from "
-                f"satan-gateway includes"
+                f"satanclaw-gateway includes"
             )
 
     def test_skills_config_covers_tools_config_platforms(self):
         """skills_config.PLATFORMS should have entries for all gateway platforms."""
-        from satan_cli.tools_config import PLATFORMS as TOOLS_PLATFORMS
-        from satan_cli.skills_config import PLATFORMS as SKILLS_PLATFORMS
+        from satanclaw_cli.tools_config import PLATFORMS as TOOLS_PLATFORMS
+        from satanclaw_cli.skills_config import PLATFORMS as SKILLS_PLATFORMS
 
         non_messaging = {"api_server"}
         for platform in TOOLS_PLATFORMS:

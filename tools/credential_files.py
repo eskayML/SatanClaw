@@ -21,8 +21,8 @@ Remote backends (``tools/environments/modal.py``, ``docker.py``) call
 Each registered entry is a dict::
 
     {
-        "host_path": "/home/user/.satan/google_token.json",
-        "container_path": "/root/.satan/google_token.json",
+        "host_path": "/home/user/.satanclaw/google_token.json",
+        "container_path": "/root/.satanclaw/google_token.json",
     }
 """
 
@@ -43,13 +43,13 @@ _registered_files: Dict[str, str] = {}
 _config_files: List[Dict[str, str]] | None = None
 
 
-def _resolve_satan_home() -> Path:
-    return Path(os.environ.get("HERMES_HOME", Path.home() / ".satan"))
+def _resolve_satanclaw_home() -> Path:
+    return Path(os.environ.get("HERMES_HOME", Path.home() / ".satanclaw"))
 
 
 def register_credential_file(
     relative_path: str,
-    container_base: str = "/root/.satan",
+    container_base: str = "/root/.satanclaw",
 ) -> bool:
     """Register a credential file for mounting into remote sandboxes.
 
@@ -61,7 +61,7 @@ def register_credential_file(
     skill cannot declare ``required_credential_files: ['../../.ssh/id_rsa']``
     and exfiltrate sensitive host files into a container sandbox.
     """
-    satan_home = _resolve_satan_home()
+    satanclaw_home = _resolve_satanclaw_home()
 
     # Reject absolute paths — they bypass the HERMES_HOME sandbox entirely.
     if os.path.isabs(relative_path):
@@ -71,21 +71,21 @@ def register_credential_file(
         )
         return False
 
-    host_path = satan_home / relative_path
+    host_path = satanclaw_home / relative_path
 
     # Resolve symlinks and normalise ``..`` before the containment check so
     # that traversal like ``../. ssh/id_rsa`` cannot escape HERMES_HOME.
     try:
         resolved = host_path.resolve()
-        satan_home_resolved = satan_home.resolve()
-        resolved.relative_to(satan_home_resolved)  # raises ValueError if outside
+        satanclaw_home_resolved = satanclaw_home.resolve()
+        resolved.relative_to(satanclaw_home_resolved)  # raises ValueError if outside
     except ValueError:
         logger.warning(
             "credential_files: rejected path traversal %r "
             "(resolves to %s, outside HERMES_HOME %s)",
             relative_path,
             resolved,
-            satan_home_resolved,
+            satanclaw_home_resolved,
         )
         return False
 
@@ -101,7 +101,7 @@ def register_credential_file(
 
 def register_credential_files(
     entries: list,
-    container_base: str = "/root/.satan",
+    container_base: str = "/root/.satanclaw",
 ) -> List[str]:
     """Register multiple credential files from skill frontmatter entries.
 
@@ -132,8 +132,8 @@ def _load_config_files() -> List[Dict[str, str]]:
 
     result: List[Dict[str, str]] = []
     try:
-        satan_home = _resolve_satan_home()
-        config_path = satan_home / "config.yaml"
+        satanclaw_home = _resolve_satanclaw_home()
+        config_path = satanclaw_home / "config.yaml"
         if config_path.exists():
             import yaml
 
@@ -141,7 +141,7 @@ def _load_config_files() -> List[Dict[str, str]]:
                 cfg = yaml.safe_load(f) or {}
             cred_files = cfg.get("terminal", {}).get("credential_files")
             if isinstance(cred_files, list):
-                satan_home_resolved = satan_home.resolve()
+                satanclaw_home_resolved = satanclaw_home.resolve()
                 for item in cred_files:
                     if isinstance(item, str) and item.strip():
                         rel = item.strip()
@@ -150,18 +150,18 @@ def _load_config_files() -> List[Dict[str, str]]:
                                 "credential_files: rejected absolute config path %r", rel,
                             )
                             continue
-                        host_path = (satan_home / rel).resolve()
+                        host_path = (satanclaw_home / rel).resolve()
                         try:
-                            host_path.relative_to(satan_home_resolved)
+                            host_path.relative_to(satanclaw_home_resolved)
                         except ValueError:
                             logger.warning(
                                 "credential_files: rejected config path traversal %r "
                                 "(resolves to %s, outside HERMES_HOME %s)",
-                                rel, host_path, satan_home_resolved,
+                                rel, host_path, satanclaw_home_resolved,
                             )
                             continue
                         if host_path.is_file():
-                            container_path = f"/root/.satan/{rel}"
+                            container_path = f"/root/.satanclaw/{rel}"
                             result.append({
                                 "host_path": str(host_path),
                                 "container_path": container_path,
@@ -200,7 +200,7 @@ def get_credential_file_mounts() -> List[Dict[str, str]]:
 
 
 def get_skills_directory_mount(
-    container_base: str = "/root/.satan",
+    container_base: str = "/root/.satanclaw",
 ) -> Dict[str, str] | None:
     """Return mount info for a symlink-safe copy of the skills directory.
 
@@ -216,8 +216,8 @@ def get_skills_directory_mount(
 
     Returns a dict with ``host_path`` and ``container_path`` keys, or None.
     """
-    satan_home = _resolve_satan_home()
-    skills_dir = satan_home / "skills"
+    satanclaw_home = _resolve_satanclaw_home()
+    skills_dir = satanclaw_home / "skills"
     if not skills_dir.is_dir():
         return None
 
@@ -251,7 +251,7 @@ def _safe_skills_path(skills_dir: Path) -> str:
     if _safe_skills_tempdir and _safe_skills_tempdir.is_dir():
         shutil.rmtree(_safe_skills_tempdir, ignore_errors=True)
 
-    safe_dir = Path(tempfile.mkdtemp(prefix="satan-skills-safe-"))
+    safe_dir = Path(tempfile.mkdtemp(prefix="satanclaw-skills-safe-"))
     _safe_skills_tempdir = safe_dir
 
     for item in skills_dir.rglob("*"):
@@ -275,15 +275,15 @@ def _safe_skills_path(skills_dir: Path) -> str:
 
 
 def iter_skills_files(
-    container_base: str = "/root/.satan",
+    container_base: str = "/root/.satanclaw",
 ) -> List[Dict[str, str]]:
     """Yield individual (host_path, container_path) entries for skills files.
 
     Skips symlinks entirely.  Preferred for backends that upload files
     individually (Daytona, Modal) rather than mounting a directory.
     """
-    satan_home = _resolve_satan_home()
-    skills_dir = satan_home / "skills"
+    satanclaw_home = _resolve_satanclaw_home()
+    skills_dir = satanclaw_home / "skills"
     if not skills_dir.is_dir():
         return []
 
